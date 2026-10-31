@@ -186,7 +186,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - **Momento/velocidade:** ainda sem um jeito claro de aplicar. Lembrete: momento tem direção, energia não.
 - **Mais 2 habilidades numéricas** (a escolher). Candidatas:
   - **Temperatura** (°C): derreter gelo, congelar água em ponte.
-  - **Elasticidade** (0 a 1): roubar o "quique" de uma bola de borracha.
+  - **Elasticidade** (0 a 1): roubar o "quique" de uma bola de borracha. (Já existe como atributo
+    fixo de cada objeto; trocar seria o passo seguinte.)
   - **Atrito** (coeficiente): rampa lisa ou que gruda.
   - **Gravidade do objeto** (m/s²): objeto que "cai para cima".
   - **Carga elétrica** (C): atrair e repelir, ligar circuitos.
@@ -210,6 +211,18 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   pela física, sem virar habilidade de troca.
   **Soltar ≠ lançar:** só soltar não empurra (a gravidade puxa a pedra, não você); você só sobe se
   ficou mais leve que o meio. Lançar com força empurra para o lado contrário. São duas ações no jogo.
+- **Barra de carregamento do lançamento (decisão minha):** segurar o botão enche uma barra; soltar
+  lança o objeto segurado. A barra cresce **linear**. A carga define a **energia** que os braços dão
+  (como no pulo): v = √(2·E ÷ m_objeto), com um limite de velocidade dos braços. Objeto pesado vai
+  devagar, leve vai rápido, então trocar a massa muda o quanto dá para arremessar. Um **toque rápido
+  conta como soltar** (sem recuo). Pendente, decidir na hora/no playtest: energia máxima dos braços,
+  limite de velocidade, tempo para encher e a carga mínima que separa "soltar" de "lançar".
+- **Elasticidade dos objetos (decisão minha):** cada objeto tem um grau de elasticidade fixo (0 a 1,
+  o "quique"), para o arremesso ficar bom e o objeto não perder quase toda a energia ao bater na
+  parede. Ao quicar, sobra e² da energia cinética (e = 0,8 → sobra 64 %). Quem calcula a batida é a
+  física do Godot (material do objeto); o `rules` só lê a energia que a física devolve. Por enquanto
+  **não é trocável**; virar habilidade de troca continua possível (ver "Novas propriedades").
+  Valores por material (borracha, madeira, pedra...) a decidir no `game`.
 - **Nado (física):** a velocidade máxima de nado é a mesma em todos os meios; o que muda é a
   resistência (na água para rápido, no ar e no gás desliza como no espaço).
 - **Pulo (fisicamente correto, ajustar depois):** as pernas dão uma energia fixa por pulo, com limite de

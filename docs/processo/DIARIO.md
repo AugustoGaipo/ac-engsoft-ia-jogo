@@ -409,3 +409,19 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     vale para qualquer um dos dois.
   - Os testes de `SwapTests` (Tarefa 4) passaram a usar regras permissivas (objeto↔objeto, simultânea
     e recarga 0), porque testam o efeito da troca e não a legalidade. Nenhuma asserção foi alterada.
+
+---
+
+## 2026-10-31 — Barra de lançamento e elasticidade
+
+- **Barra de carregamento para lançar (ideia e decisões minhas):** segurar enche a barra, soltar lança.
+  Escolhi a opção do agente em que a carga dá **energia** (como no pulo), v = √(2·E ÷ m_objeto) com
+  limite de velocidade dos braços, em vez de velocidade fixa. Crescimento **linear**. Um **toque rápido
+  conta como soltar** (sem recuo). Valores (energia máxima, limite, tempo de carga, carga mínima)
+  decididos na hora/no playtest.
+- **Elasticidade (ideia minha):** os objetos devem ter um grau de elasticidade para não perderem quase
+  toda a energia ao bater na parede. O agente explicou que isso é o "quique" do material na física do
+  Godot (ao quicar sobra e² da energia), que o `rules` não simula batidas e só lê a energia que a física
+  devolve. Fica como atributo fixo por objeto; trocar a elasticidade continua sendo ideia futura.
+- O agente não mudou a spec do `rules` nem o código: as duas ideias entram quando a spec do `game` (ou
+  uma revisão da spec do `rules`, para a fórmula da carga) for feita.
