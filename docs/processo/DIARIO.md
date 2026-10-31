@@ -355,3 +355,19 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     programação, como manda a spec).
   - `PropertyKind.Position/Mass/KineticEnergy` são instâncias `static readonly` imutáveis (não é estado
     mutável estático).
+
+---
+
+## 2026-10-31 — Skills do Claude Code Game Studios
+
+- A meu pedido, o agente instalou 8 skills do kit [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios)
+  (licença MIT, commit `05ad7c8`): `/brainstorm`, `/quick-design`, `/design-review`, `/consistency-check`,
+  `/playtest-report`, `/balance-check`, `/prototype` e `/scope-check`.
+- Escolhi a opção "só algumas skills": **sem** os hooks automáticos, **sem** o `settings.json` e **sem** o `CLAUDE.md`
+  do kit, para não mexer na rotina do `rules` nem no processo atual (spec, `tasks/`, este diário).
+- Junto vieram só os arquivos de apoio que as skills usam: `hooks/yaml-helper.sh` (lê a configuração; sem o
+  `project.yaml` do kit usa os padrões: revisão "solo", modo colaborativo), 3 scripts, documentos de apoio,
+  4 modelos e 6 agentes que as skills chamam (diretores criativo, técnico e de arte, narrativo, designer de
+  sistemas e de economia). Créditos em `.claude/THIRD-PARTY-NOTICES.md`.
+- **Observação do agente:** as skills salvam os documentos nas pastas do kit (ex.: `design/gdd/`), não em
+  `docs/specs/`. Dá para mover depois, se preferir.
