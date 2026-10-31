@@ -67,3 +67,10 @@ Skill `agent-skills:idea-refine`, **fim da fase 1**. Próximo passo: o aluno esc
 variações → fase 2 (agrupar em 2-3 direções, testar cada uma, levantar premissas) →
 fase 3 (one-pager em `docs/ideas/`).
 Pendência resolvida (sessão 2): o professor já libera jogos que não sejam simples demais (ex.: cobrinha).
+
+## Onde paramos (sessão 2, fim)
+- Spec do `rules` aprovada; plano em `tasks/plan.md` e `tasks/todo.md`; Tarefa 1 feita localmente.
+- Tarefas 2–8 sendo feitas por uma **rotina na nuvem** (`trig_014m1a1SpcD9kaW9NajwNc1Z`,
+  https://claude.ai/code/routines/trig_014m1a1SpcD9kaW9NajwNc1Z), a cada hora no minuto 24 UTC, Sonnet.
+  Ela faz commit/push no GitHub e escreve `docs/processo/RELATORIO-rules.md` no fim.
+- Ao voltar: `git pull`, revisar o diário e o relatório, e **desligar a rotina** quando acabar.
