@@ -445,3 +445,7 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Casos forçados** (ex.: o objeto quântico de posição que volta sozinho quando a ligação arrebenta,
   que não pode ser recusado): ideia minha de "destruir e reconstruir" o objeto num ponto de
   renascimento. Minha dúvida: como saber que bugou sem destruir por engano objetos normais? Em discussão.
+- **Intangível no teleporte forçado (ideia minha):** se o destino estiver ocupado, o objeto aparece
+  intangível até o espaço liberar, em vez de ser destruído. Proposta do agente, em discussão: intangível
+  **parado no lugar** (sem gravidade, semitransparente, não pode ser trocado); se o que ocupa é parede
+  ou chão (nunca libera) ou se passar um tempo limite, vai para o ponto de renascimento.
