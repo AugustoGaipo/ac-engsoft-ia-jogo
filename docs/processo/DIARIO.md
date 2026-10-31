@@ -427,3 +427,12 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   uma revisão da spec do `rules`, para a fórmula da carga) for feita.
 - **Troca de elasticidade (decisão minha):** entrou como opção na rota de prioridade, no fim da P2
   (se não sobrar tempo, passa para a P3). A elasticidade fixa de cada objeto continua valendo antes disso.
+
+---
+
+## 2026-10-31 — Colisão e empilhamento
+
+- **Colisão sólida (deixei explícito):** jogador e objetos colidem entre si, então dá para empilhar
+  várias caixas, subir nelas e apoiar coisas. Fica a cargo da física do Godot (spec do `game`).
+- Perguntas abertas levantadas pelo agente: a pressão sobre uma peça quebradiça soma o peso da pilha
+  inteira? E o que acontece numa troca de posição quando o objeto maior não cabe no lugar do menor?

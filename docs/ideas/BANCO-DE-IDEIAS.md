@@ -71,6 +71,9 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - **Trocas permanentes** com recarga entre quaisquer trocas.
 - **Números na tela** (ex.: 5 kg, 3 m/s, 9 J).
 - **Regras seguem a física**, explicáveis por contas.
+- **Colisão sólida entre tudo (decisão minha):** jogador e objetos colidem entre si (jogador ↔ objeto
+  e objeto ↔ objeto). Dá para **empilhar várias caixas** uma em cima da outra, subir nelas, empurrar e
+  apoiar coisas. Quem calcula as colisões é a física do Godot; o `rules` não simula batidas.
 
 ### Propriedades
 - **Posição:** os dois trocam de lugar.
