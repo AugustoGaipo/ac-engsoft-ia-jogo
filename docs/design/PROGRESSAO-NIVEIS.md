@@ -55,8 +55,21 @@ Base da spec do módulo `levels`. Estado: **proposta em revisão** (2026-10-31).
 | **11** (P2) | Troca simultânea. |
 
 ## Escopo da entrega (sexta, 2026-11-06)
-- Jogável: **nível 1** (salas 1.1 a 1.4).
-- Os demais níveis ficam descritos aqui e entram na apresentação como continuação planejada.
+Um nível por propriedade, mais as barreiras, os buracos e as paredes (decisão do usuário):
+
+| Nível | Salas jogáveis na sexta |
+|---|---|
+| **1** Posição | 1.1 a 1.4 |
+| **2** Barreiras | 2.1 barreira 1, 2.2 barreira 2, 2.3 barreira 3 |
+| **3** Peso | 3.1 botão pesado, 3.2 pulo pela massa |
+| **5** Energia | 5.1 receber energia, 5.2 dar energia |
+
+- **Paredes e buracos** entram em todas as salas como peças básicas do cenário. Cair num buraco é
+  **morte por queda**: a sala reinicia e o tempo e as trocas continuam somando.
+- Ficam para depois: sufocamento e ponto livre mais próximo (2.4), vidro (3.3), água e gás (nível 4),
+  barra de lançamento (5.3), nível 6, combinações (7–10).
+- Ordem de corte se atrasar: barreiras 1 e 2 sozinhas (a grade de saída fica), depois 3.2 e 5.2.
+- Se sobrar tempo: 3.3 vidro e 5.3 barra de lançamento.
 
 ## Em aberto
 - Recarga dos níveis 7–10 (decidir jogando; nos níveis 1–6 é 1 s).

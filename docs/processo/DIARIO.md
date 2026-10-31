@@ -597,3 +597,8 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   Os níveis garantidos no corte (1, 3, 5, 10) ensinam sozinhos o essencial de cada propriedade.
 - **Tempo e trocas na tela desde o começo (decisão minha):** o cronômetro e o contador aparecem já na
   sala 1.1, não só na 1.3.
+- **Escopo de sexta (decisão minha):** jogável até a energia cinética, com barreiras, buracos e paredes.
+  O agente avisou que os níveis 1 a 6 inteiros (~27 salas) não cabem em 6 dias e propôs uma sala curta
+  por ideia: nível 1 completo, barreiras 1/2/3 (2.1–2.3), peso (3.1–3.2) e energia (5.1–5.2), num total
+  de 11 salas. Cair num buraco é morte por queda. A ordem de corte e os extras ficaram registrados em
+  `docs/design/PROGRESSAO-NIVEIS.md`.
