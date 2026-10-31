@@ -22,6 +22,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 1. **`rules`:** troca jogador ↔ objeto de posição, peso e energia; recarga; travas e cores; testes.
 2. **`levels`:** formato JSON das fases + validador + testes.
 3. **`game` mínimo:** personagem com peso e energia simulados, mira, troca, números na tela,
+   parede de saída (só entidades + restauração),
    botão, porta e saída → **fase 1 jogável** (critério de corte do dia 3).
 4. **Fases 1, 3, 5 e 10** (as garantidas do corte).
 5. **`profiles`:** nome + ícone, código de acesso, hash, bloqueio por tentativas, limite de envios; testes.
@@ -31,6 +32,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 
 ### P1 — Jogo completo planejado
 - Fases 2, 4, 6, 7, 8 e 9.
+- Fases contínuas (uma leva direto à próxima).
+- Paredes "só entidades", "só objetos" e "restauração" como peças das fases.
 - Tela de ranking e escolha de ícone dentro do jogo.
 - Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
 - **Densidade:** água (afundar e boiar), peças quebradiças e **pressão parada** (peso ÷ área de contato,
@@ -93,6 +96,21 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - **Duração da recarga** nas fases 7–10: decidir conforme a dificuldade de cada fase.
 - **Nome do jogo:** "Swapping" provisório.
 - **Ordem exata das fases:** proposta no one-pager, ainda pode mudar.
+- **Fases contínuas, como no Portal:** o jogo não para entre as fases; uma leva direto à próxima
+  (corredor ou elevador carrega a fase seguinte). Cada fase continua tendo início e fim para medir
+  tempo e trocas no ranking.
+- **Paredes especiais** (peças das fases):
+  - **Só entidades passam:** o jogador atravessa, os objetos não.
+  - **Só objetos passam:** os objetos atravessam, o jogador não.
+  - **Restauração:** deixa passar, mas quem atravessa recupera o **valor verdadeiro** trocando com
+    quem está com ele. Só vale para propriedades que não mudam sozinhas (peso hoje; talvez
+    temperatura e elasticidade no futuro). Energia e posição ficam de fora.
+    Ex.: eu 10 kg, A 2 kg, B 3 kg. Troco com A (eu 2, A 10) e com B (eu 3, B 2). A atravessa a parede →
+    troca com B, que estava com o peso verdadeiro dela → eu 3, A 2, B 10.
+  - **Combinadas:** a **parede de saída** de cada fase junta "só entidades" + "restauração": nenhum
+    objeto e nenhum valor trocado passa para a próxima fase.
+- **Impacto na arquitetura:** a biblioteca `rules` registra **de quem cada valor é originalmente**.
+  Como as trocas só embaralham os valores, cada valor original está sempre em exatamente um recipiente.
 
 ---
 

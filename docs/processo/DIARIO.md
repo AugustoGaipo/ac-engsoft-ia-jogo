@@ -214,3 +214,16 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Prioridade ajustada:** densidade (água, quebradiças, pressão) e o site explicando a arquitetura
   subiram para P1. O site é só para mim: precisa ser compreensível, não bonito.
 - **Pressão:** a versão parada (peso ÷ área, objeto parado em cima) é simples e fica no P1 junto com a densidade; a pressão de impacto (objeto caindo) vai para o P3.
+
+---
+
+## 2026-10-31 — Fases contínuas e paredes especiais
+
+- Propus fases contínuas, como no Portal, e paredes especiais: só entidades passam, só objetos passam,
+  e uma parede que devolve o valor verdadeiro de quem atravessa. Combinadas, formam a parede de saída
+  de cada fase: nada trocado passa para a próxima.
+- **Apontamento do agente:** a restauração funciona porque as trocas só embaralham os valores (cada
+  valor original está em exatamente um recipiente). A biblioteca `rules` precisa registrar de quem é
+  cada valor, e isso entra na spec antes do código. Energia e posição mudam sozinhas com a física,
+  então a restauração vale só para propriedades estáveis (peso).
+- **Prioridade:** parede de saída no P0; fases contínuas e as outras paredes no P1.
