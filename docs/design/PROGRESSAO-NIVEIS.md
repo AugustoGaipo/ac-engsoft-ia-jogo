@@ -1,7 +1,7 @@
 # Progressão dos níveis
 
 Curva de aprendizado do jogo: o que o jogador aprende em cada nível e em cada sala.
-Base da spec do módulo `levels`. Estado: **proposta em revisão** (2026-10-31).
+Base da spec do módulo `levels`. Estado: **aprovada** (2026-10-31).
 
 ## Regras da curva
 - Cada nível tem várias salas. Cada sala ensina **uma coisa nova**; a última sala do nível junta o que foi aprendido.

@@ -602,3 +602,11 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   por ideia: nível 1 completo, barreiras 1/2/3 (2.1–2.3), peso (3.1–3.2) e energia (5.1–5.2), num total
   de 11 salas. Cair num buraco é morte por queda. A ordem de corte e os extras ficaram registrados em
   `docs/design/PROGRESSAO-NIVEIS.md`.
+
+## 2026-10-31 — Módulo `rules` concluído
+- A rotina foi pausada a meu pedido antes de escrever o relatório, então o agente escreveu no PC o
+  `docs/processo/RELATORIO-rules.md`, com cada tarefa, a tabela critério → teste (15 de 15), as decisões
+  tomadas sem mim, os problemas e o que está pendente.
+- Na revisão apareceu uma divergência na spec: os exemplos de pulo só batem com densidade ~1 000 kg/m³.
+  Com o volume fixo do jogador, 7 kg pula 1,86 m, e não 1,84 m. Isso entra na revisão da spec.
+- Progressão dos níveis aprovada.
