@@ -25,16 +25,16 @@ warnings as errors) and the `Swapping.Rules.Tests` xUnit project referencing it.
 force and state, static pressure, throw recoil, jump take-off speed and height; `Medium` with
 density and drag (air, dense gas, water).
 **Acceptance criteria:**
-- [ ] SC 3 (2 kg at 3 m/s → 8 kg → 1.5 m/s), SC 10 (pressure 9 800 Pa, glass limits), SC 11
+- [x] SC 3 (2 kg at 3 m/s → 8 kg → 1.5 m/s), SC 10 (pressure 9 800 Pa, glass limits), SC 11
       (swim / sink / swim-in-air), SC 12 (jump heights) pass as formula tests.
-- [ ] Recoil example: 0.05 kg throws 0.01 kg at 5 m/s → 1 m/s back; dropping → 0.
-- [ ] Buoyancy band edges (exactly 0.1× and 1.1×) are Swim.
+- [x] Recoil example: 0.05 kg throws 0.01 kg at 5 m/s → 1 m/s back; dropping → 0.
+- [x] Buoyancy band edges (exactly 0.1× and 1.1×) are Swim.
 **Dependencies:** Task 1
 **Files:** `Model/Vec3.cs`, `Physics/Formulas.cs`, `Physics/Medium.cs`, `FormulaTests.cs`
 **Scope:** M
 
 ### Checkpoint: Foundation
-- [ ] Build clean, all tests green, commit + push.
+- [x] Build clean, all tests green, commit + push.
 
 ## Task 3: Variables, containers and the world invariant
 **Description:** `PropertyKind` (Position, Mass, KineticEnergy, behind `IPropertyKind`), `Variable`

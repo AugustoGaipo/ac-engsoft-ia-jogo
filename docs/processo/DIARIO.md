@@ -320,3 +320,19 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   pela própria compilação.
 - `dotnet build` sem avisos; `dotnet test`: 1 teste de fumaça aprovado.
 - Escolhi agendar o resto da implementação na nuvem (o agente da nuvem trabalha a partir do GitHub).
+
+### Tarefa 2 do `rules` — fórmulas de física e meios ✅
+- Criados `Vec3`, `Formulas` (energia cinética, velocidade a partir da energia, densidade, empuxo,
+  estado de flutuação, pressão, recuo, pulo) e `Medium` (ar, gás denso, água com densidade e arrasto).
+- Testes: 27/27 aprovados (inclui os critérios 3, 10, 11 e 12 da spec, o recuo e as bordas 0,1× e 1,1×).
+  `dotnet build` sem avisos.
+- **Decisões tomadas sozinho:**
+  - O ambiente da nuvem bloqueou o instalador oficial do .NET (403); instalei o SDK 8 por `apt-get install dotnet-sdk-8.0`.
+  - Exemplos de pulo da spec (0,50 / 1,00 / 1,84 / 0,12 m) só batem com ±0,01 se a densidade for ~1000 kg/m³
+    (g_eff ≈ g). Com 7 kg e 0,07 m³ (ρ = 100) a fórmula daria 1,86 m. Os testes usam `density: 1000`;
+    `JumpHeight` recebe a densidade como parâmetro. **Vale revisar a spec.**
+  - Corpo não mais denso que o meio (ρ ≤ ρ_fluido): `JumpHeight` devolve +∞ (g_eff ≤ 0).
+  - Bordas das faixas de flutuação usam tolerância relativa de 1e-9 para evitar erro de ponto flutuante.
+  - Arrasto (1/s) padrão: ar 0,05, gás denso 0,1, água 3,0 — valores provisórios, ajustáveis; a velocidade
+    máxima de nado (3 m/s) está em `Formulas.DefaultSwimSpeed`.
+  - `Vec3` é um `readonly record struct`; `RecoilSpeed` recebe `onGround` e devolve 0 no chão.
