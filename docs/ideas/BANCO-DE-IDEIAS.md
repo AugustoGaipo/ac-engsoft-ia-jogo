@@ -12,6 +12,43 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
 
 ---
 
+## 🧭 Rota de prioridade
+
+O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a anterior está pronta
+(exceto a documentação, que acompanha tudo).
+
+### P0 — Essencial (sem isso não tem nota nem demo)
+0. **C4 de Contexto e Container** — o enunciado exige antes do código.
+1. **`rules`:** troca jogador ↔ objeto de posição, peso e energia; recarga; travas e cores; testes.
+2. **`levels`:** formato JSON das fases + validador + testes.
+3. **`game` mínimo:** personagem com peso e energia simulados, mira, troca, números na tela,
+   botão, porta e saída → **fase 1 jogável** (critério de corte do dia 3).
+4. **Fases 1, 3, 5 e 10** (as garantidas do corte).
+5. **`profiles`:** nome + ícone, código de acesso, hash, bloqueio por tentativas, limite de envios; testes.
+6. **`progress`:** fases liberadas em ordem, melhor resultado, ranking nos dois modos; testes.
+7. **`sync`:** save local + fila de envio quando houver internet; testes.
+8. **Documentação final:** C4 de Componentes e Código, README de como rodar, diário, prints.
+
+### P1 — Jogo completo planejado
+- Fases 2, 4, 6, 7, 8 e 9.
+- Tela de ranking e escolha de ícone dentro do jogo.
+- Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
+
+### P2 — Se sobrar tempo
+- Fase 11: troca simultânea.
+- Fantasma das partidas dos primeiros do ranking.
+- Site interativo explicando a arquitetura (antes da apresentação).
+
+### P3 — Futuro (a arquitetura já deixa o espaço)
+- Objeto ↔ objeto e a arma que guarda valores.
+- Tempo (roubar/entregar) e o tipo de operação "transferir".
+- Objetos instáveis, power-up de recarga, peso glorioso, downgrade de tempo limitado.
+- Densidade: água, peças quebradiças e pressão.
+- Momento e as outras propriedades novas.
+- Steam.
+
+---
+
 ## ✅ Utilizadas
 
 ### Mecânica
@@ -115,12 +152,14 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
 - **Cuidado técnico:** desacelerar o mundo todo no Godot também desacelera o jogador; vai precisar de
   uma escala de tempo por objeto.
 
-### Compartilhar partidas (replay)
-- Assistir à partida jogada pelos primeiros do ranking, como um "fantasma" que refaz o caminho.
-- O jogo grava a posição do jogador várias vezes por segundo e o momento de cada troca; o replay mostra
-  o caminho gravado, sem re-simular a física.
+### Fantasma (compartilhar a partida jogada) — se sobrar tempo
+- Assistir à partida dos primeiros do ranking como um **fantasma** do personagem andando pela fase.
+- Grava **só o personagem**: posição e ângulo/direção da cabeça, várias vezes por segundo.
+  **Os objetos não aparecem** e a física não é re-simulada.
+- Tamanho pequeno: ~20 amostras por segundo × 5 números ≈ 120 KB para 5 minutos de partida.
 - Na API: arquivo opcional junto do resultado, com limite de tamanho e validação de formato; só os
   primeiros do ranking ficam disponíveis. O módulo `progress` já nasce com esse espaço.
+- Evolução possível: replay completo, com os objetos e as trocas.
 
 ### Plataforma
 - **Steam** via Steamworks (login, ranking e saves da Steam no lugar da API).

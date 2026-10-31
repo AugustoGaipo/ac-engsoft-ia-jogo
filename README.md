@@ -8,5 +8,7 @@ conjunto de skills [Agent Skills](https://github.com/addyosmani/agent-skills) do
 
 - Ideia do jogo: [`docs/CONTEXTOJOGO.md`](docs/CONTEXTOJOGO.md)
 - Diário do processo: [`docs/processo/DIARIO.md`](docs/processo/DIARIO.md)
+- Banco de ideias e rota de prioridade: [`docs/ideas/BANCO-DE-IDEIAS.md`](docs/ideas/BANCO-DE-IDEIAS.md)
+- Mapa de módulos: [`CAPABILITY-MAP.md`](CAPABILITY-MAP.md)
 
 **Stack planejada:** Godot 4 (C#), biblioteca de regras em C# puro, API ASP.NET Core + SQLite.

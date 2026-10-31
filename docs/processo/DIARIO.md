@@ -206,3 +206,8 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Compartilhar partidas:** assistir aos replays dos primeiros do ranking. O agente lembrou que, como a
   física não é determinística, o replay mostra o caminho gravado em vez de re-simular. Fica como
   possível, com espaço previsto no módulo `progress`.
+- **Fantasma no lugar do replay completo:** grava só o personagem (posição e direção da cabeça),
+  sem os objetos. Fica para se sobrar tempo.
+- **Rota de prioridade:** pedi uma ordem do que é mais importante. Criada no banco de ideias, em
+  faixas P0 (essencial) a P3 (futuro).
+- **Mapa de módulos aprovado** e salvo em [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md).
