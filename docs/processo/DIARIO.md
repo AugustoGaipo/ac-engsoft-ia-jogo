@@ -686,3 +686,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - O ponto de renascimento dentro de uma zona que barra **variáveis** é permitido (só não pode ser
     numa zona de queda nem numa barreira que barra o jogador).
   - Objeto encostado num botão não é sobreposição. Objeto em cima do botão logo no começo dá erro.
+
+### Tarefa 5 do `levels` — ligação com o `rules` ✅
+- Testes (`MappingTests`) escritos antes do `RulesMapping`. Desta vez não rodei a fase vermelha antes de
+  escrever o código (os testes nem compilariam sem a classe), mas todos foram feitos antes dele.
+- `ToLevelRules(nível, sala)` aplica as regras da sala por cima das do nível, só nos campos que a sala define.
+  `BuildWorld(nível, sala)` cria um `World` novo com o jogador e os objetos da sala.
+- Critérios 8 (sala sem propriedade liberada recusa toda troca), 9 (sala 3.1: a troca de massa com a
+  caixa deixa o jogador com 300 kg e o invariante vale) e 10 (montar de novo = reiniciar a sala).
+- Testes: 96/96 do `levels` (8 novos), 94/94 do `rules`. Build com 0 avisos. Checkpoint "Core" concluído.
+- **Decisões tomadas sozinho:**
+  - No `World`, a posição do jogador é o **centro do corpo** (pés + 0,9 m), como a dos objetos. Assim a
+    troca de posição troca centro com centro. O `game` converte para os pés do `CharacterBody3D`.
+  - Área de contato do jogador: 0,6 × 0,6 = 0,36 m².
+  - Sala que não existe lança exceção (erro de programação, como no `rules`), e não gera um erro de nível.

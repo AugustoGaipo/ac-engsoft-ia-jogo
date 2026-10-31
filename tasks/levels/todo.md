@@ -69,15 +69,15 @@ doors, kill zones and the 0.6 × 1.8 × 0.6 m spawn area), `SpawnUnsafe`.
 spawn) and one `Container` per object (derived volume and contact area, locked, accepted properties) at its
 start position, mass and velocity.
 **Acceptance criteria:**
-- [ ] SC 8: `unlockedProperties: []` override → every swap in that room is `PropertyNotUnlocked`.
-- [ ] SC 9: room 3.1 of the spec example → player ↔ crate mass swap applied, player then 300 kg, invariant holds.
-- [ ] SC 10: two `BuildWorld` calls give independent worlds.
+- [x] SC 8: `unlockedProperties: []` override → every swap in that room is `PropertyNotUnlocked`.
+- [x] SC 9: room 3.1 of the spec example → player ↔ crate mass swap applied, player then 300 kg, invariant holds.
+- [x] SC 10: two `BuildWorld` calls give independent worlds.
 **Dependencies:** Task 4
 **Files:** `RulesMapping.cs`, `tests/.../MappingTests.cs`
 **Scope:** S
 
 ### Checkpoint: Core
-- [ ] Build clean, all tests green, commit + push.
+- [x] Build clean, all tests green, commit + push.
 
 ## Task 6: Catalog and levels 1 and 2
 **Description:** `LevelCatalog` (reads `levels/catalog.json` and the files it lists; `CatalogOrder`
