@@ -43,6 +43,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 ### P2 — Se sobrar tempo
 - Fase 11: troca simultânea.
 - Fantasma das partidas dos primeiros do ranking.
+- Mais causas de morte: explosão, implosão e outras.
 - **Troca de elasticidade** (opcional, por último nesta faixa; se não der tempo, vai para a P3):
   trocar o "quique" entre o jogador e um objeto, como uma quarta propriedade.
 

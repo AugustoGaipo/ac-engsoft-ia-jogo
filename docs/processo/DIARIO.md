@@ -498,3 +498,9 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Morte em todos os casos (decisão minha):** sem espaço nem no ponto mais próximo, vale estouro +
   renascimento (objeto) ou morte (jogador) tanto na troca normal quanto no quântico. Nenhuma troca é
   recusada por falta de espaço; o "não permitir" do quântico sai.
+- **Estouro do objeto (decisão minha):** a troca de posição acontece antes do estouro; os outros
+  atributos continuam os de antes da morte (em troca simultânea, só a posição é trocada). Interpretação
+  do agente a confirmar.
+- **Morte do jogador (decisão minha):** volta ao ponto de renascimento da fase. Para começar: queda
+  (altura/colisão), sufocamento/sobreposição e afogamento. Explosão, implosão e outras foram para a P2
+  do banco de ideias.
