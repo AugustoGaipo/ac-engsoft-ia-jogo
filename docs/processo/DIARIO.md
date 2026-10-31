@@ -285,3 +285,8 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Correção:** a regra das propriedades aceitas continua; a cor só sai do objeto e vai para o **contorno** (branco = aceita tudo).
 - **Ação e reação:** lançar um objeto sem estar apoiado no chão empurra para o lado contrário (no ar desliza como no espaço; na água para logo). O momento entra no jogo pela física. Velocidade de nado por meio: o agente explicou que, pela física, ela seria parecida nos meios e o que muda é a resistência; decisão pendente.
 - **Soltar ≠ lançar (correção minha, confirmada pelo agente):** só soltar não dá reação; a reação vem só da velocidade que o lançamento adiciona, não da gravidade. Viram duas ações no jogo.
+- **Pulo:** propus pular mais alto quando leve, "como na Lua". O agente explicou que a gravidade acelera
+  todos igual (Galileu): leve pula mais alto porque as pernas empurram menos massa, mas cai na
+  velocidade normal; a queda só fica lunar perto da densidade do meio. Decisão: pulo fisicamente
+  correto, com recado para comparar depois com um pulo ajustado de jogo.
+- **Nado:** escolhida a opção física (mesma velocidade máxima; muda a resistência de cada meio).

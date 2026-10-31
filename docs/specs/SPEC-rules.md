@@ -101,6 +101,21 @@ properties; the game always uses "all" for now.
   object (relative to the thrower). Gravity is not the thrower's push, so **dropping** (just letting go)
   gives **no recoil**; the thrower may still rise, but because it became lighter (buoyancy).
   Drop and throw are two different actions. On the ground, floor friction cancels the recoil.
+- **Swimming (physics-based).** Each medium has a density and a **drag**. Pushing against a denser
+  medium gives more thrust but also more drag, so the **top swim speed is the same in every medium**
+  (default 3 m/s, tunable). What changes is how long you keep gliding when you stop: high drag in
+  water (stops quickly), low drag in air and gas (drifts, like in space).
+- **Jumping (physically correct; tune after playtesting).**
+  - The legs give a fixed energy per jump: E_jump = 343 J (a 0.5 m jump at 70 kg).
+  - Take-off speed v = min(√(2·E_jump ÷ m), v_legs_max), with v_legs_max = 6 m/s (legs cannot
+    extend infinitely fast).
+  - Effective gravity near the medium's density: g_eff = g · (1 − ρ_fluid ÷ ρ) when ρ > ρ_fluid. A
+    lighter body jumps higher but falls at the normal speed; only close to the medium's density does
+    the fall become slow, "moon-like".
+  - Jump height h = v² ÷ (2·g_eff). Examples in air: 70 kg → 0.50 m; 35 kg → 1.00 m;
+    7 kg → capped at 6 m/s → 1.84 m; 300 kg → 0.12 m.
+  - ⚠️ **Note for later:** compare this with a tuned, gameplay-first jump in playtests and keep the one
+    that feels better.
   How fast the recoil fades depends on the medium's drag: little in air or gas (drifts, like in
   space), a lot in water (stops quickly). Example: a 0.05 kg player flying in air throws a 0.01 kg
   ball at 5 m/s → drifts back at 1 m/s.
@@ -204,9 +219,10 @@ public sealed class SwapOperation : IOperation
 10. Pressure: 10 kg on 0.01 m² → 9 800 Pa; breaks a 5 000 Pa glass, not a 10 000 Pa one.
 11. Buoyancy: the player (70 kg, 0.07 m³) in water → **Swim**; holding a 30 kg, 0.01 m³ rock →
     ρ = 100 ÷ 0.08 = 1 250 → **Sink**; with 0.05 kg in air → ρ ≈ 0.71 → **Swim** (flies).
-12. The invariant test passes for 1 000 random steps.
-13. `Swapping.Rules.csproj` has no reference to Godot.
-14. Line coverage ≥ 90 %.
+12. Jump in air: 70 kg → 0.50 m, 35 kg → 1.00 m, 7 kg → 1.84 m (speed cap), 300 kg → 0.12 m (± 0.01).
+13. The invariant test passes for 1 000 random steps.
+14. `Swapping.Rules.csproj` has no reference to Godot.
+15. Line coverage ≥ 90 %.
 
 ## Decisions confirmed with the user
 - The **player** is 70 kg with 0.07 m³ (density 1 000 kg/m³ → swims in water by default).

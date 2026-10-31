@@ -204,6 +204,12 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   pela física, sem virar habilidade de troca.
   **Soltar ≠ lançar:** só soltar não empurra (a gravidade puxa a pedra, não você); você só sobe se
   ficou mais leve que o meio. Lançar com força empurra para o lado contrário. São duas ações no jogo.
+- **Nado (física):** a velocidade máxima de nado é a mesma em todos os meios; o que muda é a
+  resistência (na água para rápido, no ar e no gás desliza como no espaço).
+- **Pulo (fisicamente correto, ajustar depois):** as pernas dão uma energia fixa por pulo, com limite de
+  velocidade; mais leve = pula mais alto, mas cai na velocidade normal. Só perto da densidade do meio a
+  queda fica lenta, "lunar". Ex.: 70 kg → 0,5 m; 35 kg → 1 m; 300 kg → 12 cm.
+  ⚠️ Recado: testar jogando e comparar com um pulo ajustado "de jogo".
 - **Afundar ou boiar:** na água, objetos com densidade maior que a da água afundam.
 - **Quebrar coisas quebradiças:** vidro, tábua fina, gelo. Uma peça quebradiça quebra quando a
   pancada ou o peso em cima passa de um limite, e o limite aparece como número.
