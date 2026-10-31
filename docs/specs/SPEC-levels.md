@@ -106,6 +106,13 @@ Field rules:
 - `rulesOverride`: optional; any field of `rules` set here replaces the level's value **for that room
   only** (room 1.1 uses `"unlockedProperties": []` because the player has no swap device yet).
 - The player is always 70 kg, 0.07 m³ (`rules` spec); it is not written in the file.
+- **Reference points:** an object's `position` is its **center**; a button's `position` is the center of its
+  **bottom face** (a plate on the floor); the spawn `position` is the player's **feet**.
+- **Optional fields** and their defaults: `rangeMeters` ({}), `allowObjectToObject` and
+  `allowSimultaneousSwaps` (false), `rulesOverride` (null), the piece lists `objects`, `buttons`, `doors`,
+  `barriers`, `killZones` ([]), and per object `accepts` (null), `locked` (false), `velocity` ([0,0,0]),
+  `bounce` (0). Everything else is required.
+- Files may contain `//` comments and trailing commas (they are written by hand).
 
 ### Catalog
 `levels/catalog.json` lists the levels in play order: `[{ "id": "level-1", "file": "level_1.json" }, …]`.

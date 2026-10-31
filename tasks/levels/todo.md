@@ -29,15 +29,15 @@ touching faces not overlapping), `LevelError` and `LevelErrorCode` (all codes of
 with `System.Text.Json` (camelCase). Missing required fields, wrong types and malformed text become
 `InvalidJson` with the JSON path; no exception escapes. Vectors are 3-number arrays.
 **Acceptance criteria:**
-- [ ] SC 2 (first half): the spec's example file parses into the expected values.
-- [ ] SC 4: malformed JSON, a missing `rooms` and a 2-number vector → `InvalidJson` with a path, no exception.
-- [ ] `accepts: null` and an absent `rulesOverride` parse as "not set".
+- [x] SC 2 (first half): the spec's example file parses into the expected values.
+- [x] SC 4: malformed JSON, a missing `rooms` and a 2-number vector → `InvalidJson` with a path, no exception.
+- [x] `accepts: null` and an absent `rulesOverride` parse as "not set".
 **Dependencies:** Task 1
 **Files:** `LevelParser.cs`, `tests/.../ParserTests.cs`, `tests/.../Fixtures.cs` (the spec example as the base valid level)
 **Scope:** M
 
 ### Checkpoint: Foundation
-- [ ] Build clean, all tests green, commit + push.
+- [x] Build clean, all tests green, commit + push.
 
 ## Task 3: Validator — value checks
 **Description:** `LevelValidator.Validate(LevelFile)` with the checks that look at one field or one

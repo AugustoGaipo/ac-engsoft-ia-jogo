@@ -643,3 +643,15 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - A posição do **objeto** é o centro dele. A do **botão** é o centro da face de baixo, porque é uma
     placa no chão. O exemplo da spec já seguia isso: caixa em y = 0,5 com 1 m de altura, botão em y = 0.
   - A massa e o volume do jogador (70 kg, 0,07 m³) viraram constantes em `LevelFile`, já que não vão no arquivo.
+
+### Tarefa 2 do `levels` — leitor do JSON ✅
+- Primeiro os testes (`ParserTests` + `Fixtures` com o exemplo da spec como nível-base válido), depois o
+  `LevelParser` com o `JsonDocument` do .NET (sem pacote NuGet).
+- O leitor confere só o **formato**: campos obrigatórios, tipos, vetores de 3 números e palavras conhecidas
+  (`box`/`ball`, `any`/`objects`, `exitGrid`). Cada problema vira um erro `InvalidJson` com o caminho
+  (ex.: `rooms[0].spawn.position`). Nenhuma exceção escapa e todos os problemas aparecem de uma vez.
+- Testes: 27/27 do `levels` (15 novos), 94/94 do `rules`. Build com 0 avisos. Checkpoint "Foundation" concluído.
+- **Decisões tomadas sozinho:**
+  - Defini os campos opcionais e os padrões (listas vazias, `accepts` nulo, `locked` falso, velocidade
+    zero, `bounce` 0) e os pontos de referência das posições, e registrei tudo na spec.
+  - O arquivo aceita comentários `//` e vírgula sobrando no fim, porque os níveis são escritos à mão.
