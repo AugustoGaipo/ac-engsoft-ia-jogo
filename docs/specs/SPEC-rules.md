@@ -95,6 +95,12 @@ properties; the game always uses "all" for now.
   Example: a player lighter than air holding a rock does not rise; letting go, they rise. A player
   holding a big light balloon in water may switch from swim to float.
 - Every container follows these rules, not only the player.
+- **Recoil when throwing (conservation of momentum).** When a container that is **not standing on
+  the ground** (swimming or floating) throws an object, it is pushed the opposite way:
+  v_thrower = m_object · v_object ÷ m_thrower. On the ground, floor friction cancels it.
+  How fast the recoil fades depends on the medium's drag: little in air or gas (drifts, like in
+  space), a lot in water (stops quickly). Example: a 0.05 kg player flying in air throws a 0.01 kg
+  ball at 5 m/s → drifts back at 1 m/s.
 - Static pressure P = m·g ÷ A_contact, with g = 9.8 m/s²; a fragile piece breaks when P > its limit.
   Example: 10 kg on 0.01 m² → 9 800 Pa; on 0.1 m² → 980 Pa.
 

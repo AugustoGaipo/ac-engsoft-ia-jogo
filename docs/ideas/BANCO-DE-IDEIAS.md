@@ -198,6 +198,10 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   boia abaixo de 100 kg/m³.
 - **Segurar objetos conta:** jogador + objeto viram um corpo só, com densidade = massas somadas ÷
   volumes somados. Mais leve que o ar segurando uma pedra não sobe; soltando, sobe.
+- **Ação e reação ao lançar:** quem não está apoiado no chão (nadando ou boiando) é empurrado para o
+  lado contrário ao lançar algo (conservação do momento). No ar e no gás desliza por muito tempo, como
+  no espaço; na água para logo, porque a água freia mais. É assim que o **momento** entra no jogo:
+  pela física, sem virar habilidade de troca.
 - **Afundar ou boiar:** na água, objetos com densidade maior que a da água afundam.
 - **Quebrar coisas quebradiças:** vidro, tábua fina, gelo. Uma peça quebradiça quebra quando a
   pancada ou o peso em cima passa de um limite, e o limite aparece como número.
