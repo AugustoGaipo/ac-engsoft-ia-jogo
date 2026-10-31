@@ -655,3 +655,18 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - Defini os campos opcionais e os padrões (listas vazias, `accepts` nulo, `locked` falso, velocidade
     zero, `bounce` 0) e os pontos de referência das posições, e registrei tudo na spec.
   - O arquivo aceita comentários `//` e vírgula sobrando no fim, porque os níveis são escritos à mão.
+
+### Tarefa 3 do `levels` — validador, parte 1 (valores) ✅
+- Primeiro os testes (`ValidatorValueTests`): cada um parte do nível-base válido, quebra um campo e
+  exige **só** o erro esperado, no caminho certo. Depois o `LevelValidator`.
+- Códigos cobertos: `UnsupportedSchema`, `BadId`, `DuplicateId`, `NumberOutOfRange`, `UnknownProperty`,
+  `NotPositive`, `OutOfRange01`, `ImplausibleDensity`, `EmptyBox`, `NotAccepted` e `EmptyBarrier`.
+  Inclui o critério 5 (ids de sala fora de ordem; id repetido entre salas) e o 6 (densidade 300 vale;
+  0,001 kg e 30 000 kg num cubo de 1 m são implausíveis).
+- Testes: 63/63 do `levels` (36 novos), 94/94 do `rules`. Build com 0 avisos.
+- **Decisões tomadas sozinho:**
+  - O id `player` é reservado (o `World` do `rules` usa esse id para o jogador). Uma peça com esse nome
+    dá `DuplicateId`.
+  - Uma lista `accepts` vazia dá `NotAccepted` (aceitaria nada; para isso existe `locked`).
+  - Massa ou tamanho inválido não gera também o erro de densidade, para não repetir o mesmo problema.
+  - Recarga 0 s é permitida, porque os testes do `rules` usam esse valor.

@@ -43,7 +43,7 @@ Model records + Box                                  (Task 1)
 ### Checkpoint: Foundation
 
 ### Phase 2: Validation and mapping
-- [ ] Task 3: Validator — value checks
+- [x] Task 3: Validator — value checks
 - [ ] Task 4: Validator — spatial and reference checks
 - [ ] Task 5: Mapping to `rules`
 

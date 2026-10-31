@@ -65,3 +65,49 @@ public static class Fixtures
 
     public static LevelFile Example() => Parse(ExampleNode());
 }
+
+/// <summary>Helpers to grow the example without creating spatial problems.</summary>
+public static class FixtureEdits
+{
+    /// <summary>
+    /// Appends a copy of room 0, moved <paramref name="dx"/> meters along X, with the next room id and
+    /// every piece id suffixed by <paramref name="suffix"/>.
+    /// </summary>
+    public static JsonObject AddShiftedRoom(JsonObject level, double dx = 20, string suffix = "-b")
+    {
+        var rooms = (JsonArray)level["rooms"]!;
+        var copy = (JsonObject)rooms[0]!.DeepClone();
+        Shift(copy, dx);
+        foreach (var list in new[] { "objects", "buttons", "doors", "barriers", "killZones" })
+            foreach (var piece in (JsonArray?)copy[list] ?? new JsonArray())
+                piece!["id"] = piece["id"]!.GetValue<string>() + suffix;
+        foreach (var door in (JsonArray?)copy["doors"] ?? new JsonArray())
+            door!["opensWith"] = new JsonArray(((JsonArray)door["opensWith"]!)
+                .Select(b => (JsonNode)JsonValue.Create(b!.GetValue<string>() + suffix)!).ToArray());
+
+        var number = level["number"]!.GetValue<int>();
+        copy["id"] = $"{number}.{rooms.Count + 1}";
+        rooms.Add(copy);
+        return copy;
+    }
+
+    private static void Shift(JsonNode node, double dx)
+    {
+        if (node is JsonObject obj)
+        {
+            foreach (var (name, value) in obj.ToList())
+            {
+                if (name is "min" or "max" or "position" && value is JsonArray v)
+                    v[0] = v[0]!.GetValue<double>() + dx;
+                else if (value is not null)
+                    Shift(value, dx);
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var item in array)
+                if (item is not null)
+                    Shift(item, dx);
+        }
+    }
+}

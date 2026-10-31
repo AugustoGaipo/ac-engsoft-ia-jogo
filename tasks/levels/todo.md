@@ -44,9 +44,9 @@ with `System.Text.Json` (camelCase). Missing required fields, wrong types and ma
 list: `UnsupportedSchema`, `BadId`, `DuplicateId`, `NumberOutOfRange`, `UnknownProperty`, `NotPositive`,
 `OutOfRange01`, `ImplausibleDensity`, `EmptyBox`, `NotAccepted`, `EmptyBarrier`.
 **Acceptance criteria:**
-- [ ] One test per code above: the base fixture with one field broken gives that code only, with the right path.
-- [ ] SC 5 (room ids out of order → `BadId`; duplicate ids across rooms → `DuplicateId`), SC 6 (density 300 ok; 0.001 kg and 30 000 kg → `ImplausibleDensity`).
-- [ ] The base fixture validates with zero errors.
+- [x] One test per code above: the base fixture with one field broken gives that code only, with the right path.
+- [x] SC 5 (room ids out of order → `BadId`; duplicate ids across rooms → `DuplicateId`), SC 6 (density 300 ok; 0.001 kg and 30 000 kg → `ImplausibleDensity`).
+- [x] The base fixture validates with zero errors.
 **Dependencies:** Task 2
 **Files:** `LevelValidator.cs`, `tests/.../ValidatorValueTests.cs`
 **Scope:** M
