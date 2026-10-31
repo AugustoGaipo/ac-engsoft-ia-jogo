@@ -62,6 +62,9 @@ Corte se apertar: fases 1, 3, 5 e 10 garantidas.
 | Duração da troca | permanente (agora), temporária / objetos instáveis |
 | Modificadores da recarga | power-up que zera a recarga, "peso glorioso", downgrade de tempo limitado |
 | Combinação de trocas | duas com intervalo (agora), simultâneas (fase 11) |
+| Tipos de operação: trocar (A ↔ B) e transferir (A → reserva → B) | tempo (roubar/entregar), arma que guarda valores |
+| Escala de tempo por objeto | habilidade de tempo (mundo mais lento ou mais rápido) |
+| Peças com limites físicos (quebradiça, água) | quebrar coisas pela densidade/peso, afundar e boiar |
 | Fases em JSON com peças | novas fases e novos tipos de peça sem mexer no código das regras |
 
 ## Not Doing (and Why)

@@ -166,3 +166,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   escopo, "não vamos fazer" e pontos de extensão.
 - **Pedido para o futuro:** quando a arquitetura estiver quase pronta, o agente vai explicá-la num site
   interativo simples, com exemplos do dia a dia.
+
+---
+
+## 2026-10-31 — Ideias novas: densidade e tempo
+
+- **Densidade:** além de afundar, serve para quebrar coisas quebradiças (vidro, gelo, tábua),
+  com um limite numérico de peso ou pancada.
+- **Tempo como habilidade:** em vez de trocar, o jogador **rouba** tempo de objetos em movimento
+  constante (o mundo fica mais lento para ele) e **entrega** tempo a si ou a objetos (o mundo fica
+  mais rápido).
+- **Impacto na arquitetura apontado pelo agente:** o tempo não é uma troca (A ↔ B), e sim uma
+  transferência de mão única (A → reserva → B), como a arma que guarda valores. A arquitetura passa a
+  prever dois tipos de operação: trocar e transferir. As duas ideias entram como possíveis no
+  banco de ideias, com ponto de extensão no one-pager.

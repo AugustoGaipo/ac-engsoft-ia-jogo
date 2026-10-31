@@ -81,13 +81,34 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
   - **Carga elétrica** (C): atrair e repelir, ligar circuitos.
 - Do documento original: tamanho, direção da gravidade.
 
+### Densidade (consequência do peso com volume constante)
+- **Afundar ou boiar:** na água, objetos com densidade maior que a da água afundam.
+- **Quebrar coisas quebradiças:** vidro, tábua fina, gelo. Uma peça quebradiça quebra quando a
+  pancada ou o peso em cima passa de um limite, e o limite aparece como número.
+  Ex.: o chão de vidro aguenta 50 kg; fico com o peso do bloco de ferro (200 kg) e caio para o andar
+  de baixo.
+
+### Tempo como habilidade (roubar e entregar, não trocar)
+- **Roubar tempo:** só funciona com objetos em **movimento constante** (ventilador, pêndulo, esteira,
+  plataforma que vai e volta). O objeto fica mais lento ou para, e o jogador acumula esse tempo.
+- **Efeito no jogador:** quem tem mais tempo fica "mais rápido" que o mundo, então **o mundo ao redor
+  fica mais lento**. Quem entrega o próprio tempo fica "mais lento", então **o mundo ao redor fica
+  mais rápido**.
+- **Entregar tempo:** o jogador aplica o tempo guardado em si mesmo ou em outro objeto, que acelera.
+- **É numérico:** ex.: escala de tempo 0,5× / 1× / 2× na tela. Forte candidata a uma das
+  2 habilidades numéricas futuras.
+- **O que muda na arquitetura:** hoje tudo é **troca** (A ↔ B). O tempo é uma **transferência de mão
+  única** (A → reserva → B), igual à ideia da arma que guarda valores. A arquitetura passa a prever
+  dois tipos de operação: trocar e transferir, com uma "reserva" no jogador ou na arma.
+- **Cuidado técnico:** desacelerar o mundo todo no Godot também desacelera o jogador; vai precisar de
+  uma escala de tempo por objeto.
+
 ### Plataforma
 - **Steam** via Steamworks (login, ranking e saves da Steam no lugar da API).
 
 ---
 
 ## 💭 Ideias pensadas
-- **Água:** trocar o peso faz objetos afundarem ou boiarem (consequência do volume constante).
 - **Tempo como dificuldade:** trocar a velocidade de algo em queda no momento certo.
 - **Ideias descartadas na sessão 1** (substituídas pela ideia própria): puzzle diário com semente,
   fases criadas pelos jogadores com solver, jogo educativo de programar um robô.
