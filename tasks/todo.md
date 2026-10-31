@@ -42,9 +42,9 @@ density and drag (air, dense gas, water).
 properties), `World` (registers containers, creates one owned variable per property, tracks who uses
 which, `ExchangeVariables`, `CheckInvariant`).
 **Acceptance criteria:**
-- [ ] A new container uses its own variables; the invariant holds.
-- [ ] `ExchangeVariables(a, b, kind)` swaps users of that kind only.
-- [ ] Unknown container id throws (programming error).
+- [x] A new container uses its own variables; the invariant holds.
+- [x] `ExchangeVariables(a, b, kind)` swaps users of that kind only.
+- [x] Unknown container id throws (programming error).
 **Dependencies:** Task 2
 **Files:** `Model/PropertyKind.cs`, `Model/Variable.cs`, `Model/Container.cs`, `World.cs`, `WorldTests.cs`
 **Scope:** M

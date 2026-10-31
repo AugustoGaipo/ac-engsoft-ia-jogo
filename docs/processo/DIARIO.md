@@ -336,3 +336,22 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - Arrasto (1/s) padrão: ar 0,05, gás denso 0,1, água 3,0 — valores provisórios, ajustáveis; a velocidade
     máxima de nado (3 m/s) está em `Formulas.DefaultSwimSpeed`.
   - `Vec3` é um `readonly record struct`; `RecoilSpeed` recebe `onGround` e devolve 0 no chão.
+
+### Tarefa 3 do `rules` — variáveis, containers e o invariante do mundo ✅
+- Criados `IPropertyKind` + `PropertyKind` (posição, massa, energia cinética), `Variable` (id
+  "dono.propriedade", tipo, dono, valor), `Container` (id, jogador/objeto, volume, área de contato,
+  travado, propriedades aceitas) e `World` (registra containers, cria uma variável própria por
+  propriedade, sabe quem usa qual, `ExchangeVariables` e `CheckInvariant`).
+- Testes escritos antes do código (`WorldTests`): 36/36 aprovados (9 novos). `dotnet build` sem avisos.
+- **Decisões tomadas sozinho:**
+  - Ids de container são `string` (ex.: "player", "A"); o id da variável é "dono.propriedade"
+    (`A.mass`, `A.energy`).
+  - O valor da variável é um `VariableValue(Scalar, Vector)`: posição usa o vetor; massa usa o
+    escalar (kg); energia usa o escalar (J) e o vetor como direção unitária do movimento.
+  - `World.Add(container, posição, massa, velocidade)` calcula a energia inicial (½·m·v²) e a direção
+    a partir da velocidade.
+  - `AcceptedProperties = null` significa "aceita todas"; `Container` é um `record` imutável.
+  - Id desconhecido lança `KeyNotFoundException`; id repetido lança `ArgumentException` (erros de
+    programação, como manda a spec).
+  - `PropertyKind.Position/Mass/KineticEnergy` são instâncias `static readonly` imutáveis (não é estado
+    mutável estático).
