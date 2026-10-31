@@ -303,3 +303,12 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Princípio do mundo (decisão minha):** o mundo é sempre o mesmo; só mudam valores matemáticos de
   forma fisicamente plausível, e as habilidades evoluem por sala. O agente apontou que a categoria
   mimética (mudar a forma) conflita com esse princípio.
+
+---
+
+## 2026-10-31 — Spec do `rules` aprovada; implementação autônoma
+
+- Aprovei a spec do `rules` e autorizei o agente a implementar o módulo enquanto eu estava fora
+  (plano, código com testes primeiro, commits e push).
+- Combinado: decisões que precisariam de mim são tomadas pelo caminho mais simples e reversível e
+  anotadas aqui para eu revisar.

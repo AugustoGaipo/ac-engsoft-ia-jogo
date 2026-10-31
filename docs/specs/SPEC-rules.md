@@ -1,7 +1,7 @@
 # Spec: `rules` — swap rules library
 
 > Module from [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md). Produced with
-> `agent-skills:spec-driven-development` (phase 1, Specify). Status: **draft, awaiting approval**.
+> `agent-skills:spec-driven-development` (phase 1, Specify). Status: **approved by the user on 2026-10-31**.
 
 ## Objective
 
