@@ -87,6 +87,10 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
   pancada ou o peso em cima passa de um limite, e o limite aparece como número.
   Ex.: o chão de vidro aguenta 50 kg; fico com o peso do bloco de ferro (200 kg) e caio para o andar
   de baixo.
+- **Pressão (força ÷ área de contato):** o que quebra é a pressão, não só o peso. Um objeto pequeno e
+  pesado quebra o vidro mais fácil que um objeto grande com o mesmo peso.
+  Ex.: 10 kg sobre 0,01 m² → P = 10·9,8 / 0,01 = 9.800 Pa; os mesmos 10 kg sobre 0,1 m² → 980 Pa.
+  O limite da peça quebradiça passa a ser uma pressão.
 
 ### Tempo como habilidade (roubar e entregar, não trocar)
 - **Roubar tempo:** só funciona com objetos em **movimento constante** (ventilador, pêndulo, esteira,

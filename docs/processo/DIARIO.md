@@ -180,3 +180,6 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   transferência de mão única (A → reserva → B), como a arma que guarda valores. A arquitetura passa a
   prever dois tipos de operação: trocar e transferir. As duas ideias entram como possíveis no
   banco de ideias, com ponto de extensão no one-pager.
+- **Pressão:** o que quebra o vidro é a pressão (força ÷ área de contato), não só o peso. Um objeto
+  pequeno e pesado quebra mais fácil que um grande com o mesmo peso. Registrado no banco de ideias.
+- Fim das ideias por agora → começa a etapa de especificação.
