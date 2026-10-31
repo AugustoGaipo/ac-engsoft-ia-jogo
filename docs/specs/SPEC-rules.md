@@ -101,6 +101,9 @@ properties; the game always uses "all" for now.
   object (relative to the thrower). Gravity is not the thrower's push, so **dropping** (just letting go)
   gives **no recoil**; the thrower may still rise, but because it became lighter (buoyancy).
   Drop and throw are two different actions. On the ground, floor friction cancels the recoil.
+  How fast the recoil fades depends on the medium's drag: little in air or gas (drifts, like in
+  space), a lot in water (stops quickly). Example: a 0.05 kg player flying in air throws a 0.01 kg
+  ball at 5 m/s → drifts back at 1 m/s.
 - **Swimming (physics-based).** Each medium has a density and a **drag**. Pushing against a denser
   medium gives more thrust but also more drag, so the **top swim speed is the same in every medium**
   (default 3 m/s, tunable). What changes is how long you keep gliding when you stop: high drag in
@@ -116,9 +119,6 @@ properties; the game always uses "all" for now.
     7 kg → capped at 6 m/s → 1.84 m; 300 kg → 0.12 m.
   - ⚠️ **Note for later:** compare this with a tuned, gameplay-first jump in playtests and keep the one
     that feels better.
-  How fast the recoil fades depends on the medium's drag: little in air or gas (drifts, like in
-  space), a lot in water (stops quickly). Example: a 0.05 kg player flying in air throws a 0.01 kg
-  ball at 5 m/s → drifts back at 1 m/s.
 - Static pressure P = m·g ÷ A_contact, with g = 9.8 m/s²; a fragile piece breaks when P > its limit.
   Example: 10 kg on 0.01 m² → 9 800 Pa; on 0.1 m² → 980 Pa.
 
@@ -154,7 +154,8 @@ src/Swapping.Rules/
   Model/        → Vec3, Container, Variable, PropertyKind, BarrierFilter
   Operations/   → IOperation, SwapOperation, Restoration, SwapRequest, SwapResult, RejectReason
   Policies/     → LevelRules (unlocked properties, ranges, cooldown, flags), Cooldown
-  Physics/      → Formulas (kinetic energy, speed from energy, density, pressure)
+  Physics/      → Formulas (kinetic energy, speed from energy, density, buoyancy state, recoil,
+                  jump, pressure) and Medium (density, drag)
   World.cs      → holds containers and variables, enforces the invariant, keeps the swap log
 tests/Swapping.Rules.Tests/
   → one test class per rule area (PositionSwapTests, MassSwapTests, EnergySwapTests,
