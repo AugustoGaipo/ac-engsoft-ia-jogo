@@ -33,7 +33,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Fases 2, 4, 6, 7, 8 e 9.
 - Tela de ranking e escolha de ícone dentro do jogo.
 - Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
-- **Densidade:** água (afundar e boiar), peças quebradiças e pressão.
+- **Densidade:** água (afundar e boiar), peças quebradiças e **pressão parada** (peso ÷ área de contato,
+  verificada quando o objeto está parado em cima da peça; a área de contato é um número no JSON).
 - **Site explicando a arquitetura** (só para mim: simples e bem compreensível, não precisa ser bonito).
 
 ### P2 — Se sobrar tempo
@@ -44,6 +45,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Objeto ↔ objeto e a arma que guarda valores.
 - Tempo (roubar/entregar) e o tipo de operação "transferir".
 - Objetos instáveis, power-up de recarga, peso glorioso, downgrade de tempo limitado.
+- **Pressão de impacto:** objeto que cai sobre a peça quebradiça (estimar a pancada pela física).
 - Momento e as outras propriedades novas.
 - Steam.
 

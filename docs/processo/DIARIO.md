@@ -213,3 +213,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Mapa de módulos aprovado** e salvo em [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md).
 - **Prioridade ajustada:** densidade (água, quebradiças, pressão) e o site explicando a arquitetura
   subiram para P1. O site é só para mim: precisa ser compreensível, não bonito.
+- **Pressão:** a versão parada (peso ÷ área, objeto parado em cima) é simples e fica no P1 junto com a densidade; a pressão de impacto (objeto caindo) vai para o P3.
