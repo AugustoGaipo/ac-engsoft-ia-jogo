@@ -97,7 +97,10 @@ properties; the game always uses "all" for now.
 - Every container follows these rules, not only the player.
 - **Recoil when throwing (conservation of momentum).** When a container that is **not standing on
   the ground** (swimming or floating) throws an object, it is pushed the opposite way:
-  v_thrower = m_object · v_object ÷ m_thrower. On the ground, floor friction cancels it.
+  v_thrower = m_object · v_added ÷ m_thrower, where **v_added is only the speed the throw adds** to the
+  object (relative to the thrower). Gravity is not the thrower's push, so **dropping** (just letting go)
+  gives **no recoil**; the thrower may still rise, but because it became lighter (buoyancy).
+  Drop and throw are two different actions. On the ground, floor friction cancels the recoil.
   How fast the recoil fades depends on the medium's drag: little in air or gas (drifts, like in
   space), a lot in water (stops quickly). Example: a 0.05 kg player flying in air throws a 0.01 kg
   ball at 5 m/s → drifts back at 1 m/s.

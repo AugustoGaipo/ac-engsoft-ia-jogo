@@ -202,6 +202,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   lado contrário ao lançar algo (conservação do momento). No ar e no gás desliza por muito tempo, como
   no espaço; na água para logo, porque a água freia mais. É assim que o **momento** entra no jogo:
   pela física, sem virar habilidade de troca.
+  **Soltar ≠ lançar:** só soltar não empurra (a gravidade puxa a pedra, não você); você só sobe se
+  ficou mais leve que o meio. Lançar com força empurra para o lado contrário. São duas ações no jogo.
 - **Afundar ou boiar:** na água, objetos com densidade maior que a da água afundam.
 - **Quebrar coisas quebradiças:** vidro, tábua fina, gelo. Uma peça quebradiça quebra quando a
   pancada ou o peso em cima passa de um limite, e o limite aparece como número.
