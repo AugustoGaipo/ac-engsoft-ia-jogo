@@ -486,3 +486,12 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     responde `BlocksPassageOf`.
   - O SDK .NET 8 foi instalado com `apt-get update && apt-get install dotnet-sdk-8.0` (o instalador
     oficial de novo não gerou nada).
+- **Ponto livre mais próximo vale para os dois (decisão minha):** trocas de posição normais e teleporte
+  quântico. O quântico procura numa distância maior; sem espaço nem longe, não é permitido.
+- **Morte e renascimento por falta de espaço (ideia minha):** em vez de recusar, a troca acontece; se o
+  objeto não tiver espaço, ele "morre" com efeito de estouro/explosão e fumaça (só som e imagem, sem
+  fragmentos com colisão) e renasce como num portal, **com os atributos de antes da morte**. Se for o
+  jogador, ele morre por sufocamento/sobreposição e a fase reinicia. **O jogo tem morte** (contei agora).
+- **Resistência a dano pela densidade do personagem (ideia minha):** a detalhar.
+- Em discussão com o agente: a morte substitui o "não permitir" do quântico? Do que se morre? Vida ou
+  morte na hora? Reiniciar conta no ranking?
