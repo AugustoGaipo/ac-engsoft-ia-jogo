@@ -630,3 +630,16 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   O plano do `rules`, já concluído, foi movido (não apagado) para `tasks/rules/`.
 - Lição do `rules` levada para o plano: a cobertura tem que ser medida **com todos os testes passando na
   mesma rodada**, e os testes de reflexão ignoram as classes do coverlet desde o começo.
+
+### Tarefa 1 do `levels` — projetos e modelo ✅
+- Feita no PC, com TDD: primeiro o teste vermelho (`ModelTests`, sem compilar), depois o modelo.
+- Criados `Swapping.Levels` (só referencia o `Swapping.Rules`) e `Swapping.Levels.Tests`, os dois na solução.
+  Modelo: `Box` (as faces que se encostam não contam como sobreposição), `ObjectDef` (volume, área de
+  contato e densidade calculados a partir do tamanho), `ButtonDef`, `DoorDef`, `BarrierDef` (com o preset
+  `exitGrid`), `KillZoneDef`, `SpawnDef` (área do jogador de 0,6 × 1,8 × 0,6 m), `RoomDef`, `LevelFile`,
+  `LevelError` e os 21 códigos de erro da spec.
+- Testes: 12/12 novos e 94/94 do `rules`; build com 0 avisos.
+- **Decisões tomadas sozinho:**
+  - A posição do **objeto** é o centro dele. A do **botão** é o centro da face de baixo, porque é uma
+    placa no chão. O exemplo da spec já seguia isso: caixa em y = 0,5 com 1 m de altura, botão em y = 0.
+  - A massa e o volume do jogador (70 kg, 0,07 m³) viraram constantes em `LevelFile`, já que não vão no arquivo.

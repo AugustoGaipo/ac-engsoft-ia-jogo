@@ -37,7 +37,7 @@ Model records + Box                                  (Task 1)
 
 ## Task List
 ### Phase 1: Foundation
-- [ ] Task 1: Scaffold the projects and the model
+- [x] Task 1: Scaffold the projects and the model
 - [ ] Task 2: Parser
 
 ### Checkpoint: Foundation

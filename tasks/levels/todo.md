@@ -16,9 +16,9 @@ Common verification (every task):
 `DensityKgM3`), `ButtonDef`, `DoorDef`, `BarrierDef`, `KillZoneDef`, `Box` (`Contains`, `Overlaps` with
 touching faces not overlapping), `LevelError` and `LevelErrorCode` (all codes of the spec).
 **Acceptance criteria:**
-- [ ] Build has zero warnings; a smoke test runs.
-- [ ] Box 1 × 1 × 1 → volume 1 m³, contact 1 m²; ball d = 1 → volume π/6, contact 1 % of π/4.
-- [ ] Two boxes that only touch do not overlap; a box inside another is contained.
+- [x] Build has zero warnings; a smoke test runs.
+- [x] Box 1 × 1 × 1 → volume 1 m³, contact 1 m²; ball d = 1 → volume π/6, contact 1 % of π/4.
+- [x] Two boxes that only touch do not overlap; a box inside another is contained.
 **Dependencies:** None
 **Files:** `src/Swapping.Levels/Swapping.Levels.csproj`, `Model/*.cs`, `LevelError.cs`,
 `tests/Swapping.Levels.Tests/Swapping.Levels.Tests.csproj`, `ModelTests.cs`
