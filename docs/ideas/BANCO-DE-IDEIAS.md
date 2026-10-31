@@ -39,7 +39,10 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
 - Godot 4 com C#; biblioteca de regras em C# puro com testes.
 - Fases montadas a partir de arquivos JSON com peças reutilizáveis.
 - Jogo offline; progresso enviado para a API quando há internet.
-- API com login, progresso e ranking; sem validação antitrapaça.
+- **Perfil sem senha:** o jogador escolhe nome e ícone; o servidor gera uma chave secreta guardada no PC
+  (o servidor guarda só o hash). Nada de senha ou e-mail para vazar.
+- **Ranking com dois modos:** por tempo (desempate por trocas) ou por movimentos (desempate por tempo).
+- API com perfil, progresso e ranking; sem validação antitrapaça.
 - Visual simples e limpo (formas geométricas, cores sólidas).
 
 ---
@@ -104,11 +107,15 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
 - **O que muda na arquitetura:** hoje tudo é **troca** (A ↔ B). O tempo é uma **transferência de mão
   única** (A → reserva → B), igual à ideia da arma que guarda valores. A arquitetura passa a prever
   dois tipos de operação: trocar e transferir, com uma "reserva" no jogador ou na arma.
+- **O jogador nunca muda:** a velocidade e a sensibilidade do personagem continuam iguais; só o mundo
+  ao redor acelera ou desacelera.
 - **Cuidado técnico:** desacelerar o mundo todo no Godot também desacelera o jogador; vai precisar de
   uma escala de tempo por objeto.
 
 ### Plataforma
 - **Steam** via Steamworks (login, ranking e saves da Steam no lugar da API).
+- **Conta da Steam no lugar da chave secreta** do perfil.
+- **Contas com senha própria:** só se um dia fizer sentido fora da Steam.
 
 ---
 

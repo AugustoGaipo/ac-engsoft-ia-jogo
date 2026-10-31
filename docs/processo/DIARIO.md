@@ -183,3 +183,20 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Pressão:** o que quebra o vidro é a pressão (força ÷ área de contato), não só o peso. Um objeto
   pequeno e pesado quebra mais fácil que um grande com o mesmo peso. Registrado no banco de ideias.
 - Fim das ideias por agora → começa a etapa de especificação.
+
+---
+
+## 2026-10-31 — Mapa de módulos e decisões de segurança
+
+**Skill usada:** `agent-skills:spec-driven-development` (fase 0: mapa de módulos)
+
+- O agente propôs dividir o sistema em 6 módulos (regras, fases, contas, progresso, sincronização,
+  jogo), cada um com sua spec, e construir uma versão mínima do jogo cedo para testar o critério
+  de corte do dia 3.
+- **Idioma:** código e documentos técnicos em inglês.
+- **Login:** propus só nome, para agilizar. O agente apontou que só com nome qualquer um enviaria
+  pontuação no nome de outro, e sugeriu um perfil sem senha (nome + ícone) com uma chave secreta
+  gerada pelo servidor. Não guarda senha nem e-mail, então não há o que vazar. No futuro, a conta
+  da Steam substitui a chave.
+- **Ranking:** dois modos, por tempo ou por movimentos, cada um usando o outro critério como desempate.
+- **Tempo:** a velocidade e a sensibilidade do personagem nunca mudam; só o mundo muda.
