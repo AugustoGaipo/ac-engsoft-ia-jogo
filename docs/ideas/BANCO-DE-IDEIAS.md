@@ -74,7 +74,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - 10 fases: 2 por habilidade sozinha, 1 por dupla, 1 com as três (ordem no one-pager).
 - Fases seguidas com a mesma habilidade, como no Portal.
 - Controles de dificuldade: quantos objetos, quantas propriedades, ordem das trocas, limite de trocas.
-- Contra atalhos: objetos travados, propriedades permitidas por cor, só trocar com o que está à vista.
+- Contra atalhos: objetos travados, objetos que só aceitam certas propriedades, só trocar com o que está à vista.
+- **Contorno no lugar de cor:** o objeto que dá para segurar ou trocar (e o que estou segurando) ganha um contorno.
 - **Alcance máximo da troca:** cada habilidade tem uma distância máxima; longe demais, a troca não
   acontece (a mira avisa, ex.: muda de cor). O alcance pode ser diferente por habilidade e é configurado
   em cada fase, servindo como mais um controle de dificuldade.
@@ -189,6 +190,12 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - **Flutuar no ar:** se a densidade do objeto for menor que a do meio, ele sobe, inclusive no ar.
   Ex.: o jogador (0,07 m³) só flutua no ar se ficar mais leve que 0,084 kg, por exemplo trocando o
   peso com um balão de 0,05 kg.
+- **3 estados em cada meio** (simplificação de jogo): **afunda** (densidade > 1,1 × a do meio, não
+  sobe), **nada** (entre 0,1 × e 1,1 ×, sobe e desce à vontade; no ar ou no gás é "voar") e **boia**
+  (< 0,1 ×, é empurrado para cima e não mergulha). Na água: afunda acima de 1.100, nada de 100 a 1.100,
+  boia abaixo de 100 kg/m³.
+- **Segurar objetos conta:** jogador + objeto viram um corpo só, com densidade = massas somadas ÷
+  volumes somados. Mais leve que o ar segurando uma pedra não sobe; soltando, sobe.
 - **Afundar ou boiar:** na água, objetos com densidade maior que a da água afundam.
 - **Quebrar coisas quebradiças:** vidro, tábua fina, gelo. Uma peça quebradiça quebra quando a
   pancada ou o peso em cima passa de um limite, e o limite aparece como número.

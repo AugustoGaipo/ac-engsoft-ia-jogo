@@ -80,10 +80,21 @@ properties; the game always uses "all" for now.
   | Air | 1.2 kg/m³ |
   | Dense gas | 6.1 kg/m³ (like real sulfur hexafluoride) |
   | Water | 1 000 kg/m³ |
-- Buoyancy: net upward force = (ρ_fluid − ρ_object) · V · g. A container **rises** when
-  ρ_object < ρ_fluid, sinks when greater, hovers when equal — **in any medium, air included**.
-  Example: the player (0.07 m³) floats up in air only if lighter than 1.2 · 0.07 = 0.084 kg, e.g.
-  after swapping mass with a 0.05 kg balloon.
+- Buoyancy force: (ρ_fluid − ρ_object) · V · g, upward when positive.
+- **Three buoyancy states per medium** (a gameplay simplification of real physics, where only an exact
+  match is neutral). Same proportions in every medium, tunable:
+  | State | Density range | Behaviour |
+  |---|---|---|
+  | **Sink** | ρ > 1.1 · ρ_fluid | goes down; cannot rise on its own |
+  | **Swim** | 0.1 · ρ_fluid ≤ ρ ≤ 1.1 · ρ_fluid | moves freely up and down (swims in water, "flies" in air or gas) |
+  | **Float** | ρ < 0.1 · ρ_fluid | pushed up to the surface or ceiling; cannot dive |
+  Water: sink above 1 100, swim 100–1 100, float below 100 kg/m³.
+  Air: sink above 1.32, swim 0.12–1.32, float below 0.12 kg/m³.
+- **Holding an object counts.** While the player holds something, the pair is treated as one body:
+  ρ = (m_player + m_held) ÷ (V_player + V_held). Dropping it recomputes the state.
+  Example: a player lighter than air holding a rock does not rise; letting go, they rise. A player
+  holding a big light balloon in water may switch from swim to float.
+- Every container follows these rules, not only the player.
 - Static pressure P = m·g ÷ A_contact, with g = 9.8 m/s²; a fragile piece breaks when P > its limit.
   Example: 10 kg on 0.01 m² → 9 800 Pa; on 0.1 m² → 980 Pa.
 
@@ -184,14 +195,21 @@ public sealed class SwapOperation : IOperation
 11. `Swapping.Rules.csproj` has no reference to Godot.
 12. Line coverage ≥ 90 %.
 
+## Decisions confirmed with the user
+- The **player** is 70 kg with 0.07 m³ (density 1 000 kg/m³ → swims in water by default).
+- A swap counts as **1 move** in the ranking (a simultaneous swap too). **Restorations by a barrier
+  do not count.**
+- Defaults: range **8 m** for every property, cooldown **1 s** in levels 1–6; levels 7–10 decided
+  while playtesting. Tunable per level, but should rarely change.
+- **No colors for accepted properties.** The game shows an **outline** on the object you can grab or
+  swap with (and on the one you are holding). The rule `PropertyNotAccepted` stays in the library;
+  how the game shows it is decided in the `game` spec.
+
 ## Assumptions (correct me if wrong)
-1. On **restoration**, each container keeps its **own current direction of travel** and takes the
-   energy magnitude of the variable it gets back; if it is not moving, it uses the direction stored
+1. On **energy restoration**, the container keeps going **in its own current direction**; only its
+   speed changes to match the energy it gets back. If it is not moving, it uses the direction stored
    in the variable.
-2. The **player** is 70 kg with 0.07 m³ of volume (density ≈ water, so the player barely floats).
-3. A swap of one property counts as **1 move** in the ranking; a simultaneous swap (level 11) also counts as 1.
-4. Default values, tunable per level: range **8 m** for every property, cooldown **1 s** in levels
-   1–6; the cooldown of levels 7–10 is decided while playtesting.
 
 ## Open Questions
-- Do the four assumptions above match what you imagined?
+- How does the outline tell which properties an object accepts (icons next to the numbers?) →
+  `game` spec.

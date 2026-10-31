@@ -274,3 +274,10 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   tudo pode ser testado com `dotnet test`.
 - Aguardando a minha aprovação e a confirmação de 4 suposições.
 - **3 meios de densidade:** ar, gás denso e água. Objetos menos densos que o meio sobem, inclusive no ar (ex.: o jogador flutua com o peso de um balão). Adicionado à spec do `rules` e ao banco de ideias (P1).
+- **Respostas às suposições da spec:** o jogador boia (70 kg, 0,07 m³); restauração por barreira não
+  conta como movimento; valores padrão mantidos.
+- **Contorno no lugar de cor:** em vez de cores para as propriedades aceitas, um contorno no objeto
+  que dá para segurar ou trocar.
+- **3 estados por meio (ideia minha):** afunda, nada e boia, com faixas de densidade; segurar um
+  objeto entra na conta. O agente explicou que na física real só a densidade exatamente igual é
+  neutra, então a faixa é uma simplificação de jogo, e adotou as mesmas proporções em todos os meios.
