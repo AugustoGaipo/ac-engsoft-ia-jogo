@@ -570,3 +570,13 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Vida, resistência, tiro e explosão ficam de fora (decisão minha):** só como ideia a pensar, em
   "Ideias pensadas", fora da rota de prioridade. A linha de "mais causas de morte" saiu da P2.
 - **Barra de ar (decisão minha):** 15 s para começar, enche de novo ao sair da água; ajustar jogando.
+
+### Revisão local do `rules` (sessão no PC)
+- Baixei tudo o que a rotina fez e rodei de novo: build com 0 avisos e 94/94 testes aprovados.
+- **Bug achado na revisão:** com a cobertura ligada (`--collect:"XPlat Code Coverage"`), o teste
+  `RulesAssembly_HasNoStaticMutableFields` falhava. O coverlet injeta no assembly classes de contagem
+  (`Coverlet.Core.Instrumentation.Tracker...`) com campos estáticos, e o teste as confundia com estado
+  do jogo. Corrigido no teste, que agora ignora o namespace `Coverlet`; o código do `rules` não mudou.
+  Agora são 94/94 com e sem cobertura, e a cobertura é de 98,3 % das linhas.
+- Lição para a apresentação: a medição de cobertura que a rotina reportou passava, mas um teste quebrava
+  justamente durante essa medição. Por isso vale revisar o trabalho autônomo antes de confiar nele.

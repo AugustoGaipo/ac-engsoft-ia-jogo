@@ -48,6 +48,8 @@ public class ArchitectureTests
     {
         const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
         var mutable = Rules.GetTypes()
+            // Coverage tools (coverlet) inject tracker types with static counters into the assembly.
+            .Where(t => !(t.Namespace ?? "").StartsWith("Coverlet", StringComparison.Ordinal))
             .SelectMany(t => t.GetFields(flags).Select(f => (Type: t, Field: f)))
             .Where(x => !x.Field.IsInitOnly && !x.Field.IsLiteral)
             .Select(x => $"{x.Type.FullName}.{x.Field.Name}")
