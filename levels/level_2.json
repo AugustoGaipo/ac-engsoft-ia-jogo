@@ -1,0 +1,73 @@
+// Level 2 — Barreiras. Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
+// Level space: meters, Y up, rooms side by side along +X. Floor at y = 0.
+// Numbers are a first draft, tuned while building the Godot scene.
+{
+  "schemaVersion": 1,
+  "id": "level-2",
+  "number": 2,
+  "name": "Barreiras",
+  "scene": "res://levels/level_2.tscn",
+  "rules": {
+    "unlockedProperties": ["position"],
+    "rangeMeters": { "position": 8.0 },
+    "cooldownSeconds": 1.0
+  },
+  "rooms": [
+    {
+      "id": "2.1",
+      "teaches": "Barreira 1 (barra objetos): a caixa não passa, mas atravessa por troca de posição.",
+      "bounds": { "min": [0, -3, 0], "max": [12, 6, 10] },
+      "spawn": { "position": [1, 0, 5], "yawDegrees": -90 },
+      "exit": { "min": [11.5, 0, 4], "max": [12, 3, 6] },
+      // Walk through the barrier, then swap places with the box left behind.
+      "objects": [
+        { "id": "box-2-1", "kind": "box", "position": [3, 0.5, 3], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
+      ],
+      "buttons": [
+        { "id": "button-2-1", "position": [8.5, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
+      ],
+      "doors": [
+        { "id": "door-2-1", "box": { "min": [10, 0, 4], "max": [10.3, 3, 6] }, "opensWith": ["button-2-1"] }
+      ],
+      "barriers": [
+        { "id": "no-objects-2-1", "blocksObjects": true, "box": { "min": [6, 0, 0], "max": [6.2, 6, 10] } },
+        { "id": "exit-grid-2-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 4], "max": [11.6, 3, 6] } }
+      ]
+    },
+    {
+      "id": "2.2",
+      "teaches": "Barreira 2 (barra o jogador): o jogador atravessa trocando com uma caixa do outro lado.",
+      "bounds": { "min": [12, -3, 0], "max": [24, 6, 10] },
+      "spawn": { "position": [13, 0, 5], "yawDegrees": -90 },
+      "exit": { "min": [23.5, 0, 4], "max": [24, 3, 6] },
+      "objects": [
+        { "id": "box-2-2", "kind": "box", "position": [20, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
+      ],
+      "barriers": [
+        { "id": "no-player-2-2", "blocksPlayer": true, "box": { "min": [17, 0, 0], "max": [17.2, 6, 10] } },
+        { "id": "exit-grid-2-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 4], "max": [23.6, 3, 6] } }
+      ]
+    },
+    {
+      "id": "2.3",
+      "teaches": "Barreira 3 (zona sem trocas): preparar as trocas antes de entrar.",
+      "bounds": { "min": [24, -3, 0], "max": [36, 6, 10] },
+      "spawn": { "position": [25, 0, 5], "yawDegrees": -90 },
+      "exit": { "min": [35.5, 0, 4], "max": [36, 3, 6] },
+      // No swap works through or inside the zone: carry the box across it to the button.
+      "objects": [
+        { "id": "box-2-3", "kind": "box", "position": [26, 0.5, 8], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
+      ],
+      "buttons": [
+        { "id": "button-2-3", "position": [34, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
+      ],
+      "doors": [
+        { "id": "door-2-3", "box": { "min": [35, 0, 4], "max": [35.3, 3, 6] }, "opensWith": ["button-2-3"] }
+      ],
+      "barriers": [
+        { "id": "zone-2-3", "blocksVariables": true, "box": { "min": [28, 0, 0], "max": [32, 6, 10] } },
+        { "id": "exit-grid-2-3", "preset": "exitGrid", "box": { "min": [35.5, 0, 4], "max": [35.6, 3, 6] } }
+      ]
+    }
+  ]
+}

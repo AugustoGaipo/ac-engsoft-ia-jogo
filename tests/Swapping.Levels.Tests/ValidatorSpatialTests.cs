@@ -296,8 +296,7 @@ public class ValidatorSpatialTests
         var source = string.Join("\n", Directory.GetFiles(AppContext.BaseDirectory.Split("bin")[0], "*Tests.cs")
             .Select(File.ReadAllText));
 
-        // CatalogOrder belongs to the catalog (Task 6); the exclusion is removed there.
-        foreach (var code in Enum.GetNames<LevelErrorCode>().Where(c => c != nameof(LevelErrorCode.CatalogOrder)))
+        foreach (var code in Enum.GetNames<LevelErrorCode>())
             Assert.Contains($"LevelErrorCode.{code}", source);
     }
 }

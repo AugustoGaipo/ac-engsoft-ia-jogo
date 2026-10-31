@@ -164,7 +164,7 @@ validator, each room has a **design test**: a test that checks that the pieces t
 | 1.1 | Walk, hold, button, door, exit grid (no swap) | no unlocked property; ≥ 1 box, 1 button, 1 door |
 | 1.2 | First position swap across a gap | position unlocked; a kill zone between the spawn and the exit, and a box beyond it ≤ 8 m from the spawn |
 | 1.3 | Swap to put the box on a high button | button with `detects: "objects"`; a box that accepts position |
-| 1.4 | Colored outline: one box refuses position | ≥ 1 box with `accepts` without position and ≥ 1 that accepts it |
+| 1.4 | Colored outline: one box refuses position | ≥ 1 box that cannot swap position (locked, or `accepts` without position) and ≥ 1 that can. Level 1 unlocks only position, so the refusing box is **locked** |
 | 2.1 | Barrier 1: the box crosses by swapping | a barrier blocking objects only, a button on its other side |
 | 2.2 | Barrier 2: the player crosses by swapping | a barrier blocking the player only, a box on its other side |
 | 2.3 | Barrier 3: prepare swaps before the zone | a barrier blocking variables, big enough to be a zone (≥ 2 m on X and Z) |

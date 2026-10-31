@@ -84,8 +84,8 @@ start position, mass and velocity.
 check). Write the room design tests for 1.1–1.4 and 2.1–2.3 first (spec table), then `levels/level_1.json`
 and `levels/level_2.json` following `docs/design/PROGRESSAO-NIVEIS.md`.
 **Acceptance criteria:**
-- [ ] `CatalogOrder` has tests (numbers not increasing, missing file, id/number mismatch).
-- [ ] Both files pass the validator (`ShippedLevelsTests`) and the 7 room design tests pass.
+- [x] `CatalogOrder` has tests (numbers not increasing, missing file, id/number mismatch).
+- [x] Both files pass the validator (`ShippedLevelsTests`) and the 7 room design tests pass.
 **Dependencies:** Task 5
 **Files:** `LevelCatalog.cs`, `levels/catalog.json`, `levels/level_1.json`, `levels/level_2.json`,
 `tests/.../ShippedLevelsTests.cs`, `tests/.../RoomDesignTests.cs`

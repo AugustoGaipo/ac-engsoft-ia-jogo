@@ -28,7 +28,7 @@ public static partial class LevelValidator
     private static string Inv(int i) => i.ToString(CultureInfo.InvariantCulture);
 
     /// <summary>The unlocked properties in force in a room (its override, or the level's).</summary>
-    internal static IReadOnlyList<string> UnlockedIn(LevelFile level, RoomDef room) =>
+    public static IReadOnlyList<string> UnlockedIn(LevelFile level, RoomDef room) =>
         room.RulesOverride?.UnlockedProperties ?? level.Rules.UnlockedProperties;
 
     private static void CheckValues(LevelFile level, List<LevelError> errors)

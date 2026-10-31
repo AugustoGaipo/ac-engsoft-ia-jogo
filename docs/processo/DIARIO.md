@@ -700,3 +700,26 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     troca de posição troca centro com centro. O `game` converte para os pés do `CharacterBody3D`.
   - Área de contato do jogador: 0,6 × 0,6 = 0,36 m².
   - Sala que não existe lança exceção (erro de programação, como no `rules`), e não gera um erro de nível.
+
+### Tarefa 6 do `levels` — catálogo e níveis 1 e 2 ✅
+- Primeiro os testes do catálogo (`CatalogTests`), depois o `LevelCatalog`, a única classe que lê arquivos.
+  Ele confere a ordem dos números (pode pular número), se o arquivo existe e se o id bate com o arquivo.
+- Depois os **testes de design** das salas 1.1–1.4 e 2.1–2.3 (`RoomDesignTests`): vermelhos, com 9 falhas,
+  antes de existirem os arquivos. Só então escrevi `levels/level_1.json`, `level_2.json` e `catalog.json`.
+  Todo nível entregue também precisa montar um mundo que respeite o invariante (`ShippedLevelsTests`).
+- Testes: 118/118 do `levels`, 94/94 do `rules`. Build com 0 avisos.
+- **Decisões tomadas sozinho:**
+  - **Segurança:** no catálogo, o arquivo tem que ser um nome simples na pasta `levels/`. Nada de
+    `../`, subpasta ou unidade (`C:`). Assim um catálogo alterado não consegue ler arquivos de fora.
+  - **Sala 1.4:** o nível 1 só libera a posição, então a caixa que "não aceita posição" é uma caixa
+    **travada**. Um `accepts` com outra propriedade daria `NotAccepted`. O teste e a spec foram ajustados.
+    **Vale você confirmar:** o contorno colorido por propriedade só faz sentido de verdade a partir do
+    nível 3, quando há mais de uma propriedade liberada.
+  - **Sala 1.3:** para pôr a caixa no botão alto, coloquei uma bola em cima da plataforma (2 m). A
+    sequência é: trocar com a bola (sobe), ficar em cima do botão e trocar com a caixa lá de baixo (ela
+    aparece no botão).
+  - Salas lado a lado ao longo de +X, chão em y = 0 e buracos até y = -3 (zona de queda no fundo).
+    `yawDegrees: -90` olha para +X (convenção do Godot).
+  - **Recado para a spec do `game`:** a troca de posição troca **centros**. A caixa tem centro a 0,5 m
+    do chão e o jogador a 0,9 m, então o jogador que vai para o lugar da caixa fica com os pés 0,4 m
+    dentro do chão. O `game` precisa subir o corpo para o ponto livre mais próximo (já decidido).
