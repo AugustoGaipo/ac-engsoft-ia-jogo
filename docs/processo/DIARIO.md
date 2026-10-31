@@ -456,3 +456,8 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   e que a massa pesa mais na estabilidade das pilhas. Proteções sugeridas: detecção contínua de colisão
   (CCD) no Godot, espessura mínima de parede checada pelo validador do `levels`, zona de fora do mapa como
   última rede e, talvez, um limite de velocidade (mudaria a física; depende de mim).
+- **Ponto livre mais próximo (ideia minha):** se o destino estiver ocupado (ex.: bola dentro de entulho),
+  em vez de recusar, o objeto vai para o ponto mais próximo onde cabe. Condições sugeridas pelo agente:
+  raio máximo de busca, ponto visível a partir do destino original (não atravessa parede), sem cruzar
+  barreira nem sair do mapa, ordem de busca fixa (mesma situação → mesmo resultado). Sem ponto válido →
+  falha. Em discussão: vale só para teleporte forçado ou também para trocas normais? Qual o raio?
