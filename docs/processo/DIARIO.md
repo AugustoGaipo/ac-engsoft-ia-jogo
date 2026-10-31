@@ -109,3 +109,34 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Mais duas habilidades** entram no futuro, ainda sem definição (quero uma que lide com números).
   → A arquitetura precisa permitir adicionar propriedades novas sem reescrever o resto.
 - **Decisão pendente para a spec:** ao trocar o peso, o objeto mantém a velocidade ou mantém a energia?
+
+---
+
+## 2026-10-31 — Eixos de evolução das habilidades
+
+**Skill usada:** `agent-skills:idea-refine` (fase 2: convergir)
+
+- Perguntei ao agente qual troca parece mais evoluída. Minha ideia: **jogador ↔ objeto** como a mais
+  básica, porque ensina melhor, limita atalhos nas fases e abre espaço para evoluir depois.
+  O agente concordou: mira em uma coisa só, o jogador sente a troca no próprio corpo, e na biblioteca
+  de regras o jogador é só mais um "recipiente".
+- Propus combinar duas habilidades, primeiro **com um intervalo** entre as trocas e depois
+  **ao mesmo tempo**. O agente organizou isso em dois eixos de evolução:
+
+| Alcance (com quem troco) | Combinação (quantas de uma vez) |
+|---|---|
+| 1. jogador ↔ objeto | 1. uma habilidade por vez |
+| 2. objeto ↔ objeto | 2. duas, com intervalo entre elas |
+| 3. arma que guarda valores | 3. duas ao mesmo tempo (intervalo zero) |
+
+**Escopo das fases**
+- Fases 1–10: só jogador ↔ objeto. Fases 1–6 com uma troca por vez; fases 7–10 combinam
+  habilidades com intervalo (o intervalo vale entre qualquer troca).
+- **Fase 11 (extra, se sobrar tempo):** troca simultânea.
+- Depois: objeto ↔ objeto e a arma, mas a biblioteca de regras já nasce suportando as duas.
+
+**Cuidados levados para a spec**
+- Se o jogador aperta botões com o próprio peso, resolve fases sem trocar → botões só para objetos,
+  ou que exigem mais peso que o jogador.
+- Quando o jogador recebe energia, para onde ele é lançado? Câmera ou direção anterior?
+- A troca simultânea não é "intervalo quase zero": as duas propriedades mudam no mesmo passo.
