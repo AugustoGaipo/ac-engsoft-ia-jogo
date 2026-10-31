@@ -106,7 +106,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - **Só entidades passam:** o jogador atravessa, os objetos não.
   - **Só objetos passam:** os objetos atravessam, o jogador não.
   - **Restauração:** deixa passar, mas quem atravessa recupera o **valor verdadeiro** trocando com
-    quem está com ele. Vale para peso e energia (ver "modelo de variáveis" abaixo).
+    quem está com ele. Vale para posição, peso e energia (ver "modelo de variáveis" abaixo).
     Ex.: eu 10 kg, A 2 kg, B 3 kg. Troco com A (eu 2, A 10) e com B (eu 3, B 2). A atravessa a parede →
     troca com B, que estava com o peso verdadeiro dela → eu 3, A 2, B 10.
   - **Combinadas:** a **parede de saída** de cada fase junta "só entidades" + "restauração": nenhum
