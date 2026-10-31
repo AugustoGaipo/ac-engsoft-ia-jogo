@@ -63,3 +63,13 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - Confirmar o corte de escopo.
 - Terminar a `idea-refine` (premissas e riscos, one-pager em `docs/ideas/`).
 - Spec (`agent-skills:spec-driven-development`) e C4 de Contexto e Container antes do código.
+
+---
+
+## 2026-10-31 — Repositório no GitHub
+
+- Pedi um histórico do processo para mostrar na apresentação → criado este diário.
+- Repositório público criado: https://github.com/AugustoGaipo/ac-engsoft-ia-jogo
+  (o enunciado do professor ficou fora, via `.gitignore`).
+- Daqui em diante, cada etapa ganha uma entrada aqui e um commit, para o histórico do git também
+  servir de evidência.
