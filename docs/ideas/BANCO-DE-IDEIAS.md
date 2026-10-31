@@ -33,17 +33,17 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Fases 2, 4, 6, 7, 8 e 9.
 - Tela de ranking e escolha de ícone dentro do jogo.
 - Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
+- **Densidade:** água (afundar e boiar), peças quebradiças e pressão.
+- **Site explicando a arquitetura** (só para mim: simples e bem compreensível, não precisa ser bonito).
 
 ### P2 — Se sobrar tempo
 - Fase 11: troca simultânea.
 - Fantasma das partidas dos primeiros do ranking.
-- Site interativo explicando a arquitetura (antes da apresentação).
 
 ### P3 — Futuro (a arquitetura já deixa o espaço)
 - Objeto ↔ objeto e a arma que guarda valores.
 - Tempo (roubar/entregar) e o tipo de operação "transferir".
 - Objetos instáveis, power-up de recarga, peso glorioso, downgrade de tempo limitado.
-- Densidade: água, peças quebradiças e pressão.
 - Momento e as outras propriedades novas.
 - Steam.
 

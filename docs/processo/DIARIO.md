@@ -211,3 +211,5 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Rota de prioridade:** pedi uma ordem do que é mais importante. Criada no banco de ideias, em
   faixas P0 (essencial) a P3 (futuro).
 - **Mapa de módulos aprovado** e salvo em [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md).
+- **Prioridade ajustada:** densidade (água, quebradiças, pressão) e o site explicando a arquitetura
+  subiram para P1. O site é só para mim: precisa ser compreensível, não bonito.
