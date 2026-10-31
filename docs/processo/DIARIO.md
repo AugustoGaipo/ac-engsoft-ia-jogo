@@ -584,3 +584,9 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 ## 2026-10-31 — Morte e ranking
 - **Morrer não zera o tempo (decisão minha):** quando o jogador morre e a fase reinicia, o relógio da fase
   continua correndo no ranking. Entra na spec do `progress` (e na do `game`, que mede o tempo).
+- **Níveis têm várias salas (decisão minha):** o ranking mede o nível inteiro, com o tempo e as trocas de
+  todas as salas somados. A morte reinicia só a sala, e o tempo e as trocas continuam somando. O menu tem
+  "reiniciar sala" (igual à morte) e "reiniciar nível" (tempo e trocas voltam a zero, tentativa nova).
+- **Observação do agente:** o `MoveCount` do `World` (no `rules`) conta as trocas de um mundo. Se a sala
+  reiniciar com um mundo novo, quem guarda a soma do nível é o `game`/`progress`, e não o `rules`.
+  Isso entra na spec desses módulos, sem mudar o código do `rules`.
