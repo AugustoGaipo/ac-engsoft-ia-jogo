@@ -1,11 +1,20 @@
 using Swapping.Rules.Model;
 using Swapping.Rules.Operations;
+using Swapping.Rules.Policies;
 
 namespace Swapping.Rules.Tests;
 
 public class SwapTests
 {
     private const double Tol = 0.001;
+
+    // These tests are about what a swap does, not whether it is allowed (see LegalityTests).
+    private static readonly LevelRules Permissive = LevelRules.Default with
+    {
+        AllowObjectToObject = true,
+        AllowSimultaneousSwaps = true,
+        CooldownSeconds = 0,
+    };
 
     private static Container Player() => new("player", ContainerType.Player, VolumeM3: 0.07, ContactAreaM2: 0.1);
     private static Container Box(string id) => new(id, ContainerType.Object, VolumeM3: 0.001, ContactAreaM2: 0.01);
@@ -24,7 +33,7 @@ public class SwapTests
     [Fact]
     public void MassSwap_Chained_PlayerGetsBsMass()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Player(), Vec3.Zero, 10, Vec3.Zero);
         world.Add(Box("A"), new Vec3(1, 0, 0), 2, Vec3.Zero);
         world.Add(Box("B"), new Vec3(2, 0, 0), 3, Vec3.Zero);
@@ -42,7 +51,7 @@ public class SwapTests
     [Fact]
     public void MassSwap_KeepsEnergy_RecomputesSpeed()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Box("A"), Vec3.Zero, 2, new Vec3(3, 0, 0));
         world.Add(Box("B"), new Vec3(1, 0, 0), 8, Vec3.Zero);
 
@@ -61,7 +70,7 @@ public class SwapTests
     [Fact]
     public void EnergySwap_ReceiverMovesTheWayTheGiverWasMoving()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Box("ball"), new Vec3(3, 0, 0), 1, new Vec3(4, 0, 0));
         world.Add(Player(), Vec3.Zero, 70, Vec3.Zero);
 
@@ -78,7 +87,7 @@ public class SwapTests
     [Fact]
     public void EnergySwap_ZeroJouleReceiverStops()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Box("A"), Vec3.Zero, 2, new Vec3(0, -5, 0));
         world.Add(Box("B"), new Vec3(1, 0, 0), 2, Vec3.Zero);
 
@@ -92,7 +101,7 @@ public class SwapTests
     [Fact]
     public void PositionSwap_ExchangesPlaces_KeepsVelocities()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Player(), new Vec3(0, 1, 0), 70, new Vec3(0, 0, 2));
         world.Add(Box("A"), new Vec3(5, 0, 0), 2, new Vec3(-1, 0, 0));
 
@@ -111,7 +120,7 @@ public class SwapTests
     [Fact]
     public void Swap_ReturnsUpdatesForBothContainers_InRequestOrder()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Player(), Vec3.Zero, 70, Vec3.Zero);
         world.Add(Box("A"), new Vec3(1, 0, 0), 2, Vec3.Zero);
 
@@ -123,7 +132,7 @@ public class SwapTests
     [Fact]
     public void SyncFromPhysics_WritesPositionAndEnergyIntoTheUsedVariables()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Player(), Vec3.Zero, 70, Vec3.Zero);
         world.Add(Box("A"), new Vec3(1, 0, 0), 2, Vec3.Zero);
         Swap(world, "player", "A", PropertyKind.Position, PropertyKind.KineticEnergy);
@@ -143,7 +152,7 @@ public class SwapTests
     [Fact]
     public void SyncFromPhysics_AtRest_KeepsLastDirection()
     {
-        var world = new World();
+        var world = new World(Permissive);
         world.Add(Box("A"), Vec3.Zero, 2, new Vec3(3, 0, 0));
 
         world.SyncFromPhysics("A", Vec3.Zero, Vec3.Zero);
@@ -157,7 +166,7 @@ public class SwapTests
     [Fact]
     public void SyncFromPhysics_UnknownId_Throws()
     {
-        var world = new World();
+        var world = new World(Permissive);
         Assert.Throws<KeyNotFoundException>(() => world.SyncFromPhysics("ghost", Vec3.Zero, Vec3.Zero));
         Assert.Throws<KeyNotFoundException>(() => world.BodyUpdateFor("ghost"));
     }

@@ -67,16 +67,16 @@ Physics write-back: `World.SyncFromPhysics(id, position, velocity)`.
 multi-property flags), `SwapContext` (game-measured distance, line of sight, barrier between, inside
 barrier), every `RejectReason`, `Cooldown`.
 **Acceptance criteria:**
-- [ ] SC 8: one test per reason in the legality table, plus "distance == range is allowed".
-- [ ] SC 9: cooldown 2 s → t = 1.5 rejected, t = 2.0 applied.
-- [ ] Defaults: range 8 m, cooldown 1 s.
+- [x] SC 8: one test per reason in the legality table, plus "distance == range is allowed".
+- [x] SC 9: cooldown 2 s → t = 1.5 rejected, t = 2.0 applied.
+- [x] Defaults: range 8 m, cooldown 1 s.
 **Dependencies:** Task 4
 **Files:** `Policies/LevelRules.cs`, `Policies/Cooldown.cs`, `Operations/SwapContext.cs`,
 `Operations/RejectReason.cs`, `LegalityTests.cs`
 **Scope:** M
 
 ### Checkpoint: Core
-- [ ] Build clean, all tests green, commit + push.
+- [x] Build clean, all tests green, commit + push.
 
 ## Task 6: Barriers and restoration
 **Description:** `BarrierFilter` (blocks objects, blocks player, blocks variables) with `Blocks...`

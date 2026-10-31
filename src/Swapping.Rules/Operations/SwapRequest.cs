@@ -9,4 +9,7 @@ public sealed record SwapRequest(string First, string Second, IReadOnlyList<IPro
         : this(first, second, new[] { property })
     {
     }
+
+    /// <summary>What the game measured for this request.</summary>
+    public SwapContext Context { get; init; } = SwapContext.Clear;
 }

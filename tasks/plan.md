@@ -52,7 +52,7 @@ See [`todo.md`](todo.md) for acceptance criteria and verification of each task.
 ### Phase 2: Core model and swaps
 - [x] Task 3: Variables, containers and the world invariant
 - [x] Task 4: Swapping position, mass and energy
-- [ ] Task 5: Swap legality and cooldown
+- [x] Task 5: Swap legality and cooldown
 
 ### Checkpoint: Core
 

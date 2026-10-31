@@ -388,3 +388,24 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     sugere a estrutura da spec.
   - O SDK .NET 8 foi instalado de novo por `apt-get install dotnet-sdk-8.0` (o instalador oficial não
     gerou nada).
+
+### Tarefa 5 do `rules` — legalidade da troca e tempo de recarga ✅
+- Criados `RejectReason` (os 11 motivos da tabela), `SwapContext` (distância, linha de visão, barreira
+  de variáveis entre eles, cada um dentro de uma barreira — tudo medido pelo jogo), `LevelRules`
+  (propriedades liberadas, alcance por propriedade, recarga, chaves objeto↔objeto e troca simultânea) e
+  `Cooldown`. `SwapOperation` agora consulta `world.Rules.Check(...)` e devolve
+  `SwapResult.Rejected(motivo)` sem mexer em nada; `World` recebe as regras no construtor.
+- Testes escritos antes do código (`LegalityTests`): 65/65 aprovados (20 novos) — um por motivo, a borda
+  "distância = alcance é permitida", o critério 9 (recarga de 2 s: t = 1,5 recusada, t = 2,0 aplicada) e
+  os padrões (8 m, 1 s). `dotnet build` sem avisos. Checkpoint "Core" concluído.
+- **Decisões tomadas sozinho:**
+  - Com várias falhas ao mesmo tempo, vale o primeiro motivo na ordem da tabela da spec.
+  - Padrão do `LevelRules`: as três propriedades liberadas; objeto↔objeto e troca simultânea desligados.
+  - O `SwapContext` vai dentro do `SwapRequest` (propriedade `Context`, padrão "tudo livre": distância 0,
+    com visão, sem barreira), para manter a assinatura `Apply(world, request, now)` da spec.
+  - A recarga fica no `World` (estado da partida) e só começa com troca **aplicada**; troca recusada não
+    reinicia a recarga. Comparação de tempo com tolerância de 1e-9 s.
+  - `PropertyNotAccepted` vale se **qualquer** dos dois não aceitar a propriedade; `Locked` também
+    vale para qualquer um dos dois.
+  - Os testes de `SwapTests` (Tarefa 4) passaram a usar regras permissivas (objeto↔objeto, simultânea
+    e recarga 0), porque testam o efeito da troca e não a legalidade. Nenhuma asserção foi alterada.

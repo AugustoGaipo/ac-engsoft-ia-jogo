@@ -1,6 +1,7 @@
 using Swapping.Rules.Model;
 using Swapping.Rules.Operations;
 using Swapping.Rules.Physics;
+using Swapping.Rules.Policies;
 
 namespace Swapping.Rules;
 
@@ -15,6 +16,13 @@ public sealed class World
     private readonly Dictionary<string, Container> _containers = new();
     private readonly Dictionary<(string Container, IPropertyKind Kind), Variable> _uses = new();
     private readonly Dictionary<Variable, string> _users = new();
+
+    public World(LevelRules? rules = null) => Rules = rules ?? LevelRules.Default;
+
+    public LevelRules Rules { get; }
+
+    /// <summary>When the last swap was applied (shared by every property).</summary>
+    public Cooldown Cooldown { get; } = new();
 
     public IReadOnlyList<Container> Containers => _order;
 
