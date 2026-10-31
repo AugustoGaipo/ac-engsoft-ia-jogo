@@ -13,6 +13,7 @@ public sealed class SwapOperation : IOperation
             world.ExchangeVariables(request.First, request.Second, kind);
 
         world.Cooldown.Record(now);
+        world.Log.Record(request, now);
         return SwapResult.Applied(world.BodyUpdatesFor(request.First, request.Second));
     }
 }

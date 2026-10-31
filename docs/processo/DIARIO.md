@@ -516,3 +516,23 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - **Densidade e dano:** mais denso pode levar **mais** dano de queda, mas tem **mais resistência** aos
     outros danos (tiro, explosão — tudo que não mata na hora). Ou seja, existe vida para os danos que
     não matam na hora.
+
+### Tarefa 7 do `rules` — registro de trocas, contagem de jogadas e teste aleatório do invariante ✅
+- Criado `SwapLog` (em `Operations/SwapLog.cs`) com `SwapLogEntry` (primeiro, segundo, propriedades,
+  instante em s). O `World` ganhou `Log` e `MoveCount`; o `SwapOperation` registra cada troca aplicada
+  logo depois de registrar a recarga.
+- Testes (`InvariantTests`): 83/83 aprovados (7 novos): mundo novo com 0 jogadas, troca aplicada
+  registrada e contando 1, troca simultânea contando 1, troca recusada não registrada, restaurações
+  (`OnEnter`, `RestoreAll`, `Restore`) não mudam a contagem, ordem do registro e o critério 13:
+  1 000 passos aleatórios (semente fixa 20261031; 6 containers; 70 % trocas com 1 a 3 propriedades,
+  30 % restaurações totais ou de uma propriedade) com o invariante checado depois de cada passo e a
+  contagem final igual ao número de trocas aplicadas. `dotnet build` sem avisos.
+- **Decisões tomadas sozinho:**
+  - `MoveCount` = número de entradas do registro (cada troca aplicada vale 1, simultânea também);
+    não há contador separado, então os dois nunca divergem.
+  - A entrada copia a lista de propriedades da requisição (o registro não muda se a lista original mudar).
+  - O teste aleatório usa `System.Random` com semente fixa **só no projeto de testes**; a biblioteca
+    continua sem aleatoriedade. Usa regras permissivas (objeto↔objeto, simultânea, recarga 0) para
+    exercitar todas as combinações; a única recusa possível é `SameContainer`, e o teste confere isso.
+  - O SDK .NET 8 foi instalado de novo com `apt-get install dotnet-sdk-8.0` (o instalador oficial
+    foi bloqueado pelo proxy, 403).

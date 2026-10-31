@@ -25,6 +25,12 @@ public sealed class World
     /// <summary>When the last swap was applied (shared by every property).</summary>
     public Cooldown Cooldown { get; } = new();
 
+    /// <summary>Applied swaps, in order. Restorations are not recorded.</summary>
+    public SwapLog Log { get; } = new();
+
+    /// <summary>Moves for the ranking: each applied swap counts 1 (a simultaneous swap too).</summary>
+    public int MoveCount => Log.MoveCount;
+
     public IReadOnlyList<Container> Containers => _order;
 
     /// <summary>Registers a container and creates one owned variable per property.</summary>

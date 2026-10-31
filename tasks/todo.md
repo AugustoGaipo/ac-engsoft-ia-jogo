@@ -95,8 +95,8 @@ them, per property.
 **Description:** `SwapLog` records applied swaps; `MoveCount` counts swaps (simultaneous = 1),
 restorations do not count. Randomized test: 1 000 steps of swaps and restorations from a fixed seed.
 **Acceptance criteria:**
-- [ ] Restorations do not change the move count.
-- [ ] SC 13: invariant holds after each of 1 000 random steps.
+- [x] Restorations do not change the move count.
+- [x] SC 13: invariant holds after each of 1 000 random steps.
 **Dependencies:** Task 6
 **Files:** `Operations/SwapLog.cs`, `World.cs`, `InvariantTests.cs`
 **Scope:** S
