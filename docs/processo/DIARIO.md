@@ -580,3 +580,7 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   Agora são 94/94 com e sem cobertura, e a cobertura é de 98,3 % das linhas.
 - Lição para a apresentação: a medição de cobertura que a rotina reportou passava, mas um teste quebrava
   justamente durante essa medição. Por isso vale revisar o trabalho autônomo antes de confiar nele.
+
+## 2026-10-31 — Morte e ranking
+- **Morrer não zera o tempo (decisão minha):** quando o jogador morre e a fase reinicia, o relógio da fase
+  continua correndo no ranking. Entra na spec do `progress` (e na do `game`, que mede o tempo).

@@ -104,6 +104,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   guarda e pede para o jogador anotar. Entrar em outro PC = nome + código. O servidor guarda só o hash,
   bloqueia após tentativas erradas e permite gerar um código novo. Perdeu código e PC = perdeu o perfil.
 - **Ranking com dois modos:** por tempo (desempate por trocas) ou por movimentos (desempate por tempo).
+- **Morte não zera o relógio:** quando o jogador morre e a fase reinicia, o tempo continua contando no
+  ranking (morrer custa tempo).
 - API com perfil, progresso e ranking; sem validação antitrapaça.
 - Visual simples e limpo (formas geométricas, cores sólidas).
 
