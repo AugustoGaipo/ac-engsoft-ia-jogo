@@ -461,3 +461,28 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   raio máximo de busca, ponto visível a partir do destino original (não atravessa parede), sem cruzar
   barreira nem sair do mapa, ordem de busca fixa (mesma situação → mesmo resultado). Sem ponto válido →
   falha. Em discussão: vale só para teleporte forçado ou também para trocas normais? Qual o raio?
+
+### Tarefa 6 do `rules` — barreiras e restauração ✅
+- Criados `BarrierFilter` (bloqueia objetos, bloqueia jogador, bloqueia variáveis; combináveis com
+  `Combine`; consultas `BlocksPassageOf`, `RestoresOnEntry`, `BlocksSwaps`; prontos `ExitGrid` e
+  `BlocksVariablesOnly`) e `Restoration` (`OnEnter`, `RestoreAll`, `Restore` por propriedade). No
+  `World`: `OwnVariable(id, propriedade)` — a variável com que o container nasceu.
+- Testes (`RestorationTests`): 76/76 aprovados (11 novos), cobrindo o critério 2 (segunda metade:
+  A entra → jogador 3, A 2, B 10), o 6 (restauração de posição: a caixa continua andando, o outro
+  fica parado), o 7 (restauração de energia inverte a direção), "restaurar quem já usa as próprias
+  variáveis não muda nada" e "a grade de saída bloqueia objetos e variáveis e deixa o jogador passar".
+  `dotnet build` sem avisos.
+- **Decisões tomadas sozinho:**
+  - `Restoration` é uma classe estática sem estado (não um `IOperation`): restauração não é troca,
+    então ignora legalidade e recarga e não reinicia a recarga (há teste). A contagem de jogadas fica
+    para a Tarefa 7.
+  - `RestoreAll` devolve as atualizações de corpo do container e depois de cada antigo dono afetado, sem
+    repetir, na ordem posição → massa → energia. Se nada mudar, devolve só o próprio container;
+    `OnEnter` numa barreira que não bloqueia variáveis devolve lista vazia.
+  - `BarrierFilter` é um `record struct` imutável (os prontos `ExitGrid`/`BlocksVariablesOnly` são
+    `static readonly` imutáveis, não estado mutável). O filtro por propriedade fica para depois, como a
+    spec pede ("all" por enquanto).
+  - Soltar um objeto segurado ao cruzar a barreira 1 é detectado e feito pelo jogo; o `rules` só
+    responde `BlocksPassageOf`.
+  - O SDK .NET 8 foi instalado com `apt-get update && apt-get install dotnet-sdk-8.0` (o instalador
+    oficial de novo não gerou nada).

@@ -16,6 +16,7 @@ public sealed class World
     private readonly Dictionary<string, Container> _containers = new();
     private readonly Dictionary<(string Container, IPropertyKind Kind), Variable> _uses = new();
     private readonly Dictionary<Variable, string> _users = new();
+    private readonly Dictionary<(string Owner, IPropertyKind Kind), Variable> _owned = new();
 
     public World(LevelRules? rules = null) => Rules = rules ?? LevelRules.Default;
 
@@ -36,9 +37,9 @@ public sealed class World
         _order.Add(container);
 
         var energy = Formulas.KineticEnergy(massKg, velocity.Length);
-        Use(container.Id, new Variable(PropertyKind.Position, container.Id, VariableValue.OfPosition(position)));
-        Use(container.Id, new Variable(PropertyKind.Mass, container.Id, VariableValue.OfMass(massKg)));
-        Use(container.Id, new Variable(PropertyKind.KineticEnergy, container.Id, VariableValue.OfEnergy(energy, velocity)));
+        Own(new Variable(PropertyKind.Position, container.Id, VariableValue.OfPosition(position)));
+        Own(new Variable(PropertyKind.Mass, container.Id, VariableValue.OfMass(massKg)));
+        Own(new Variable(PropertyKind.KineticEnergy, container.Id, VariableValue.OfEnergy(energy, velocity)));
     }
 
     public Container Get(string id) =>
@@ -53,6 +54,13 @@ public sealed class World
     }
 
     public string UserOf(Variable variable) => _users[variable];
+
+    /// <summary>The variable the container was born with for this property.</summary>
+    public Variable OwnVariable(string containerId, IPropertyKind kind)
+    {
+        Get(containerId);
+        return _owned[(containerId, kind)];
+    }
 
     /// <summary>The two containers exchange the variables of one property.</summary>
     public void ExchangeVariables(string first, string second, IPropertyKind kind)
@@ -107,6 +115,12 @@ public sealed class World
             }
 
         return used.Count == _users.Count && used.Count == _order.Count * PropertyKind.All.Count;
+    }
+
+    private void Own(Variable variable)
+    {
+        _owned.Add((variable.Owner, variable.Kind), variable);
+        Use(variable.Owner, variable);
     }
 
     private void Use(string containerId, Variable variable)

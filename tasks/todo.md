@@ -83,10 +83,10 @@ barrier), every `RejectReason`, `Cooldown`.
 queries and `ExitGrid`; `Restoration` gives each of a container's own variables back from whoever holds
 them, per property.
 **Acceptance criteria:**
-- [ ] SC 2 second half (A enters → 3/2/10), SC 6 (position restoration), SC 7 (energy restoration
+- [x] SC 2 second half (A enters → 3/2/10), SC 6 (position restoration), SC 7 (energy restoration
       reverses direction).
-- [ ] Restoring a container that uses only its own variables changes nothing.
-- [ ] Exit grid blocks objects and variables, lets the player pass.
+- [x] Restoring a container that uses only its own variables changes nothing.
+- [x] Exit grid blocks objects and variables, lets the player pass.
 **Dependencies:** Task 5
 **Files:** `Model/BarrierFilter.cs`, `Operations/Restoration.cs`, `RestorationTests.cs`
 **Scope:** M
