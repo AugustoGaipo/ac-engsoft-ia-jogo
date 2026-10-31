@@ -43,7 +43,6 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 ### P2 — Se sobrar tempo
 - Fase 11: troca simultânea.
 - Fantasma das partidas dos primeiros do ranking.
-- Mais causas de morte: explosão, implosão e outras.
 - **Troca de elasticidade** (opcional, por último nesta faixa; se não der tempo, vai para a P3):
   trocar o "quique" entre o jogador e um objeto, como uma quarta propriedade.
 
@@ -322,5 +321,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 
 ## 💭 Ideias pensadas
 - **Tempo como dificuldade:** trocar a velocidade de algo em queda no momento certo.
+- **Vida, resistência e outros danos (a pensar, fora da rota de prioridade):** uma barra de vida para
+  danos que não matam na hora (tiro, explosão); mais denso = mais resistente a esses danos. Outras
+  causas de morte possíveis: explosão, implosão.
 - **Ideias descartadas na sessão 1** (substituídas pela ideia própria): puzzle diário com semente,
   fases criadas pelos jogadores com solver, jogo educativo de programar um robô.

@@ -567,3 +567,5 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     "Never: static mutable state" da spec.
   - `TestResults/` entrou no `.gitignore` (saída da cobertura).
   - O README do repositório está em português, então a seção nova também.
+- **Vida, resistência, tiro e explosão ficam de fora (decisão minha):** só como ideia a pensar, em
+  "Ideias pensadas", fora da rota de prioridade. A linha de "mais causas de morte" saiu da P2.
