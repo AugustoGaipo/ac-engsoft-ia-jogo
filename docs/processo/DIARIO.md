@@ -569,3 +569,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - O README do repositório está em português, então a seção nova também.
 - **Vida, resistência, tiro e explosão ficam de fora (decisão minha):** só como ideia a pensar, em
   "Ideias pensadas", fora da rota de prioridade. A linha de "mais causas de morte" saiu da P2.
+- **Barra de ar (decisão minha):** 15 s para começar, enche de novo ao sair da água; ajustar jogando.
