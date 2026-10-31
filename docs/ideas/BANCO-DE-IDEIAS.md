@@ -116,8 +116,9 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
     não de energia: a caixa continua em movimento e o objeto que estava parado aparece na parede e
     só cai no chão.
   - **A parede é um filtro:** cada parede define o que passa (jogador, objetos) e quais variáveis
-    passam (posição, peso, energia). A **mira da troca obedece ao mesmo filtro**: não dá para trocar
-    o peso com uma caixa atrás de uma parede que barra peso.
+    passam. A **mira da troca obedece ao mesmo filtro**: não dá para trocar
+    nada com uma caixa atrás de uma parede que barra variáveis. (A arquitetura ainda permite filtrar
+    por tipo de variável no futuro, mas o jogo usa sempre "todas".)
   - **Cada variável volta para o seu dono:** se o objeto trocou posição com um e peso com outro, ao
     atravessar a parede a posição volta de um e o peso volta do outro.
   - **Dentro de uma barreira que bloqueia trocas** (barreira não sólida, o objeto está *dentro* dela):
@@ -129,7 +130,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - **Decisão: 3 barreiras básicas, combináveis** (para não confundir o jogador):
     1. **Barra objetos:** só o jogador passa; o objeto segurado cai (cor própria + ícone 📦 riscado).
     2. **Barra o jogador:** só os objetos passam (cor própria + ícone 🧍 riscado).
-    3. **Barra variáveis:** quem passa recupera as próprias variáveis; não dá para trocar através dela
+    3. **Barra variáveis:** barra **todas** as variáveis de uma vez (não uma por tipo). Quem passa
+       recupera todas as próprias variáveis; não dá para trocar nada através dela
        nem dentro dela (cor própria + ícone ⇄ riscado).
     As outras são combinações. A **grade de saída** de cada fase = 1 + 3 (aparece desde a fase 1).
     As barreiras sozinhas entram aos poucos, como peças de puzzle, a partir das fases do P1.

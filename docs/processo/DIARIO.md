@@ -243,3 +243,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   começo confundem o jogador. Sugeriu o modelo completo na arquitetura e paredes introduzidas aos poucos.
 - **Decisão:** 3 barreiras básicas e combináveis (barra objetos, barra o jogador, barra variáveis),
   cada uma com cor e ícone próprios. A grade de saída = barreira 1 + 3.
+- **Simplificação:** a barreira 3 barra **todas** as variáveis, não uma por tipo.
