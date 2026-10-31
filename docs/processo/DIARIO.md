@@ -504,3 +504,15 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Morte do jogador (decisão minha):** volta ao ponto de renascimento da fase. Para começar: queda
   (altura/colisão), sufocamento/sobreposição e afogamento. Explosão, implosão e outras foram para a P2
   do banco de ideias.
+- **Correções e confirmações (minhas):**
+  - Estouro: numa troca simultânea **as duas propriedades trocam** (não só a posição); o outro lado
+    recebe antes do estouro. Se for preciso para a troca acontecer a tempo, uma intangibilidade bem
+    rápida é permitida (só se necessário).
+  - Objeto que estoura renasce **parado** (energia cinética zerada), no ponto de renascimento dele.
+  - Jogador morre → a fase reinicia e **tudo volta ao normal**; ele renasce no ponto de renascimento dele.
+  - Morte por falta de espaço é só sufocamento/sobreposição (sem esmagamento por enquanto).
+  - Afogamento: está nadando e não sai da água antes da **barra de ar** acabar.
+  - Queda mata: sim.
+  - **Densidade e dano:** mais denso pode levar **mais** dano de queda, mas tem **mais resistência** aos
+    outros danos (tiro, explosão — tudo que não mata na hora). Ou seja, existe vida para os danos que
+    não matam na hora.
