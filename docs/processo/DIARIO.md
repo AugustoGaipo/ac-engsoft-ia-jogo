@@ -610,3 +610,13 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - Na revisão apareceu uma divergência na spec: os exemplos de pulo só batem com densidade ~1 000 kg/m³.
   Com o volume fixo do jogador, 7 kg pula 1,86 m, e não 1,84 m. Isso entra na revisão da spec.
 - Progressão dos níveis aprovada.
+
+## 2026-10-31 — Spec do módulo `levels` (rascunho)
+- Com a skill `agent-skills:spec-driven-development`. Antes de escrever, o agente perguntou duas coisas:
+  - **O cenário fica no editor do Godot (decisão minha).** O JSON guarda só o que é do jogo: regras,
+    salas, objetos, botões, portas, barreiras e zonas de queda (buracos). Consequência: o validador não
+    enxerga as paredes, então a checagem da espessura de parede vai para o `game`.
+  - **Os 4 níveis de sexta (1, 2, 3 e 5, 11 salas) entram já no `levels` (decisão minha).**
+- O rascunho está em `docs/specs/SPEC-levels.md`: formato, 20 códigos de erro do validador, conversão
+  para o `rules` (`BuildWorld` por sala, que também serve para reiniciar a sala), um teste de design por
+  sala e 14 critérios de sucesso. Seis suposições ficaram listadas para eu confirmar.
