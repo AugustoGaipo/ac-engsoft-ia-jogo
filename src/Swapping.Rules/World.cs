@@ -1,4 +1,5 @@
 using Swapping.Rules.Model;
+using Swapping.Rules.Operations;
 using Swapping.Rules.Physics;
 
 namespace Swapping.Rules;
@@ -53,6 +54,37 @@ public sealed class World
         Use(first, b);
         Use(second, a);
     }
+
+    /// <summary>
+    /// Physics write-back (every physics step): stores the current position and kinetic energy into the
+    /// variables the container is using. At rest the energy keeps its last direction.
+    /// </summary>
+    public void SyncFromPhysics(string containerId, Vec3 position, Vec3 velocity)
+    {
+        var positionVariable = VariableUsedBy(containerId, PropertyKind.Position);
+        var energyVariable = VariableUsedBy(containerId, PropertyKind.KineticEnergy);
+        var mass = VariableUsedBy(containerId, PropertyKind.Mass).Value.Scalar;
+
+        positionVariable.Value = VariableValue.OfPosition(position);
+        var direction = velocity.Length > 0 ? velocity : energyVariable.Value.Vector;
+        energyVariable.Value = VariableValue.OfEnergy(Formulas.KineticEnergy(mass, velocity.Length), direction);
+    }
+
+    /// <summary>
+    /// The body state computed from the variables the container uses: it moves the way its energy
+    /// variable was moving, at v = √(2·E ÷ m).
+    /// </summary>
+    public BodyUpdate BodyUpdateFor(string containerId)
+    {
+        var position = VariableUsedBy(containerId, PropertyKind.Position).Value.Vector;
+        var mass = VariableUsedBy(containerId, PropertyKind.Mass).Value.Scalar;
+        var energy = VariableUsedBy(containerId, PropertyKind.KineticEnergy).Value;
+        var velocity = energy.Vector * Formulas.SpeedFromEnergy(energy.Scalar, mass);
+        return new BodyUpdate(containerId, position, mass, velocity);
+    }
+
+    public IReadOnlyList<BodyUpdate> BodyUpdatesFor(string first, string second) =>
+        new[] { BodyUpdateFor(first), BodyUpdateFor(second) };
 
     public bool CheckInvariant()
     {

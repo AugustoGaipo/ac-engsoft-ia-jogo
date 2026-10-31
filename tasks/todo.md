@@ -55,8 +55,8 @@ which, `ExchangeVariables`, `CheckInvariant`).
 energy and recomputes speed; energy swap moves the receiver the way the variable was moving.
 Physics write-back: `World.SyncFromPhysics(id, position, velocity)`.
 **Acceptance criteria:**
-- [ ] SC 2 first half (10/2/3 → 3/10/2), SC 3 via a mass swap of a moving body, SC 4 (ball/player), SC 5.
-- [ ] A 0 J receiver stops.
+- [x] SC 2 first half (10/2/3 → 3/10/2), SC 3 via a mass swap of a moving body, SC 4 (ball/player), SC 5.
+- [x] A 0 J receiver stops.
 **Dependencies:** Task 3
 **Files:** `Operations/SwapRequest.cs`, `Operations/SwapOperation.cs`, `Operations/SwapResult.cs`,
 `Operations/BodyUpdate.cs`, `World.cs`, `SwapTests.cs`

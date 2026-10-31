@@ -371,3 +371,20 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   sistemas e de economia). Créditos em `.claude/THIRD-PARTY-NOTICES.md`.
 - **Observação do agente:** as skills salvam os documentos nas pastas do kit (ex.: `design/gdd/`), não em
   `docs/specs/`. Dá para mover depois, se preferir.
+
+### Tarefa 4 do `rules` — trocar posição, massa e energia ✅
+- Criados `SwapRequest`, `IOperation` + `SwapOperation`, `SwapResult` (por enquanto só "aplicada"; a
+  rejeição entra na Tarefa 5) e `BodyUpdate` (id, posição, massa, velocidade). No `World`:
+  `SyncFromPhysics(id, posição, velocidade)`, `BodyUpdateFor(id)` e `BodyUpdatesFor(a, b)`.
+- Testes escritos antes do código (`SwapTests`): 45/45 aprovados (9 novos), cobrindo o critério 2
+  (primeira metade), 3 (por troca de massa), 4, 5 e o receptor de 0 J que para. `dotnet build` sem avisos.
+- **Decisões tomadas sozinho:**
+  - Uma regra única calcula o corpo a partir das variáveis em uso: velocidade = direção da variável de
+    energia × √(2·E ÷ m). Daí saem as três trocas (posição mantém velocidades; massa mantém a energia e
+    recalcula a velocidade; energia faz o receptor andar na direção do doador).
+  - `SyncFromPhysics` grava a energia com a massa que o container usa no momento; parado (v = 0), a
+    variável guarda a última direção (o plano já previa isso).
+  - Os testes ficaram num único `SwapTests.cs` (como em `todo.md`), não em três classes separadas como
+    sugere a estrutura da spec.
+  - O SDK .NET 8 foi instalado de novo por `apt-get install dotnet-sdk-8.0` (o instalador oficial não
+    gerou nada).
