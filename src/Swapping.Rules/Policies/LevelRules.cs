@@ -24,6 +24,21 @@ public sealed record LevelRules
     /// <summary>Multi-property flag: more than one property in one swap.</summary>
     public bool AllowSimultaneousSwaps { get; init; }
 
+    /// <summary>
+    /// Entangled ("quantum") properties flag: effects always hit the object's original variable.
+    /// Reserved for a future level; nothing reads it yet.
+    /// </summary>
+    public bool EnableEntangledProperties { get; init; }
+
+    /// <summary>Swap duration policy (permanent in this version).</summary>
+    public ISwapDurationPolicy SwapDuration { get; init; } = new PermanentSwapDuration();
+
+    /// <summary>Cooldown modifier (none in this version).</summary>
+    public ICooldownModifier CooldownModifier { get; init; } = new NoCooldownModifier();
+
+    /// <summary>The level's cooldown after the modifier.</summary>
+    public double EffectiveCooldownSeconds => CooldownModifier.Modify(CooldownSeconds);
+
     public double RangeFor(IPropertyKind kind) =>
         RangeMeters.TryGetValue(kind, out var range) ? range : DefaultRangeMeters;
 
@@ -45,7 +60,7 @@ public sealed record LevelRules
         if (context.VariableBarrierBetween) return RejectReason.BlockedByBarrier;
         if (context.FirstInsideVariableBarrier || context.SecondInsideVariableBarrier)
             return RejectReason.InsideVariableBarrier;
-        if (!world.Cooldown.IsReady(now, CooldownSeconds)) return RejectReason.OnCooldown;
+        if (!world.Cooldown.IsReady(now, EffectiveCooldownSeconds)) return RejectReason.OnCooldown;
         if (request.Properties.Count > 1 && !AllowSimultaneousSwaps) return RejectReason.TooManyProperties;
         return null;
     }

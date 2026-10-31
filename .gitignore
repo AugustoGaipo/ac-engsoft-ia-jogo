@@ -9,4 +9,5 @@ export_presets.cfg
 # .NET
 bin/
 obj/
+TestResults/
 *.db

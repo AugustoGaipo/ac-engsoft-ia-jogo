@@ -107,14 +107,14 @@ restorations do not count. Randomized test: 1 000 steps of swaps and restoration
 simultaneous swaps and entangled properties, unused). Measure coverage; add a test that the rules
 assembly references no Godot assembly; document commands in the README.
 **Acceptance criteria:**
-- [ ] SC 14 (no Godot reference) has a test; SC 15 line coverage ≥ 90 %.
-- [ ] SC 1: build with zero warnings.
-- [ ] README explains how to build and test.
+- [x] SC 14 (no Godot reference) has a test; SC 15 line coverage ≥ 90 %.
+- [x] SC 1: build with zero warnings.
+- [x] README explains how to build and test.
 **Dependencies:** Task 7
 **Files:** `Policies/*.cs`, `ArchitectureTests.cs`, `README.md`
 **Scope:** M
 
 ### Checkpoint: Complete
-- [ ] All 15 success criteria covered by passing tests.
-- [ ] Diary updated with what was done and every decision taken alone.
-- [ ] Commit + push; summary for the user's review.
+- [x] All 15 success criteria covered by passing tests.
+- [x] Diary updated with what was done and every decision taken alone.
+- [x] Commit + push; summary for the user's review.

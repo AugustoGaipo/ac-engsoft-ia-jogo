@@ -59,7 +59,7 @@ See [`todo.md`](todo.md) for acceptance criteria and verification of each task.
 ### Phase 3: Barriers and bookkeeping
 - [x] Task 6: Barriers and restoration
 - [x] Task 7: Swap log, move count and randomized invariant test
-- [ ] Task 8: Extension seams, coverage and documentation
+- [x] Task 8: Extension seams, coverage and documentation
 
 ### Checkpoint: Complete
 

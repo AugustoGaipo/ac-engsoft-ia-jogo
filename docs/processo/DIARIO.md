@@ -536,3 +536,34 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     exercitar todas as combinações; a única recusa possível é `SameContainer`, e o teste confere isso.
   - O SDK .NET 8 foi instalado de novo com `apt-get install dotnet-sdk-8.0` (o instalador oficial
     foi bloqueado pelo proxy, 403).
+
+### Tarefa 8 do `rules` — pontos de extensão, cobertura e documentação ✅
+- Criados os pontos de extensão que faltavam, cada um com uma única implementação:
+  `ISwapDurationPolicy` → `PermanentSwapDuration` (toda troca é permanente) e `ICooldownModifier` →
+  `NoCooldownModifier` (mantém a recarga da fase). `LevelRules` ganhou `SwapDuration`,
+  `CooldownModifier`, `EffectiveCooldownSeconds` (usado na checagem de recarga) e a flag
+  `EnableEntangledProperties` (desligada, ninguém lê ainda). `IPropertyKind` e `IOperation` já existiam;
+  as flags objeto↔objeto e troca simultânea já existiam e são usadas na legalidade.
+- `ArchitectureTests`: o assembly se chama `Swapping.Rules`, não referencia nenhum assembly Godot,
+  o `.csproj` não tem `PackageReference`/`ProjectReference`/`Reference` nem a palavra "Godot"
+  (critério 14), não há campo estático mutável no assembly, cada ponto de extensão tem exatamente a
+  sua implementação, e os padrões (permanente, sem modificador, flags desligadas).
+- Testes: 94/94 aprovados (11 novos). `dotnet build` com 0 avisos (critério 1; `TreatWarningsAsErrors`).
+- **Cobertura de linhas do `Swapping.Rules`: 98,3 %** (ramos: 89,8 %) — critério 15 (≥ 90 %) atendido.
+  Linhas não cobertas: 12–13 de `Container.cs` (código gerado pelo `record`), `PropertyKind.ToString`
+  e `Variable.ToString`.
+- README: seção "Compilar e testar" com os comandos de build, teste, cobertura e formatação.
+- Todos os 15 critérios de sucesso têm teste aprovado (o 1 é garantido pelo build e o 15 pela medição
+  acima). O relatório completo (`docs/processo/RELATORIO-rules.md`) será escrito pela próxima execução
+  da rotina, que encontra todas as tarefas marcadas.
+- **Decisões tomadas sozinho:**
+  - `ISwapDurationPolicy.RevertAfterSeconds(request)` devolve `null` = permanente (o jeito mais simples
+    de representar "dura para sempre"); `ICooldownModifier.Modify(segundos)` recebe e devolve segundos.
+  - A recarga passou a usar `EffectiveCooldownSeconds` (modificador identidade → mesmo comportamento;
+    os testes de recarga continuam passando).
+  - A flag de propriedades entrelaçadas ficou em `LevelRules` (por fase), não em `Container`; dá para
+    mover depois sem quebrar nada, porque ninguém usa.
+  - Teste extra (não pedido): nenhum campo estático mutável no assembly, para fiscalizar a fronteira
+    "Never: static mutable state" da spec.
+  - `TestResults/` entrou no `.gitignore` (saída da cobertura).
+  - O README do repositório está em português, então a seção nova também.

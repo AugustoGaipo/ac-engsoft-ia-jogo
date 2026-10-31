@@ -13,3 +13,19 @@ conjunto de skills [Agent Skills](https://github.com/addyosmani/agent-skills) do
 - Arquitetura (C4): [`docs/architecture/C4.md`](docs/architecture/C4.md)
 
 **Stack planejada:** Godot 4 (C#), biblioteca de regras em C# puro, API ASP.NET Core + SQLite.
+
+## Compilar e testar
+
+Requer o **.NET 8 SDK**. Rode na raiz do repositório (no Git Bash do Windows, antes:
+`export PATH="$PATH:/c/Program Files/dotnet"`).
+
+```
+dotnet build Swapping.sln                                 # compila (avisos viram erros)
+dotnet test Swapping.sln                                  # roda todos os testes xUnit
+dotnet test Swapping.sln --collect:"XPlat Code Coverage"  # cobertura (cobertura.xml em tests/*/TestResults/)
+dotnet format Swapping.sln                                # formata o código
+```
+
+- `src/Swapping.Rules/`: biblioteca pura de regras das trocas (sem Godot, IO, relógio ou aleatoriedade).
+  Spec: [`docs/specs/SPEC-rules.md`](docs/specs/SPEC-rules.md).
+- `tests/Swapping.Rules.Tests/`: testes xUnit, uma classe por área de regra.
