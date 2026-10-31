@@ -83,3 +83,29 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - O professor já tinha liberado jogos, **desde que não fossem simples demais** (como um jogo da cobrinha).
 - O projeto atende a essa condição: mecânica própria de troca de propriedades físicas, 3+ módulos
   (regras, jogo, API), banco de dados, login, validação das trocas no servidor e testes automatizados.
+
+---
+
+## 2026-10-31 — Fases e habilidades
+
+**Skill usada:** `agent-skills:idea-refine` (fase 2: convergir)
+
+- Propus 10 fases: 2 com cada habilidade sozinha, 1 com cada dupla e 1 com as três juntas,
+  repetindo a mesma habilidade em fases seguidas, como no Portal.
+- O agente ajustou a ordem para a energia cinética, a mais difícil de entender, vir depois do peso:
+
+| Fase | Habilidade |
+|---|---|
+| 1–2 | Posição |
+| 3–4 | Peso |
+| 5–6 | Energia cinética |
+| 7 | Posição + Peso |
+| 8 | Posição + Energia |
+| 9 | Peso + Energia |
+| 10 | As três |
+
+- **Regra do peso:** o volume continua o mesmo; o que muda é a densidade (massa ÷ volume).
+- **Momento:** fica de fora por enquanto, porque ainda não sei como aplicar.
+- **Mais duas habilidades** entram no futuro, ainda sem definição (quero uma que lide com números).
+  → A arquitetura precisa permitir adicionar propriedades novas sem reescrever o resto.
+- **Decisão pendente para a spec:** ao trocar o peso, o objeto mantém a velocidade ou mantém a energia?

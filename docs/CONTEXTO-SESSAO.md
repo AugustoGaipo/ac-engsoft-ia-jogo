@@ -55,8 +55,8 @@ Recomendação: 1 + 6 (com um pouco da 2). Plano B se o prazo apertar: 4.
   validação da legalidade das trocas); Godot como cliente.
 - Na Steam, login/ranking/saves viriam do Steamworks → o backend serve à disciplina; o que se reaproveita
   é a biblioteca de regras e as fases.
-- Corte de escopo proposto (aguardando confirmação): 5 fases (posição 1–2, peso 3–4, arma 5);
-  jogador↔objeto e momento como extras; energia cinética só na biblioteca/testes.
+- **Escopo definido:** 10 fases com 3 habilidades (posição, peso, energia cinética); ver DIARIO.md. Volume constante no peso.
+  Momento adiado; mais 2 habilidades numéricas no futuro (arquitetura extensível).
 
 ## Onde paramos (sessão 2)
 Engine escolhida. Falta: instalar .NET SDK 8 e Godot 4 .NET; confirmar o corte de escopo;
