@@ -33,7 +33,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 ### P1 — Jogo completo planejado
 - Fases 2, 4, 6, 7, 8 e 9.
 - Fases contínuas (uma leva direto à próxima).
-- Barreiras 1, 2 e 3 sozinhas como peças de puzzle, introduzidas uma por vez.
+- Barreiras 1, 2 e 3 sozinhas como peças de puzzle, introduzidas uma por vez, em parede ou em zona.
 - Tela de ranking e escolha de ícone dentro do jogo.
 - Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
 - **Densidade:** água (afundar e boiar), peças quebradiças e **pressão parada** (peso ÷ área de contato,
@@ -135,6 +135,11 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
        nem dentro dela (cor própria + ícone ⇄ riscado).
     As outras são combinações. A **grade de saída** de cada fase = 1 + 3 (aparece desde a fase 1).
     As barreiras sozinhas entram aos poucos, como peças de puzzle, a partir das fases do P1.
+    Se um dia fizer sentido, dá para voltar a filtrar por tipo de variável.
+  - **Zonas (blocos de barreira):** a barreira é um **volume**; a parede é só um volume fino. Uma zona
+    é o mesmo volume, maior (ex.: uma sala inteira onde não dá para trocar nada). No JSON muda só o
+    tamanho. Puzzles: preparar as trocas antes de entrar na sala; "cofre" de caixas onde só o jogador
+    entra; objeto dentro da zona sempre com os valores originais, servindo de referência.
   - **Nas referências:** paredes assim são usadas no gênero para montar as fases e impedir que objetos
     e valores sejam levados para a fase seguinte.
 - **Modelo de variáveis (troca de variáveis, não de valores):** cada objeto nasce com a sua própria

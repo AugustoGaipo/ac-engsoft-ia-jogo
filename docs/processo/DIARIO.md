@@ -244,3 +244,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Decisão:** 3 barreiras básicas e combináveis (barra objetos, barra o jogador, barra variáveis),
   cada uma com cor e ícone próprios. A grade de saída = barreira 1 + 3.
 - **Simplificação:** a barreira 3 barra **todas** as variáveis, não uma por tipo.
+- **Zonas:** além de paredes, blocos ou regiões inteiras com barreira. Pela regra de estar *dentro* da barreira, parede e zona viram a mesma coisa (um volume com filtro).
