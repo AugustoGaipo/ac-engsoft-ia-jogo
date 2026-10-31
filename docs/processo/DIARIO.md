@@ -236,3 +236,6 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Alcance máximo:** cada habilidade tem uma distância máxima de troca, configurável por fase.
 - **Parede como filtro:** a parede define o que passa (jogador, objetos) e quais variáveis passam;
   a mira da troca obedece ao mesmo filtro. Isso existe nas referências do gênero para separar as fases.
+- **Regras finas das paredes:** cada variável volta para o seu dono; dentro de uma barreira que
+  bloqueia trocas não há troca; barreiras de passagem só soltam o objeto segurado. Perguntei ao agente
+  se isso ficou complicado demais para o jogador.

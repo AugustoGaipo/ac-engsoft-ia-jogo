@@ -118,6 +118,16 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - **A parede é um filtro:** cada parede define o que passa (jogador, objetos) e quais variáveis
     passam (posição, peso, energia). A **mira da troca obedece ao mesmo filtro**: não dá para trocar
     o peso com uma caixa atrás de uma parede que barra peso.
+  - **Cada variável volta para o seu dono:** se o objeto trocou posição com um e peso com outro, ao
+    atravessar a parede a posição volta de um e o peso volta do outro.
+  - **Dentro de uma barreira que bloqueia trocas** (barreira não sólida, o objeto está *dentro* dela):
+    o objeto fica com os atributos originais e não pode ser trocado até sair. O jogador dentro dela
+    não consegue usar a troca. Encostar numa parede sólida não conta.
+  - **Barreira que só bloqueia a passagem** (de objetos ou do jogador): restringe só o **segurar**.
+    Se eu atravesso segurando um objeto que não pode passar, a pegada se solta quando um dos dois
+    atravessa 100% e o objeto cai.
+  - **Dúvida em aberto:** isso fica difícil de entender para o jogador? Alternativa: como no Portal,
+    toda parede que barra a passagem também barra a troca.
   - **Nas referências:** paredes assim são usadas no gênero para montar as fases e impedir que objetos
     e valores sejam levados para a fase seguinte.
 - **Modelo de variáveis (troca de variáveis, não de valores):** cada objeto nasce com a sua própria
