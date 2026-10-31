@@ -140,3 +140,29 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   ou que exigem mais peso que o jogador.
 - Quando o jogador recebe energia, para onde ele é lançado? Câmera ou direção anterior?
 - A troca simultânea não é "intervalo quase zero": as duas propriedades mudam no mesmo passo.
+
+---
+
+## 2026-10-31 — One-pager e banco de ideias
+
+**Skill usada:** `agent-skills:idea-refine` (fases 2 e 3)
+
+- **Teste de estresse do agente:** o ponto fraco é a viabilidade (1 semana, sozinho, aprendendo Godot).
+  Premissa escondida: o personagem do Godot não é um corpo físico comum, então o peso e a energia
+  do jogador vão ser simulados pelo nosso código. Critério de corte: se no dia 3 a troca não
+  estiver jogável, ficam garantidas as fases 1, 3, 5 e 10.
+- **Antitrapaça descartada:** o agente explicou que a física do Godot não é determinística (a mesma
+  jogada pode dar resultados um pouco diferentes), então o servidor não conseguiria repetir a jogada.
+  Argumentei que é um jogo offline para um jogador e que passar de fase é chegar à saída.
+  O agente concordou e tirou a validação do escopo.
+- **Decisões de física:** ao trocar o peso, a energia se mantém (a velocidade se ajusta); quem recebe
+  energia sai na direção em que o outro se movia.
+- **Duração da troca:** modelo C (permanente por padrão, objetos instáveis no futuro), começando pelo A.
+- **Jogo offline:** o progresso vai para a API quando houver internet.
+- **Novas ideias futuras:** power-up que zera a recarga, peso glorioso, downgrade de tempo limitado.
+- **Pedido meu:** tudo o que não foi concretizado fica como possível, com espaço na arquitetura,
+  para evitar gambiarras depois. Criado o [banco de ideias](../ideas/BANCO-DE-IDEIAS.md).
+- **Resultado:** [one-pager](../ideas/troca-de-propriedades.md) com problema, direção, premissas,
+  escopo, "não vamos fazer" e pontos de extensão.
+- **Pedido para o futuro:** quando a arquitetura estiver quase pronta, o agente vai explicá-la num site
+  interativo simples, com exemplos do dia a dia.
