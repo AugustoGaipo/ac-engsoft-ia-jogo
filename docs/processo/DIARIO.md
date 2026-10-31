@@ -259,3 +259,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Decisões registradas no diagrama:** jogo offline primeiro; as regras rodam no cliente; o jogo e a
   API leem os mesmos arquivos de fase; segurança sem senha; bibliotecas não são containers (aparecem no
   nível 3, Componentes, no final).
+
+---
+
+## 2026-10-31 — Spec do módulo `rules`
+
+**Skill usada:** `agent-skills:spec-driven-development` (fase 1: especificar)
+
+- Escrita a [spec do `rules`](../specs/SPEC-rules.md): modelo de variáveis, as 3 propriedades com
+  exemplos numéricos, a tabela de motivos para recusar uma troca, as barreiras, as contas de física,
+  os pontos de extensão e 12 critérios de sucesso testáveis.
+- Decisão de design do agente: distância, linha de visão e barreiras são **medidas pelo jogo**
+  (raycasts) e passadas para a biblioteca, que só decide. Assim a biblioteca não depende do Godot e
+  tudo pode ser testado com `dotnet test`.
+- Aguardando a minha aprovação e a confirmação de 4 suposições.
