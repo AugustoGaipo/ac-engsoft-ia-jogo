@@ -73,3 +73,13 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   (o enunciado do professor ficou fora, via `.gitignore`).
 - Daqui em diante, cada etapa ganha uma entrada aqui e um commit, para o histórico do git também
   servir de evidência.
+
+---
+
+## 2026-10-31 — Domínio "jogo" aprovado
+
+- O enunciado lista exemplos de domínios (Gestão, Educação, Saúde etc.) e diz que outro domínio
+  precisa de aprovação do professor.
+- O professor já tinha liberado jogos, **desde que não fossem simples demais** (como um jogo da cobrinha).
+- O projeto atende a essa condição: mecânica própria de troca de propriedades físicas, 3+ módulos
+  (regras, jogo, API), banco de dados, login, validação das trocas no servidor e testes automatizados.

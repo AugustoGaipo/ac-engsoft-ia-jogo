@@ -64,4 +64,4 @@ seguir com a fase 2 da idea-refine (premissas/riscos) e a fase 3 (one-pager em `
 Skill `agent-skills:idea-refine`, **fim da fase 1**. Próximo passo: o aluno escolhe ou combina
 variações → fase 2 (agrupar em 2-3 direções, testar cada uma, levantar premissas) →
 fase 3 (one-pager em `docs/ideas/`).
-Pendência: mandar e-mail ao professor pedindo aprovação do domínio "jogo".
+Pendência resolvida (sessão 2): o professor já libera jogos que não sejam simples demais (ex.: cobrinha).
