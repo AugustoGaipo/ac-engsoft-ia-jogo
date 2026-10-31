@@ -67,7 +67,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 ### Propriedades
 - **Posição:** os dois trocam de lugar.
 - **Peso:** volume constante, muda a densidade.
-- **Energia cinética:** quem recebe sai na direção em que o outro se movia.
+- **Energia cinética** (só cinética, ½·m·v²; a mecânica foi descartada): quem recebe sai na direção em que o outro se movia.
 - **Peso com movimento:** a energia se mantém e a velocidade se ajusta.
 
 ### Design de fases

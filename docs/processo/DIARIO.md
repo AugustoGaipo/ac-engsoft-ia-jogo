@@ -245,3 +245,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   cada uma com cor e ícone próprios. A grade de saída = barreira 1 + 3.
 - **Simplificação:** a barreira 3 barra **todas** as variáveis, não uma por tipo.
 - **Zonas:** além de paredes, blocos ou regiões inteiras com barreira. Pela regra de estar *dentro* da barreira, parede e zona viram a mesma coisa (um volume com filtro).
+- **Energia:** só cinética (½·m·v²). A energia mecânica (movimento + altura) foi explicada pelo agente e descartada: cria casos impossíveis (receber menos energia do que a altura exige) e precisa de uma referência de altura.
+
+---
+
+## 2026-10-31 — C4 de Contexto e Container (antes do código)
+
+- Criado [`docs/architecture/C4.md`](../architecture/C4.md) com os níveis 1 e 2 do C4, em Mermaid
+  (o GitHub mostra os diagramas direto na página).
+- **Contexto:** o jogador e o sistema Swapping; a Steam aparece tracejada, como possibilidade futura.
+- **Containers:** cliente do jogo (Godot + C#, com as bibliotecas `rules`, `levels` e `sync` dentro),
+  arquivos de fase (JSON), save local, API (ASP.NET Core) e banco (SQLite).
+- **Decisões registradas no diagrama:** jogo offline primeiro; as regras rodam no cliente; o jogo e a
+  API leem os mesmos arquivos de fase; segurança sem senha; bibliotecas não são containers (aparecem no
+  nível 3, Componentes, no final).
