@@ -41,6 +41,9 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
 - Jogo offline; progresso enviado para a API quando há internet.
 - **Perfil sem senha:** o jogador escolhe nome e ícone; o servidor gera uma chave secreta guardada no PC
   (o servidor guarda só o hash). Nada de senha ou e-mail para vazar.
+- **Código de acesso:** o servidor gera um código legível (ex.: K7QM-4XRT-9WPA-HC3N); o jogo mostra,
+  guarda e pede para o jogador anotar. Entrar em outro PC = nome + código. O servidor guarda só o hash,
+  bloqueia após tentativas erradas e permite gerar um código novo. Perdeu código e PC = perdeu o perfil.
 - **Ranking com dois modos:** por tempo (desempate por trocas) ou por movimentos (desempate por tempo).
 - API com perfil, progresso e ranking; sem validação antitrapaça.
 - Visual simples e limpo (formas geométricas, cores sólidas).
@@ -111,6 +114,13 @@ Quando uma ideia muda de estado, ela muda de seção (e o diário registra o por
   ao redor acelera ou desacelera.
 - **Cuidado técnico:** desacelerar o mundo todo no Godot também desacelera o jogador; vai precisar de
   uma escala de tempo por objeto.
+
+### Compartilhar partidas (replay)
+- Assistir à partida jogada pelos primeiros do ranking, como um "fantasma" que refaz o caminho.
+- O jogo grava a posição do jogador várias vezes por segundo e o momento de cada troca; o replay mostra
+  o caminho gravado, sem re-simular a física.
+- Na API: arquivo opcional junto do resultado, com limite de tamanho e validação de formato; só os
+  primeiros do ranking ficam disponíveis. O módulo `progress` já nasce com esse espaço.
 
 ### Plataforma
 - **Steam** via Steamworks (login, ranking e saves da Steam no lugar da API).

@@ -200,3 +200,9 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   da Steam substitui a chave.
 - **Ranking:** dois modos, por tempo ou por movimentos, cada um usando o outro critério como desempate.
 - **Tempo:** a velocidade e a sensibilidade do personagem nunca mudam; só o mundo muda.
+- **Código de acesso:** propus que a chave fosse mostrada ao jogador para entrar de outro lugar.
+  O agente ajustou para o servidor gerar o código (gerador criptográfico), com hash, bloqueio por
+  tentativas erradas e opção de gerar um código novo.
+- **Compartilhar partidas:** assistir aos replays dos primeiros do ranking. O agente lembrou que, como a
+  física não é determinística, o replay mostra o caminho gravado em vez de re-simular. Fica como
+  possível, com espaço previsto no módulo `progress`.
