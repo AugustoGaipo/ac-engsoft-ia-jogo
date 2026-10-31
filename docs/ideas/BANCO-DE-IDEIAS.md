@@ -262,6 +262,14 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - Só dá para levar Q a outro lugar **segurando**.
   - Quando a energia volta para Q (barreira ou nova troca), ele volta ao normal.
   - Decisão do agente: se Q estava em movimento no momento da troca, ele **para na hora**.
+- **Categoria mimética (em análise):** quem troca **posição** com um objeto mimético não muda de lugar;
+  ele **vira uma cópia da forma** do mimético (formato, tamanho, aparência) enquanto a troca durar.
+  Ex.: bola mimética + caderno → o caderno vira uma bola.
+  - Copia **só a forma**: peso e energia continuam os do objeto (nada se cria).
+  - Acaba quando a troca se desfaz (barreira ou nova troca).
+  - A cópia de um mimético **não** é mimética (evita reação em cadeia).
+  - **Com o jogador, a troca falha "por um motivo misterioso"** (efeito visual estranho, sem explicação).
+  - Só vale a pena em fases onde a forma importa: rolar numa rampa, encaixes, área de contato.
 ### Fantasma (compartilhar a partida jogada) — se sobrar tempo
 - Assistir à partida dos primeiros do ranking como um **fantasma** do personagem andando pela fase.
 - Grava **só o personagem**: posição e ângulo/direção da cabeça, várias vezes por segundo.

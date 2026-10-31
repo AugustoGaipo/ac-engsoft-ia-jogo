@@ -296,3 +296,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   propriedade. Ex.: o gás do extintor tira peso de quem está com o peso dele; um objeto quântico na
   energia fica imóvel e repassa os empurrões para quem está com a energia dele. O modelo de variáveis
   aguenta isso sem gambiarra; entrou como ponto de extensão na spec.
+- **Categoria mimética (em análise, ideia minha):** trocar posição com um objeto mimético faz o outro virar uma cópia da forma dele (só a forma). Com o jogador, a troca falha por um motivo misterioso. O agente sugeriu separá-la do quântico, porque tem outra regra.
