@@ -1,0 +1,12 @@
+# Enunciado do professor (material da disciplina, não vai para o repositório público)
+docs/enunciado/
+
+# Godot
+.godot/
+*.import
+export_presets.cfg
+
+# .NET
+bin/
+obj/
+*.db

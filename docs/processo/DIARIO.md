@@ -1,0 +1,65 @@
+# Diário do processo
+
+Registro de como o trabalho está sendo feito com um agente de IA (Claude Code) e o conjunto de skills
+**Addy Osmani Agent Skills** (`agent-skills:`). Cada entrada diz o que foi feito, qual skill guiou a etapa,
+o que foi decidido e por quê. Serve de evidência para a apresentação.
+
+---
+
+## 2026-10-31 — Sessão 1: entender o trabalho e começar a ideia
+
+**Skill usada:** `agent-skills:idea-refine` (fase 1: expandir ideias)
+
+**O que aconteceu**
+- O agente leu o enunciado (`docs/enunciado/`) e levantou os critérios: 3+ módulos, banco de dados,
+  regras de negócio, API, autenticação, testes, documentação e modelos C4.
+- Escolhi o conjunto de skills do Addy Osmani.
+- Respondi às perguntas iniciais: jogo de puzzle 3D, sozinho, 1 semana, Unity, objetivo nota + portfólio.
+- O agente apontou riscos: prazo curto, Unity sem domínio, e o Unity sozinho não cobre banco, login,
+  API e testes.
+- O agente propôs 6 variações (C# em todas as camadas, puzzle diário, fases criadas por jogadores,
+  Three.js, jogo educativo, versão 10x mais simples).
+
+**Pendência levantada:** "jogo" não está na lista de domínios do enunciado → pedir aprovação ao professor.
+
+---
+
+## 2026-10-31 — Sessão 2: a ideia própria e a escolha da engine
+
+**Skill usada:** `agent-skills:idea-refine` (passando para a fase 2: avaliar direções)
+
+**O que aconteceu**
+- Achei que as variações fugiam do que eu imaginava e escrevi a minha ideia em `docs/CONTEXTOJOGO.md`:
+  puzzle 3D em primeira pessoa em que o jogador **troca propriedades físicas** entre objetos
+  (posição, peso, momento, energia cinética).
+- O agente adaptou a arquitetura à minha ideia e propôs duas direções:
+  - **A.** tudo no Unity e um backend mínimo;
+  - **B.** regras de troca numa biblioteca separada e testada, fases em JSON, API com banco.
+  Recomendou a B, porque testes e evidências valem 40% da nota.
+- O agente propôs um corte de escopo para caber em 1 semana: 5 fases (posição, peso, arma),
+  com momento e energia como extras.
+
+**Decisão: trocar a engine.** Perguntei o que poderia substituir o Unity.
+
+| Opção | A favor | Contra |
+|---|---|---|
+| Three.js + Rapier (web) | o agente consegue testar no navegador; uma linguagem só; link fácil para portfólio | menos ferramentas visuais |
+| Godot 4 + C# | engine de verdade, gratuita, exporta para a Steam, visual melhor | o agente não vê o editor; não conheço a engine |
+| Unity | o que eu tinha pensado | não domino e o agente não vê o editor; sem vantagem sobre o Godot |
+
+- Falei que queria levar o jogo adiante, talvez para a Steam. O agente explicou que jogos web também
+  chegam à Steam (Electron), mas que o Godot leva vantagem no visual e no crescimento do jogo.
+- Perguntei se dá para fazer algo parecido com Portal e Superliminal. O agente explicou que a minha
+  mecânica não precisa das partes difíceis desses jogos (portais e perspectiva forçada) e que as duas
+  ferramentas dão conta do que ela precisa.
+- **Escolhi Godot 4 com C#.** Para compensar o risco, as regras de troca ficam numa biblioteca em C#
+  puro, fora da engine, onde o agente consegue testar tudo.
+
+**Aprendizado:** na Steam, login, ranking e saves vêm do Steamworks. O backend atende à disciplina;
+o que segue para um possível lançamento são as regras de troca e as fases.
+
+**Próximos passos**
+- Instalar o .NET SDK 8 e o Godot 4 (.NET).
+- Confirmar o corte de escopo.
+- Terminar a `idea-refine` (premissas e riscos, one-pager em `docs/ideas/`).
+- Spec (`agent-skills:spec-driven-development`) e C4 de Contexto e Container antes do código.

@@ -1,0 +1,12 @@
+# Jogo de puzzle 3D de troca de propriedades
+
+Puzzle 3D em primeira pessoa em que o jogador resolve as fases **trocando propriedades físicas**
+entre objetos: posição, peso, momento e energia cinética.
+
+Trabalho da disciplina de Engenharia de Software + IA, desenvolvido com o agente Claude Code e o
+conjunto de skills [Agent Skills](https://github.com/addyosmani/agent-skills) do Addy Osmani.
+
+- Ideia do jogo: [`docs/CONTEXTOJOGO.md`](docs/CONTEXTOJOGO.md)
+- Diário do processo: [`docs/processo/DIARIO.md`](docs/processo/DIARIO.md)
+
+**Stack planejada:** Godot 4 (C#), biblioteca de regras em C# puro, API ASP.NET Core + SQLite.
