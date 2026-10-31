@@ -73,7 +73,17 @@ The **exit grid** of every level is barrier 1 + barrier 3. The filter model can 
 properties; the game always uses "all" for now.
 
 ### Physics helpers (needed now for density in P1)
-- Density ρ = m ÷ V; floats when ρ < ρ_fluid.
+- Density ρ = m ÷ V.
+- **Three fluid media**, each one a zone with a density (air is the default everywhere):
+  | Medium | Density (default, tunable) |
+  |---|---|
+  | Air | 1.2 kg/m³ |
+  | Dense gas | 6.1 kg/m³ (like real sulfur hexafluoride) |
+  | Water | 1 000 kg/m³ |
+- Buoyancy: net upward force = (ρ_fluid − ρ_object) · V · g. A container **rises** when
+  ρ_object < ρ_fluid, sinks when greater, hovers when equal — **in any medium, air included**.
+  Example: the player (0.07 m³) floats up in air only if lighter than 1.2 · 0.07 = 0.084 kg, e.g.
+  after swapping mass with a 0.05 kg balloon.
 - Static pressure P = m·g ÷ A_contact, with g = 9.8 m/s²; a fragile piece breaks when P > its limit.
   Example: 10 kg on 0.01 m² → 9 800 Pa; on 0.1 m² → 980 Pa.
 

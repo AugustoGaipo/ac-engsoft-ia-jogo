@@ -36,7 +36,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Barreiras 1, 2 e 3 sozinhas como peças de puzzle, introduzidas uma por vez, em parede ou em zona.
 - Tela de ranking e escolha de ícone dentro do jogo.
 - Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
-- **Densidade:** água (afundar e boiar), peças quebradiças e **pressão parada** (peso ÷ área de contato,
+- **Densidade:** 3 meios (ar, gás denso, água) para afundar, boiar e **flutuar no ar**; peças quebradiças e **pressão parada** (peso ÷ área de contato,
   verificada quando o objeto está parado em cima da peça; a área de contato é um número no JSON).
 - **Site explicando a arquitetura** (só para mim: simples e bem compreensível, não precisa ser bonito).
 
@@ -184,6 +184,11 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Do documento original: tamanho, direção da gravidade.
 
 ### Densidade (consequência do peso com volume constante)
+- **3 meios com densidade:** **ar** (1,2 kg/m³, o padrão em todo lugar), **gás denso** (6,1 kg/m³,
+  como o hexafluoreto de enxofre real) e **água** (1.000 kg/m³). Cada meio é uma zona.
+- **Flutuar no ar:** se a densidade do objeto for menor que a do meio, ele sobe, inclusive no ar.
+  Ex.: o jogador (0,07 m³) só flutua no ar se ficar mais leve que 0,084 kg, por exemplo trocando o
+  peso com um balão de 0,05 kg.
 - **Afundar ou boiar:** na água, objetos com densidade maior que a da água afundam.
 - **Quebrar coisas quebradiças:** vidro, tábua fina, gelo. Uma peça quebradiça quebra quando a
   pancada ou o peso em cima passa de um limite, e o limite aparece como número.

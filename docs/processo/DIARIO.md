@@ -273,3 +273,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   (raycasts) e passadas para a biblioteca, que só decide. Assim a biblioteca não depende do Godot e
   tudo pode ser testado com `dotnet test`.
 - Aguardando a minha aprovação e a confirmação de 4 suposições.
+- **3 meios de densidade:** ar, gás denso e água. Objetos menos densos que o meio sobem, inclusive no ar (ex.: o jogador flutua com o peso de um balão). Adicionado à spec do `rules` e ao banco de ideias (P1).
