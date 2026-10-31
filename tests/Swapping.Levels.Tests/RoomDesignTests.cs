@@ -92,4 +92,43 @@ public class RoomDesignTests
             b.Filter == new BarrierFilter(BlocksVariables: true)
             && b.Box.Max.X - b.Box.Min.X >= 2 && b.Box.Max.Z - b.Box.Min.Z >= 2);
     }
+
+    [Fact]
+    public void Room3_1_HeavyButton()
+    {
+        var room = Shipped.Room("3.1");
+
+        Assert.Equal(new[] { PropertyNames.Mass }, Unlocked("3.1"));
+        var button = Assert.Single(room.Buttons, b => b.RequiredMassKg > LevelFile.PlayerMassKg);
+        Assert.Contains(room.Objects, o => o.MassKg >= button.RequiredMassKg && CanSwap(o, PropertyNames.Mass));
+    }
+
+    [Fact]
+    public void Room3_2_JumpDependsOnMass()
+    {
+        var room = Shipped.Room("3.2");
+
+        Assert.Contains(room.Objects, o => o.MassKg <= 10 && CanSwap(o, PropertyNames.Mass));
+        Assert.True(room.Exit.Min.Y >= room.Spawn.Position.Y + 1.2, "the exit is at least 1.2 m above the spawn floor");
+    }
+
+    [Fact]
+    public void Room5_1_ReceiveEnergyFromAMovingBall()
+    {
+        var room = Shipped.Room("5.1");
+
+        Assert.Equal(new[] { PropertyNames.KineticEnergy }, Unlocked("5.1"));
+        Assert.Contains(room.Objects, o =>
+            o.Kind == ObjectKind.Ball && o.Velocity.Length > 0 && o.Bounce >= 0.9 && CanSwap(o, PropertyNames.KineticEnergy));
+    }
+
+    [Fact]
+    public void Room5_2_GiveEnergyToABoxAtRest()
+    {
+        var room = Shipped.Room("5.2");
+
+        Assert.Contains(room.Objects, o =>
+            o.Kind == ObjectKind.Box && o.Velocity == Vec3.Zero && CanSwap(o, PropertyNames.KineticEnergy));
+        Assert.Contains(room.Buttons, b => b.Detects == ButtonDetects.Objects);
+    }
 }

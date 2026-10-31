@@ -95,8 +95,8 @@ and `levels/level_2.json` following `docs/design/PROGRESSAO-NIVEIS.md`.
 **Description:** Room design tests for 3.1, 3.2, 5.1, 5.2 first, then `levels/level_3.json` and
 `levels/level_5.json`; add both to the catalog.
 **Acceptance criteria:**
-- [ ] SC 11: the 4 level files and the catalog are valid (11 rooms total).
-- [ ] SC 12: all 11 room design tests pass.
+- [x] SC 11: the 4 level files and the catalog are valid (11 rooms total).
+- [x] SC 12: all 11 room design tests pass.
 **Dependencies:** Task 6
 **Files:** `levels/level_3.json`, `levels/level_5.json`, `levels/catalog.json`, `tests/.../RoomDesignTests.cs`
 **Scope:** S

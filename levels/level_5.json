@@ -1,0 +1,57 @@
+// Level 5 — Energia. Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
+// Level space: meters, Y up, rooms side by side along +X. Floor at y = 0; pits go down to y = -3.
+// Numbers are a first draft, tuned while building the Godot scene.
+{
+  "schemaVersion": 1,
+  "id": "level-5",
+  "number": 5,
+  "name": "Energia",
+  "scene": "res://levels/level_5.tscn",
+  "rules": {
+    "unlockedProperties": ["kineticEnergy"],
+    "rangeMeters": { "kineticEnergy": 8.0 },
+    "cooldownSeconds": 1.0
+  },
+  "rooms": [
+    {
+      "id": "5.1",
+      "teaches": "Receber energia de uma bola em movimento e ser lançado na direção dela.",
+      "bounds": { "min": [0, -3, 0], "max": [12, 6, 10] },
+      "spawn": { "position": [1, 0, 3], "yawDegrees": -90 },
+      "exit": { "min": [11.5, 0, 1], "max": [12, 3, 3] },
+      // Scenery: the ball rolls back and forth in a channel along z = 8.5 (walls at both ends).
+      // Swap while it rolls toward +X to be thrown across the pit; swapping while it rolls back throws you back.
+      "objects": [
+        { "id": "ball-5-1", "kind": "ball", "position": [3, 0.3, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 20,
+          "velocity": [8, 0, 0], "bounce": 0.95 }
+      ],
+      "barriers": [
+        { "id": "exit-grid-5-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 1], "max": [11.6, 3, 3] } }
+      ],
+      "killZones": [
+        { "id": "pit-5-1", "box": { "min": [6, -3, 0], "max": [9, -1, 6] } }
+      ]
+    },
+    {
+      "id": "5.2",
+      "teaches": "Dar energia: correr e passar a energia para uma caixa parada.",
+      "bounds": { "min": [12, -3, 0], "max": [24, 6, 10] },
+      "spawn": { "position": [13, 0, 2], "yawDegrees": -90 },
+      "exit": { "min": [23.5, 0, 1], "max": [24, 3, 3] },
+      // Scenery: the box sits in a closed channel (z 4–6) that the player can't enter, aimed at the button.
+      // The only way to move it is to run along +X and give it your energy.
+      "objects": [
+        { "id": "box-5-2", "kind": "box", "position": [15, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
+      ],
+      "buttons": [
+        { "id": "button-5-2", "position": [21, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
+      ],
+      "doors": [
+        { "id": "door-5-2", "box": { "min": [22.5, 0, 1], "max": [22.8, 3, 3] }, "opensWith": ["button-5-2"] }
+      ],
+      "barriers": [
+        { "id": "exit-grid-5-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 1], "max": [23.6, 3, 3] } }
+      ]
+    }
+  ]
+}

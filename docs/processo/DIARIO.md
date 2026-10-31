@@ -723,3 +723,16 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - **Recado para a spec do `game`:** a troca de posição troca **centros**. A caixa tem centro a 0,5 m
     do chão e o jogador a 0,9 m, então o jogador que vai para o lugar da caixa fica com os pés 0,4 m
     dentro do chão. O `game` precisa subir o corpo para o ponto livre mais próximo (já decidido).
+
+### Tarefa 7 do `levels` — níveis 3 e 5 ✅
+- Primeiro os testes de design das salas 3.1, 3.2, 5.1 e 5.2 e o do catálogo com os 4 níveis e as 11 salas
+  (vermelhos, 5 falhas). Depois `levels/level_3.json`, `level_5.json` e o catálogo atualizado.
+- Testes: 122/122 do `levels`, 94/94 do `rules`. Build com 0 avisos.
+- **Decisões tomadas sozinho (rascunho, para ajustar jogando):**
+  - **3.1:** é o exemplo da spec. Botão de 150 kg e caixa de 300 kg; o jogador pega o peso da caixa e sobe no botão.
+  - **3.2:** caixa leve de 7 kg e saída numa plataforma de 1,5 m. Com 70 kg o jogador pula 0,5 m; com 7 kg, ~1,8 m.
+  - **5.1:** bola de 20 kg a 8 m/s (640 J), num corredor próprio, quicando (`bounce` 0,95). Quem pega a
+    energia sai a ~4,3 m/s na direção em que a bola ia. É preciso trocar na hora em que ela vai para
+    a saída, senão o jogador é jogado para trás.
+  - **5.2:** a caixa fica num corredor fechado em que o jogador não entra (cenário). O único jeito de
+    movê-la até o botão é correr e passar a energia para ela.

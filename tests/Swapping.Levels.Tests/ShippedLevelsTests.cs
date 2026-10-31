@@ -37,12 +37,14 @@ public class ShippedLevelsTests
         Assert.Equal(catalog.Entries.Count, catalog.Levels.Count);
     }
 
+    // SC 11
     [Fact]
-    public void Catalog_StartsWithLevels1And2()
+    public void Catalog_HasTheFridayLevels_With11Rooms()
     {
-        var ids = Shipped.Load().Levels.Select(l => l.Id).ToArray();
+        var levels = Shipped.Load().Levels;
 
-        Assert.Equal(new[] { "level-1", "level-2" }, ids.Take(2));
+        Assert.Equal(new[] { "level-1", "level-2", "level-3", "level-5" }, levels.Select(l => l.Id));
+        Assert.Equal(11, levels.Sum(l => l.Rooms.Count));
     }
 
     [Fact]

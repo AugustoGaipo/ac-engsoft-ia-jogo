@@ -1,0 +1,51 @@
+// Level 3 — Peso. Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
+// Level space: meters, Y up, rooms side by side along +X. Floor at y = 0.
+// Numbers are a first draft, tuned while building the Godot scene.
+{
+  "schemaVersion": 1,
+  "id": "level-3",
+  "number": 3,
+  "name": "Peso",
+  "scene": "res://levels/level_3.tscn",
+  "rules": {
+    "unlockedProperties": ["mass"],
+    "rangeMeters": { "mass": 8.0 },
+    "cooldownSeconds": 1.0
+  },
+  "rooms": [
+    {
+      "id": "3.1",
+      "teaches": "Botão que exige mais peso que o jogador: trocar o peso com uma caixa pesada.",
+      "bounds": { "min": [0, -3, 0], "max": [12, 6, 10] },
+      "spawn": { "position": [1, 0, 5], "yawDegrees": -90 },
+      "exit": { "min": [11.5, 0, 4], "max": [12, 3, 6] },
+      // The player (70 kg) is too light for the 150 kg button; take the crate's 300 kg and stand on it.
+      "objects": [
+        { "id": "crate-3-1", "kind": "box", "position": [6, 0.5, 2], "size": [1, 1, 1], "massKg": 300, "bounce": 0.05 }
+      ],
+      "buttons": [
+        { "id": "heavy-button-3-1", "position": [6, 0, 7], "size": [1.5, 0.1, 1.5], "requiredMassKg": 150, "detects": "any" }
+      ],
+      "doors": [
+        { "id": "door-3-1", "box": { "min": [10, 0, 4], "max": [10.3, 3, 6] }, "opensWith": ["heavy-button-3-1"] }
+      ],
+      "barriers": [
+        { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 4], "max": [11.6, 3, 6] } }
+      ]
+    },
+    {
+      "id": "3.2",
+      "teaches": "O pulo depende da massa: com 7 kg o jogador pula ~1,8 m; com 70 kg, só 0,5 m.",
+      "bounds": { "min": [12, -3, 0], "max": [24, 6, 10] },
+      "spawn": { "position": [13, 0, 5], "yawDegrees": -90 },
+      // Scenery: a 1.5 m ledge from x = 20 to x = 24; the exit is on top of it.
+      "exit": { "min": [23.5, 1.5, 4], "max": [24, 4.5, 6] },
+      "objects": [
+        { "id": "light-box-3-2", "kind": "box", "position": [16, 0.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 7, "bounce": 0.1 }
+      ],
+      "barriers": [
+        { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.5, 1.5, 4], "max": [23.6, 4.5, 6] } }
+      ]
+    }
+  ]
+}
