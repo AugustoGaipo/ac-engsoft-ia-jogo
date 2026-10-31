@@ -25,8 +25,8 @@ Sessão de 2026-10-31, iniciada em `C:\Users\USUARIO`. Pasta do projeto: `C:\pro
 
 ## Ambiente
 - Instalados: Node.js, Unity 6 (não usado mais), gh (logado como AugustoGaipo).
-- **.NET SDK 8.0.427** em `C:Program Filesdotnet` (talvez precise pôr no PATH do Git Bash).
-- **Godot 4.7.2 .NET**: `%LOCALAPPDATA%MicrosoftWinGetPackagesGodotEngine.GodotEngine.Mono_Microsoft.Winget.Source_8wekyb3d8bbweGodot_v4.7.2-stable_mono_win64` (usar o `_console.exe` para rodar sem janela).
+- **.NET SDK 8.0.427** em `C:/Program Files/dotnet` (talvez precise pôr no PATH do Git Bash).
+- **Godot 4.7.2 .NET**: `%LOCALAPPDATA%/Microsoft/WinGet/Packages/GodotEngine.GodotEngine.Mono_Microsoft.Winget.Source_8wekyb3d8bbwe/Godot_v4.7.2-stable_mono_win64/` (usar o `_console.exe` para rodar sem janela).
 
 ## Riscos apontados
 - Sozinho + 1 semana + Unity sem domínio = alto risco.
