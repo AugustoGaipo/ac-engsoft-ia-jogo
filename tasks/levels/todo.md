@@ -106,15 +106,15 @@ and `levels/level_2.json` following `docs/design/PROGRESSAO-NIVEIS.md`.
 no NuGet; ignore the `Coverlet` namespace in any reflection test). Measure coverage. Document the level
 format and commands in the README (a short section that points to the spec).
 **Acceptance criteria:**
-- [ ] SC 13 has a test; SC 14: line coverage of `Swapping.Levels` ≥ 90 %, measured with the coverage
+- [x] SC 13 has a test; SC 14: line coverage of `Swapping.Levels` ≥ 90 %, measured with the coverage
       collector **and** with every test passing in that same run.
-- [ ] SC 1: build with zero warnings.
+- [x] SC 1: build with zero warnings.
 **Dependencies:** Task 7
 **Files:** `tests/.../ArchitectureTests.cs`, `README.md`
 **Scope:** S
 
 ### Checkpoint: Complete
-- [ ] All 14 success criteria covered by passing tests.
-- [ ] Diary updated with what was done and every decision taken alone.
-- [ ] `docs/processo/RELATORIO-levels.md` written (same structure as the `rules` report).
-- [ ] Commit + push; summary for the user's review.
+- [x] All 14 success criteria covered by passing tests.
+- [x] Diary updated with what was done and every decision taken alone.
+- [x] `docs/processo/RELATORIO-levels.md` written (same structure as the `rules` report).
+- [x] Commit + push; summary for the user's review.

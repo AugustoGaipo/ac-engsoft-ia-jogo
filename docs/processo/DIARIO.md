@@ -736,3 +736,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     a saída, senão o jogador é jogado para trás.
   - **5.2:** a caixa fica num corredor fechado em que o jogador não entra (cenário). O único jeito de
     movê-la até o botão é correr e passar a energia para ela.
+
+### Tarefa 8 do `levels` — arquitetura, cobertura e documentação ✅
+- `ArchitectureTests` do `levels`: só referencia o `Swapping.Rules`, sem Godot e sem NuGet (critério 13),
+  e nenhum campo estático mutável.
+- **Bug achado na medição:** com a cobertura ligada, o teste de campo estático acusou os campos que o
+  compilador cria para as lambdas (`<>c`). Corrigido para ignorar o código gerado pelo compilador, no
+  `levels` e no `rules`. A regra do plano ("medir com todos os testes passando") pegou o problema.
+- Cobertura do `Swapping.Levels`: **96,7 % das linhas** (ramos 91,9 %), na mesma rodada em que os 125
+  testes passaram (critério 14). O `rules` continua com 94/94.
+- README: seção do `levels`, da pasta `levels/` e de como criar ou mudar um nível.
+
+## 2026-10-31 — Módulo `levels` concluído
+- Os 14 critérios estão cobertos. O relatório completo está em `docs/processo/RELATORIO-levels.md`.
+- Fica para eu confirmar: na sala 1.4, a caixa que recusa a posição é uma caixa travada.

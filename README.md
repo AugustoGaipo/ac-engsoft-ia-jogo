@@ -29,3 +29,16 @@ dotnet format Swapping.sln                                # formata o código
 - `src/Swapping.Rules/`: biblioteca pura de regras das trocas (sem Godot, IO, relógio ou aleatoriedade).
   Spec: [`docs/specs/SPEC-rules.md`](docs/specs/SPEC-rules.md).
 - `tests/Swapping.Rules.Tests/`: testes xUnit, uma classe por área de regra.
+- `src/Swapping.Levels/`: lê, valida e converte os arquivos de nível para o `rules` (só referencia o
+  `Swapping.Rules`; a única classe que lê arquivos é o `LevelCatalog`).
+  Spec: [`docs/specs/SPEC-levels.md`](docs/specs/SPEC-levels.md).
+- `tests/Swapping.Levels.Tests/`: testes do leitor, do validador (um por código de erro), da ligação com o
+  `rules`, do catálogo e um teste de design por sala.
+- `levels/`: os níveis em JSON (`level_1.json`, `level_2.json`, `level_3.json`, `level_5.json`) e o
+  `catalog.json` com a ordem. Formato na spec do `levels`. Os arquivos aceitam comentários `//`.
+
+### Criar ou mudar um nível
+1. Edite o JSON em `levels/`. O progresso de cada sala está em
+   [`docs/design/PROGRESSAO-NIVEIS.md`](docs/design/PROGRESSAO-NIVEIS.md).
+2. Rode `dotnet test Swapping.sln --filter "FullyQualifiedName~ShippedLevels"`. Um nível inválido falha
+   o teste, e a mensagem mostra o arquivo e o caminho do problema (ex.: `level_1.json:rooms[0].objects[0].massKg`).

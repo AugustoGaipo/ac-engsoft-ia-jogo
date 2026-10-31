@@ -52,7 +52,7 @@ Model records + Box                                  (Task 1)
 ### Phase 3: Content and wrap-up
 - [x] Task 6: Catalog and levels 1 and 2
 - [x] Task 7: Levels 3 and 5
-- [ ] Task 8: Architecture test, coverage and documentation
+- [x] Task 8: Architecture test, coverage and documentation
 
 ### Checkpoint: Complete
 

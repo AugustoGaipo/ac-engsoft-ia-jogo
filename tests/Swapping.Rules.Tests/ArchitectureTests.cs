@@ -50,6 +50,8 @@ public class ArchitectureTests
         var mutable = Rules.GetTypes()
             // Coverage tools (coverlet) inject tracker types with static counters into the assembly.
             .Where(t => !(t.Namespace ?? "").StartsWith("Coverlet", StringComparison.Ordinal))
+            // The C# compiler caches lambdas in static fields of generated types such as "<>c".
+            .Where(t => !t.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), inherit: false))
             .SelectMany(t => t.GetFields(flags).Select(f => (Type: t, Field: f)))
             .Where(x => !x.Field.IsInitOnly && !x.Field.IsLiteral)
             .Select(x => $"{x.Type.FullName}.{x.Field.Name}")
