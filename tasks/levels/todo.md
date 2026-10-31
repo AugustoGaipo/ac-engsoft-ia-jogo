@@ -56,9 +56,9 @@ list: `UnsupportedSchema`, `BadId`, `DuplicateId`, `NumberOutOfRange`, `UnknownP
 `DoorWithoutButton`, `UnusedButton`, `MissingExitGrid`, `Overlap` (objects with each other, with buttons,
 doors, kill zones and the 0.6 × 1.8 × 0.6 m spawn area), `SpawnUnsafe`.
 **Acceptance criteria:**
-- [ ] One test per code above (base fixture with one thing broken → that code only).
-- [ ] SC 7: a room whose exit has no exit grid → `MissingExitGrid`; an exit grid made of explicit flags (1 + 3) also counts.
-- [ ] SC 3 complete: every code of the spec table has a passing test (Tasks 2–4 together).
+- [x] One test per code above (base fixture with one thing broken → that code only).
+- [x] SC 7: a room whose exit has no exit grid → `MissingExitGrid`; an exit grid made of explicit flags (1 + 3) also counts.
+- [x] SC 3 complete: every code of the spec table has a passing test (Tasks 2–4 together).
 **Dependencies:** Task 3
 **Files:** `LevelValidator.cs` (or `SpatialChecks.cs`), `tests/.../ValidatorSpatialTests.cs`
 **Scope:** M

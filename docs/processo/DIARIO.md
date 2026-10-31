@@ -670,3 +670,19 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - Uma lista `accepts` vazia dá `NotAccepted` (aceitaria nada; para isso existe `locked`).
   - Massa ou tamanho inválido não gera também o erro de densidade, para não repetir o mesmo problema.
   - Recarga 0 s é permitida, porque os testes do `rules` usam esse valor.
+
+### Tarefa 4 do `levels` — validador, parte 2 (espaço e ligações) ✅
+- Primeiro os testes (`ValidatorSpatialTests`, 25 novos: vermelhos com 19 falhas), depois as checagens.
+- Códigos: `OutsideRoom`, `RoomsOverlap`, `UnknownReference`, `DoorWithoutButton`, `UnusedButton`,
+  `MissingExitGrid` (critério 7), `Overlap` e `SpawnUnsafe`. Um teste confere que todo código de erro
+  aparece em algum teste (critério 3). O `CatalogOrder` fica de fora até a Tarefa 6.
+- Testes: 88/88 do `levels`, 94/94 do `rules`. Build com 0 avisos.
+- **Decisões tomadas sozinho:**
+  - "Saída coberta pela grade" = uma barreira que é **exatamente** grade de saída (barra objetos e variáveis,
+    deixa o jogador passar) e encosta por dentro na caixa da saída. Uma barreira que também barra o
+    jogador não serve, porque ninguém sairia.
+  - Salas que só se encostam são válidas (as fases são contínuas). Caixa vazia ou sala sem tamanho pulam
+    as checagens de espaço, para não gerar uma enxurrada de erros repetidos.
+  - O ponto de renascimento dentro de uma zona que barra **variáveis** é permitido (só não pode ser
+    numa zona de queda nem numa barreira que barra o jogador).
+  - Objeto encostado num botão não é sobreposição. Objeto em cima do botão logo no começo dá erro.
