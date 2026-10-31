@@ -132,6 +132,8 @@ properties; the game always uses "all" for now.
 | Cooldown modifiers | power-up, "glorious weight", time-limited downgrade |
 | Multi-property swap flag | simultaneous swaps (level 11) |
 | Swap log | swap count for the ranking; future ghost/replay |
+| Items with behaviour | the extinguisher (continuous thrust, limited charge), power-ups |
+| Entangled ("quantum") properties | effects on that property always hit the object's **original** variable, wherever it is (see the ideas bank) |
 
 ## Tech Stack
 - C# 12, **.NET 8** class library (`net8.0`), no NuGet dependencies.

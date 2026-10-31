@@ -290,3 +290,9 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   velocidade normal; a queda só fica lunar perto da densidade do meio. Decisão: pulo fisicamente
   correto, com recado para comparar depois com um pulo ajustado de jogo.
 - **Nado:** escolhida a opção física (mesma velocidade máxima; muda a resistência de cada meio).
+- **Extintor (ideia minha):** item que dá empuxo contínuo, como o astronauta com extintor. Mesma física
+  do lançamento, só que contínua; carga limitada.
+- **Categoria quântica (ideia minha):** objetos ligados para sempre à variável original numa
+  propriedade. Ex.: o gás do extintor tira peso de quem está com o peso dele; um objeto quântico na
+  energia fica imóvel e repassa os empurrões para quem está com a energia dele. O modelo de variáveis
+  aguenta isso sem gambiarra; entrou como ponto de extensão na spec.

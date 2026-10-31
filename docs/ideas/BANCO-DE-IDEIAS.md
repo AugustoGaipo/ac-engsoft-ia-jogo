@@ -237,6 +237,31 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - **Cuidado técnico:** desacelerar o mundo todo no Godot também desacelera o jogador; vai precisar de
   uma escala de tempo por objeto.
 
+
+### Extintor (item)
+- **Empuxo contínuo:** enquanto aperta o botão, o jato empurra para o lado contrário ao que o extintor
+  aponta. Aceleração = força do jato ÷ massa total (segurar conta). No ar e no gás desliza muito, na
+  água é fraco, no chão quase não faz efeito.
+- **Carga limitada** na tela (ex.: 100% → 0%), para não virar voo infinito.
+- É um objeto como os outros: dá para trocar peso, energia e posição com ele.
+- ⚠️ **Recado: o peso muda ao usar.** O gás que sai deixa mais leve **a variável de peso original do
+  extintor**, esteja ela com quem estiver. Se o objeto A está com o peso do extintor, usar o extintor
+  deixa **A** mais leve. Por isso o extintor é um objeto **quântico no peso** (ver abaixo).
+- Primeiro "item com comportamento" → novo ponto de extensão (serve depois para os power-ups).
+
+### Categoria quântica (entrelaçada)
+- Um objeto quântico numa propriedade fica **sempre conectado à sua variável original**: tudo o que
+  acontece com essa propriedade vai para a variável original, e não para a que ele está usando.
+- **Só vale enquanto a propriedade estiver trocada**; sem troca, é um objeto como todos.
+- A **posição** não tem essa categoria.
+- **Quântico no peso:** ex.: o extintor (o gás que sai tira peso de quem está com o peso dele).
+- **Quântico na energia (Q), com a energia trocada:**
+  - Q fica **completamente imóvel** (sem gravidade e sem reação). Deixado no alto, fica flutuando parado.
+  - Lançado ou atingido, Q **não se move**: quem recebe o empurrão é quem está com a energia original
+    de Q, na direção do lançamento, somado ao movimento normal dele.
+  - Só dá para levar Q a outro lugar **segurando**.
+  - Quando a energia volta para Q (barreira ou nova troca), ele volta ao normal.
+  - Decisão do agente: se Q estava em movimento no momento da troca, ele **para na hora**.
 ### Fantasma (compartilhar a partida jogada) — se sobrar tempo
 - Assistir à partida dos primeiros do ranking como um **fantasma** do personagem andando pela fase.
 - Grava **só o personagem**: posição e ângulo/direção da cabeça, várias vezes por segundo.
