@@ -425,3 +425,5 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   devolve. Fica como atributo fixo por objeto; trocar a elasticidade continua sendo ideia futura.
 - O agente não mudou a spec do `rules` nem o código: as duas ideias entram quando a spec do `game` (ou
   uma revisão da spec do `rules`, para a fórmula da carga) for feita.
+- **Troca de elasticidade (decisão minha):** entrou como opção na rota de prioridade, no fim da P2
+  (se não sobrar tempo, passa para a P3). A elasticidade fixa de cada objeto continua valendo antes disso.

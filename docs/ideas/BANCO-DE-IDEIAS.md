@@ -43,6 +43,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 ### P2 — Se sobrar tempo
 - Fase 11: troca simultânea.
 - Fantasma das partidas dos primeiros do ranking.
+- **Troca de elasticidade** (opcional, por último nesta faixa; se não der tempo, vai para a P3):
+  trocar o "quique" entre o jogador e um objeto, como uma quarta propriedade.
 
 ### P3 — Futuro (a arquitetura já deixa o espaço)
 - Objeto ↔ objeto e a arma que guarda valores.
@@ -187,7 +189,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - **Mais 2 habilidades numéricas** (a escolher). Candidatas:
   - **Temperatura** (°C): derreter gelo, congelar água em ponte.
   - **Elasticidade** (0 a 1): roubar o "quique" de uma bola de borracha. (Já existe como atributo
-    fixo de cada objeto; trocar seria o passo seguinte.)
+    fixo de cada objeto; a troca é opção na P2/P3 da rota de prioridade.)
   - **Atrito** (coeficiente): rampa lisa ou que gruda.
   - **Gravidade do objeto** (m/s²): objeto que "cai para cima".
   - **Carga elétrica** (C): atrair e repelir, ligar circuitos.
@@ -221,7 +223,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   o "quique"), para o arremesso ficar bom e o objeto não perder quase toda a energia ao bater na
   parede. Ao quicar, sobra e² da energia cinética (e = 0,8 → sobra 64 %). Quem calcula a batida é a
   física do Godot (material do objeto); o `rules` só lê a energia que a física devolve. Por enquanto
-  **não é trocável**; virar habilidade de troca continua possível (ver "Novas propriedades").
+  **não é trocável** por enquanto; a **troca de elasticidade** é uma opção na rota de prioridade (P2/P3).
   Valores por material (borracha, madeira, pedra...) a decidir no `game`.
 - **Nado (física):** a velocidade máxima de nado é a mesma em todos os meios; o que muda é a
   resistência (na água para rápido, no ar e no gás desliza como no espaço).
