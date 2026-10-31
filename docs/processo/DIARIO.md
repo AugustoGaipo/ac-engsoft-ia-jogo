@@ -436,3 +436,12 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   várias caixas, subir nelas e apoiar coisas. Fica a cargo da física do Godot (spec do `game`).
 - Perguntas abertas levantadas pelo agente: a pressão sobre uma peça quebradiça soma o peso da pilha
   inteira? E o que acontece numa troca de posição quando o objeto maior não cabe no lugar do menor?
+
+### Pilha e troca sem espaço (decisões minhas)
+- **Pressão de pilha:** o vidro sente o peso da pilha inteira (3 caixas de 10 kg → 30 kg). Precisa de
+  uma pequena revisão da spec do `rules`, junto com a fórmula da barra de lançamento.
+- **Troca de posição sem espaço:** regra geral (a): o jogo mede se cabe; se não couber, a troca é
+  recusada ("sem espaço"). O agente explicou que empurrar à força (b) não dá para garantir 100 %.
+- **Casos forçados** (ex.: o objeto quântico de posição que volta sozinho quando a ligação arrebenta,
+  que não pode ser recusado): ideia minha de "destruir e reconstruir" o objeto num ponto de
+  renascimento. Minha dúvida: como saber que bugou sem destruir por engano objetos normais? Em discussão.
