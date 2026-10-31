@@ -1,7 +1,7 @@
 # Relatório do módulo `rules`
 
 > Módulo concluído em 2026-10-31. Spec: [`docs/specs/SPEC-rules.md`](../specs/SPEC-rules.md) ·
-> Plano: [`tasks/plan.md`](../../tasks/plan.md) · Tarefas: [`tasks/todo.md`](../../tasks/todo.md) ·
+> Plano: [`tasks/rules/plan.md`](../../tasks/rules/plan.md) · Tarefas: [`tasks/rules/todo.md`](../../tasks/rules/todo.md) ·
 > Diário: [`DIARIO.md`](DIARIO.md).
 
 ## Resumo

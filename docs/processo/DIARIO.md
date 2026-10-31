@@ -620,3 +620,13 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - O rascunho está em `docs/specs/SPEC-levels.md`: formato, 20 códigos de erro do validador, conversão
   para o `rules` (`BuildWorld` por sala, que também serve para reiniciar a sala), um teste de design por
   sala e 14 critérios de sucesso. Seis suposições ficaram listadas para eu confirmar.
+- **Spec do `levels` aprovada (decisão minha)**, com as 6 suposições: uma cena do Godot por nível, uma grade de saída
+  no fim de cada sala, buracos como zonas de queda no JSON, porta que abre com todos os botões apertados,
+  densidade escrita entre 1 e 22 600 kg/m³ e bola com área de contato pequena.
+- **Plano do `levels`** feito com a skill `agent-skills:planning-and-task-breakdown`: 8 tarefas em
+  `tasks/levels/`. Primeiro vêm o modelo e o parser, depois o validador em duas partes, depois a ligação
+  com o `rules`, os níveis 1 e 2, os níveis 3 e 5, e por último a arquitetura, a cobertura e a documentação.
+- **Organização das tarefas (o agente decidiu, a meu pedido):** cada módulo tem a sua pasta em `tasks/`.
+  O plano do `rules`, já concluído, foi movido (não apagado) para `tasks/rules/`.
+- Lição do `rules` levada para o plano: a cobertura tem que ser medida **com todos os testes passando na
+  mesma rodada**, e os testes de reflexão ignoram as classes do coverlet desde o começo.

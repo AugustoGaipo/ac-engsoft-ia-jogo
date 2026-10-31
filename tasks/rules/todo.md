@@ -1,6 +1,6 @@
 # Tasks: `rules` module
 
-Spec: [`docs/specs/SPEC-rules.md`](../docs/specs/SPEC-rules.md) · Plan: [`plan.md`](plan.md)
+Spec: [`docs/specs/SPEC-rules.md`](../../docs/specs/SPEC-rules.md) · Plan: [`plan.md`](plan.md)
 "SC n" = success criterion n of the spec.
 
 Common verification (every task):

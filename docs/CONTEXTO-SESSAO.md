@@ -69,7 +69,7 @@ fase 3 (one-pager em `docs/ideas/`).
 Pendência resolvida (sessão 2): o professor já libera jogos que não sejam simples demais (ex.: cobrinha).
 
 ## Onde paramos (sessão 2, fim)
-- Spec do `rules` aprovada; plano em `tasks/plan.md` e `tasks/todo.md`; Tarefa 1 feita localmente.
+- Spec do `rules` aprovada; plano em `tasks/rules/plan.md` e `tasks/rules/todo.md` (cada módulo tem a sua pasta em `tasks/`); Tarefa 1 feita localmente.
 - Tarefas 2–8 sendo feitas por uma **rotina na nuvem** (`trig_014m1a1SpcD9kaW9NajwNc1Z`,
   https://claude.ai/code/routines/trig_014m1a1SpcD9kaW9NajwNc1Z), a cada hora no minuto 24 UTC, Sonnet.
   Ela faz commit/push no GitHub e escreve `docs/processo/RELATORIO-rules.md` no fim.

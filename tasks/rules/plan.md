@@ -1,7 +1,7 @@
 # Implementation Plan: `rules` module
 
 > Produced with `agent-skills:planning-and-task-breakdown` from
-> [`docs/specs/SPEC-rules.md`](../docs/specs/SPEC-rules.md) (approved 2026-10-31).
+> [`docs/specs/SPEC-rules.md`](../../docs/specs/SPEC-rules.md) (approved 2026-10-31).
 > Task checklist: [`tasks/todo.md`](todo.md).
 
 ## Overview

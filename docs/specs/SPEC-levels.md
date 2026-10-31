@@ -1,7 +1,7 @@
 # Spec: `levels` — level files, loader and validator
 
 > Module from [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md). Produced with
-> `agent-skills:spec-driven-development` (phase 1, Specify). Status: **draft, waiting for the user's review**.
+> `agent-skills:spec-driven-development` (phase 1, Specify). Status: **approved by the user on 2026-10-31** (with the 6 assumptions below).
 > Design source: [`docs/design/PROGRESSAO-NIVEIS.md`](../design/PROGRESSAO-NIVEIS.md) (approved).
 
 ## Objective
@@ -252,7 +252,7 @@ public static IReadOnlyList<LevelError> Validate(LevelFile level)
 13. `Swapping.Levels.csproj` references only `Swapping.Rules` (no Godot, no NuGet).
 14. Line coverage ≥ 90 %.
 
-## Decisions to confirm (assumptions in this draft)
+## Decisions confirmed with the user
 1. **One Godot scene per level**, rooms are regions of it (not one scene per room). Simpler to make continuous.
 2. **Every room ends with an exit grid**, so a room restart never depends on another room.
 3. **Holes are kill zones in the JSON** (a box under the hole); falling into one is death by falling.
