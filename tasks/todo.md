@@ -12,9 +12,9 @@ Common verification (every task):
 **Description:** Create `Swapping.sln`, the `Swapping.Rules` class library (`net8.0`, nullable on,
 warnings as errors) and the `Swapping.Rules.Tests` xUnit project referencing it.
 **Acceptance criteria:**
-- [ ] `dotnet build` succeeds with zero warnings; `dotnet test` runs a smoke test.
-- [ ] `Swapping.Rules.csproj` has no package or project references (SC 14 baseline).
-- [ ] `.gitignore` already covers `bin/` and `obj/`.
+- [x] `dotnet build` succeeds with zero warnings; `dotnet test` runs a smoke test.
+- [x] `Swapping.Rules.csproj` has no package or project references (SC 14 baseline).
+- [x] `.gitignore` already covers `bin/` and `obj/`.
 **Dependencies:** None
 **Files:** `Swapping.sln`, `Directory.Build.props`, `src/Swapping.Rules/Swapping.Rules.csproj`,
 `tests/Swapping.Rules.Tests/Swapping.Rules.Tests.csproj`, one smoke test

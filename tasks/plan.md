@@ -44,7 +44,7 @@ Vec3 ── Formulas / Medium                (Task 2)
 See [`todo.md`](todo.md) for acceptance criteria and verification of each task.
 
 ### Phase 1: Foundation
-- [ ] Task 1: Scaffold the solution and test project
+- [x] Task 1: Scaffold the solution and test project
 - [ ] Task 2: Physics formulas and media
 
 ### Checkpoint: Foundation

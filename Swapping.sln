@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{085E6A6D-49BB-4135-815B-EB49AEF99205}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swapping.Rules", "src\Swapping.Rules\Swapping.Rules.csproj", "{1D563083-DC4F-4B10-A29D-B8A55BDA0017}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9EE02130-8930-4A6C-9B91-477880D68C42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swapping.Rules.Tests", "tests\Swapping.Rules.Tests\Swapping.Rules.Tests.csproj", "{BEC40877-5D06-4579-95DF-C26B9CEDDBFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D563083-DC4F-4B10-A29D-B8A55BDA0017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D563083-DC4F-4B10-A29D-B8A55BDA0017}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D563083-DC4F-4B10-A29D-B8A55BDA0017}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D563083-DC4F-4B10-A29D-B8A55BDA0017}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC40877-5D06-4579-95DF-C26B9CEDDBFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC40877-5D06-4579-95DF-C26B9CEDDBFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC40877-5D06-4579-95DF-C26B9CEDDBFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC40877-5D06-4579-95DF-C26B9CEDDBFC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1D563083-DC4F-4B10-A29D-B8A55BDA0017} = {085E6A6D-49BB-4135-815B-EB49AEF99205}
+		{BEC40877-5D06-4579-95DF-C26B9CEDDBFC} = {9EE02130-8930-4A6C-9B91-477880D68C42}
+	EndGlobalSection
+EndGlobal

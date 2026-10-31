@@ -312,3 +312,11 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   (plano, código com testes primeiro, commits e push).
 - Combinado: decisões que precisariam de mim são tomadas pelo caminho mais simples e reversível e
   anotadas aqui para eu revisar.
+
+### Tarefa 1 do `rules` — estrutura do projeto ✅
+- Criados `Swapping.sln`, a biblioteca `src/Swapping.Rules` (.NET 8, sem dependências) e os testes
+  `tests/Swapping.Rules.Tests` (xUnit do modelo padrão).
+- `Directory.Build.props` liga "avisos como erros", para o critério 1 da spec (zero avisos) ser garantido
+  pela própria compilação.
+- `dotnet build` sem avisos; `dotnet test`: 1 teste de fumaça aprovado.
+- Escolhi agendar o resto da implementação na nuvem (o agente da nuvem trabalha a partir do GitHub).
