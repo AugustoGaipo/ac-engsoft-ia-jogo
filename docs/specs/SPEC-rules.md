@@ -49,7 +49,7 @@ A swap request is rejected, with a reason, when:
 | `SameContainer` | a container cannot swap with itself |
 | `ModeNotEnabled` | the level only enables player ↔ object (object ↔ object is supported but off) |
 | `PropertyNotUnlocked` | the level has not unlocked this property |
-| `PropertyNotAccepted` | the object's color does not accept this property |
+| `PropertyNotAccepted` | this object only accepts some properties, and not this one |
 | `Locked` | the object is locked and swaps nothing |
 | `OutOfRange` | distance > the property's maximum range for this level |
 | `NoLineOfSight` | something solid is between them (the game measures it) |
@@ -186,18 +186,18 @@ public sealed class SwapOperation : IOperation
 4. Energy swap: 1 kg ball at 4 m/s to the right ↔ 70 kg player at rest → player ≈ 0.478 m/s to the
    right, ball at rest.
 5. Position swap exchanges places and keeps both velocities.
-6b. Energy restoration: box A moving right with Xb = 10 J gets back Xa = 2 J (holder moving left) →
-    A moves left at √(2·2 ÷ m_A).
 6. Position restoration: a moving box enters a variable barrier and swaps places with the resting
    holder of its position variable; the box keeps moving, the other keeps its own (zero) energy.
-7. Each rejection reason in the legality table has a passing test.
-8. Cooldown 2 s: swap at t = 0 → a swap at t = 1.5 is `OnCooldown`, at t = 2.0 is applied.
-9. Pressure: 10 kg on 0.01 m² → 9 800 Pa; breaks a 5 000 Pa glass, not a 10 000 Pa one.
-9b. Buoyancy: the player (70 kg, 0.07 m³) in water → **Swim**; holding a 30 kg, 0.01 m³ rock →
+7. Energy restoration: box A moving right with Xb = 10 J gets back Xa = 2 J (holder moving left) →
+   A moves left at √(2·2 ÷ m_A).
+8. Each rejection reason in the legality table has a passing test.
+9. Cooldown 2 s: swap at t = 0 → a swap at t = 1.5 is `OnCooldown`, at t = 2.0 is applied.
+10. Pressure: 10 kg on 0.01 m² → 9 800 Pa; breaks a 5 000 Pa glass, not a 10 000 Pa one.
+11. Buoyancy: the player (70 kg, 0.07 m³) in water → **Swim**; holding a 30 kg, 0.01 m³ rock →
     ρ = 100 ÷ 0.08 = 1 250 → **Sink**; with 0.05 kg in air → ρ ≈ 0.71 → **Swim** (flies).
-10. The invariant test passes for 1 000 random steps.
-11. `Swapping.Rules.csproj` has no reference to Godot.
-12. Line coverage ≥ 90 %.
+12. The invariant test passes for 1 000 random steps.
+13. `Swapping.Rules.csproj` has no reference to Godot.
+14. Line coverage ≥ 90 %.
 
 ## Decisions confirmed with the user
 - The **player** is 70 kg with 0.07 m³ (density 1 000 kg/m³ → swims in water by default).
@@ -208,7 +208,6 @@ public sealed class SwapOperation : IOperation
 - **No colors for accepted properties.** The game shows an **outline** on the object you can grab or
   swap with (and on the one you are holding). The rule `PropertyNotAccepted` stays in the library;
   how the game shows it is decided in the `game` spec.
-
 - **Direction travels with the energy variable**, in swaps *and* restorations. The variable always
   mirrors how its current holder is moving (magnitude and direction, written every physics step);
   whoever takes it moves that way. Example: box A moves right using Xb = 10 J; it crosses a variable
