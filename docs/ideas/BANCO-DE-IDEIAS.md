@@ -56,6 +56,12 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 
 ## ✅ Utilizadas
 
+### Princípio do mundo
+- **O mundo é sempre o mesmo.** As únicas mudanças são **valores matemáticos** (posição, peso, energia…)
+  que mudam de um jeito **fisicamente plausível** dentro das regras do jogo.
+- O que evolui são as **habilidades de troca** (a "arma"), que podem ganhar upgrades por sala.
+- Toda ideia nova precisa passar por esse filtro.
+
 ### Mecânica
 - **Troca de propriedades** como mecânica central: tudo é troca entre dois "recipientes".
 - **Jogador ↔ objeto** como a troca básica (mais fácil de entender, limita atalhos).
@@ -262,6 +268,13 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - Só dá para levar Q a outro lugar **segurando**.
   - Quando a energia volta para Q (barreira ou nova troca), ele volta ao normal.
   - Decisão do agente: se Q estava em movimento no momento da troca, ele **para na hora**.
+- **Quântico na posição — ligação com limite de distância (ideia minha, proposta):** a troca de posição
+  funciona normalmente, mas se Q e quem está com a posição dele se afastarem além do limite (padrão
+  10 m, maior que o alcance de 8 m), a ligação "arrebenta" e eles trocam de lugar **de novo**, onde
+  estiverem. Vira um teleporte com gatilho (ex.: jogar Q por cima de um muro manda o outro para lá).
+  Linha brilhante visível entre os dois + número na tela (7 / 10 m). A volta não conta movimento e
+  ignora a linha de visão; barreira de variáveis encerra a ligação; vale também para o jogador.
+  Alternativa guardada: "joystick" (Q fica parado e o outro se move no lugar dele).
 - **Categoria mimética (em análise):** quem troca **posição** com um objeto mimético não muda de lugar;
   ele **vira uma cópia da forma** do mimético (formato, tamanho, aparência) enquanto a troca durar.
   Ex.: bola mimética + caderno → o caderno vira uma bola.
@@ -270,6 +283,8 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - A cópia de um mimético **não** é mimética (evita reação em cadeia).
   - **Com o jogador, a troca falha "por um motivo misterioso"** (efeito visual estranho, sem explicação).
   - Só vale a pena em fases onde a forma importa: rolar numa rampa, encaixes, área de contato.
+  - ⚠️ **Conflito com o princípio do mundo:** mudar a forma não é um valor matemático. Se ficar, a forma
+    precisa virar uma propriedade numérica (ex.: o tamanho).
 ### Fantasma (compartilhar a partida jogada) — se sobrar tempo
 - Assistir à partida dos primeiros do ranking como um **fantasma** do personagem andando pela fase.
 - Grava **só o personagem**: posição e ângulo/direção da cabeça, várias vezes por segundo.
