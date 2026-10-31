@@ -495,3 +495,6 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Resistência a dano pela densidade do personagem (ideia minha):** a detalhar.
 - Em discussão com o agente: a morte substitui o "não permitir" do quântico? Do que se morre? Vida ou
   morte na hora? Reiniciar conta no ranking?
+- **Morte em todos os casos (decisão minha):** sem espaço nem no ponto mais próximo, vale estouro +
+  renascimento (objeto) ou morte (jogador) tanto na troca normal quanto no quântico. Nenhuma troca é
+  recusada por falta de espaço; o "não permitir" do quântico sai.
