@@ -231,3 +231,8 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   a sua (Xa, Xb…), a física continua alterando o valor enquanto outro objeto a usa, e na parede cada um
   pega a sua de volta. Com isso a energia também pode ser restaurada. O agente adotou o modelo e
   levantou três pontos: energia cinética ou mecânica, direção na restauração, e deixar a posição fora.
+- **Posição na restauração:** também entra. Na parede, troca só o lugar (não a energia): o objeto que
+  estava parado aparece na parede e cai.
+- **Alcance máximo:** cada habilidade tem uma distância máxima de troca, configurável por fase.
+- **Parede como filtro:** a parede define o que passa (jogador, objetos) e quais variáveis passam;
+  a mira da troca obedece ao mesmo filtro. Isso existe nas referências do gênero para separar as fases.

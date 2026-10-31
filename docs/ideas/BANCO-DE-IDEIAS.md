@@ -75,6 +75,9 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Fases seguidas com a mesma habilidade, como no Portal.
 - Controles de dificuldade: quantos objetos, quantas propriedades, ordem das trocas, limite de trocas.
 - Contra atalhos: objetos travados, propriedades permitidas por cor, só trocar com o que está à vista.
+- **Alcance máximo da troca:** cada habilidade tem uma distância máxima; longe demais, a troca não
+  acontece (a mira avisa, ex.: muda de cor). O alcance pode ser diferente por habilidade e é configurado
+  em cada fase, servindo como mais um controle de dificuldade.
 - Botões que só detectam objetos ou exigem mais peso que o jogador.
 
 ### Tecnologia e plataforma
@@ -108,6 +111,15 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
     troca com B, que estava com o peso verdadeiro dela → eu 3, A 2, B 10.
   - **Combinadas:** a **parede de saída** de cada fase junta "só entidades" + "restauração": nenhum
     objeto e nenhum valor trocado passa para a próxima fase.
+  - **Restauração de posição:** também vale. Ex.: uma caixa em movimento bate na parede e troca de
+    posição com o objeto parado que estava com a variável de posição dela. Eles trocam só de lugar,
+    não de energia: a caixa continua em movimento e o objeto que estava parado aparece na parede e
+    só cai no chão.
+  - **A parede é um filtro:** cada parede define o que passa (jogador, objetos) e quais variáveis
+    passam (posição, peso, energia). A **mira da troca obedece ao mesmo filtro**: não dá para trocar
+    o peso com uma caixa atrás de uma parede que barra peso.
+  - **Nas referências:** paredes assim são usadas no gênero para montar as fases e impedir que objetos
+    e valores sejam levados para a fase seguinte.
 - **Modelo de variáveis (troca de variáveis, não de valores):** cada objeto nasce com a sua própria
   variável por propriedade (Xa, Xb, Xc…). A troca muda **quem usa qual variável**; a física continua
   alterando o valor da variável enquanto outro objeto a usa. Na restauração, o objeto pega a **sua
