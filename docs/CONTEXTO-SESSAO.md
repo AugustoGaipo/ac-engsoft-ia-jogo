@@ -74,3 +74,20 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
   https://claude.ai/code/routines/trig_014m1a1SpcD9kaW9NajwNc1Z), a cada hora no minuto 24 UTC, Sonnet.
   Ela faz commit/push no GitHub e escreve `docs/processo/RELATORIO-rules.md` no fim.
 - Ao voltar: `git pull`, revisar o diário e o relatório, e **desligar a rotina** quando acabar.
+
+## Onde paramos (sessão 2, 2026-10-31 à noite)
+- **Prazo: sexta, 2026-11-06.** Cronograma: dom → `levels` pronto (feito sábado) e specs da API; seg → API
+  (`profiles` + `progress`) e spec do `game`; ter → `game` com o nível 1 no Godot; qua → níveis 2, 3 e 5,
+  e `sync`; qui → C4 final, site da arquitetura, prints, slides e ensaio (sem código novo).
+- **`rules` concluído** (rotina na nuvem, **pausada**). Relatório: `docs/processo/RELATORIO-rules.md`.
+- **`levels` concluído** no PC: 125 testes, 96,7 % de cobertura, 4 níveis (1, 2, 3, 5) e 11 salas em
+  `levels/`. Relatório: `docs/processo/RELATORIO-levels.md`.
+- **Decisões do dia:**
+  - progressão sala por sala em `docs/design/PROGRESSAO-NIVEIS.md` (aprovada), escopo de sexta no fim do arquivo;
+  - níveis têm várias salas; a morte reinicia a sala e o tempo e as trocas continuam somando;
+  - sem espaço → morte/estouro em todos os casos.
+- **Pendências:**
+  - confirmar a sala 1.4 (caixa travada);
+  - revisão pequena da spec do `rules` (exemplos de pulo, barra de lançamento, pressão de pilha);
+  - raio do ponto livre mais próximo.
+- **Próximo passo:** specs do `profiles` e do `progress` (API ASP.NET Core + SQLite).
