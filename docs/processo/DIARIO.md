@@ -590,3 +590,10 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Observação do agente:** o `MoveCount` do `World` (no `rules`) conta as trocas de um mundo. Se a sala
   reiniciar com um mundo novo, quem guarda a soma do nível é o `game`/`progress`, e não o `rules`.
   Isso entra na spec desses módulos, sem mudar o código do `rules`.
+
+## 2026-10-31 — Progressão dos níveis
+- Pedi uma divisão de quais mecânicas entram em cada nível. O agente propôs a curva sala por sala em
+  `docs/design/PROGRESSAO-NIVEIS.md`: cada sala ensina uma coisa nova e a última de cada nível junta tudo.
+  Os níveis garantidos no corte (1, 3, 5, 10) ensinam sozinhos o essencial de cada propriedade.
+- **Tempo e trocas na tela desde o começo (decisão minha):** o cronômetro e o contador aparecem já na
+  sala 1.1, não só na 1.3.
