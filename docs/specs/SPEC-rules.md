@@ -37,7 +37,7 @@ It must support the 10 planned levels **and** leave clean extension points for t
 - **Mass:** the masses are exchanged. Each container **keeps its kinetic energy**, so its speed is
   recomputed: v = √(2·E ÷ m).
   Example: 2 kg at 3 m/s → E = 9 J. After becoming 8 kg → v = √(2·9 ÷ 8) = 1.5 m/s.
-- **Kinetic energy:** the energies are exchanged. The receiver moves **in the world direction the
+- **Kinetic energy:** the energy variables are exchanged. The receiver moves **in the world direction the
   giver was moving**, at v = √(2·E ÷ m_receiver). A receiver of 0 J stops.
   Example: a 1 kg ball moving right at 4 m/s (8 J) and the player (70 kg) standing still. After the
   swap: player moves right at √(2·8 ÷ 70) ≈ 0.48 m/s, the ball stops.
@@ -186,6 +186,8 @@ public sealed class SwapOperation : IOperation
 4. Energy swap: 1 kg ball at 4 m/s to the right ↔ 70 kg player at rest → player ≈ 0.478 m/s to the
    right, ball at rest.
 5. Position swap exchanges places and keeps both velocities.
+6b. Energy restoration: box A moving right with Xb = 10 J gets back Xa = 2 J (holder moving left) →
+    A moves left at √(2·2 ÷ m_A).
 6. Position restoration: a moving box enters a variable barrier and swaps places with the resting
    holder of its position variable; the box keeps moving, the other keeps its own (zero) energy.
 7. Each rejection reason in the legality table has a passing test.
@@ -207,10 +209,11 @@ public sealed class SwapOperation : IOperation
   swap with (and on the one you are holding). The rule `PropertyNotAccepted` stays in the library;
   how the game shows it is decided in the `game` spec.
 
-## Assumptions (correct me if wrong)
-1. On **energy restoration**, the container keeps going **in its own current direction**; only its
-   speed changes to match the energy it gets back. If it is not moving, it uses the direction stored
-   in the variable.
+- **Direction travels with the energy variable**, in swaps *and* restorations. The variable always
+  mirrors how its current holder is moving (magnitude and direction, written every physics step);
+  whoever takes it moves that way. Example: box A moves right using Xb = 10 J; it crosses a variable
+  barrier and gets back Xa = 2 J, whose holder was moving left → A now moves **left** with 2 J.
+  One rule for everything: *you move the way your energy variable was moving*.
 
 ## Open Questions
 - How does the outline tell which properties an object accepts (icons next to the numbers?) →
