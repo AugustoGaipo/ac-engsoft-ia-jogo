@@ -103,14 +103,19 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - **Só entidades passam:** o jogador atravessa, os objetos não.
   - **Só objetos passam:** os objetos atravessam, o jogador não.
   - **Restauração:** deixa passar, mas quem atravessa recupera o **valor verdadeiro** trocando com
-    quem está com ele. Só vale para propriedades que não mudam sozinhas (peso hoje; talvez
-    temperatura e elasticidade no futuro). Energia e posição ficam de fora.
+    quem está com ele. Vale para peso e energia (ver "modelo de variáveis" abaixo).
     Ex.: eu 10 kg, A 2 kg, B 3 kg. Troco com A (eu 2, A 10) e com B (eu 3, B 2). A atravessa a parede →
     troca com B, que estava com o peso verdadeiro dela → eu 3, A 2, B 10.
   - **Combinadas:** a **parede de saída** de cada fase junta "só entidades" + "restauração": nenhum
     objeto e nenhum valor trocado passa para a próxima fase.
-- **Impacto na arquitetura:** a biblioteca `rules` registra **de quem cada valor é originalmente**.
-  Como as trocas só embaralham os valores, cada valor original está sempre em exatamente um recipiente.
+- **Modelo de variáveis (troca de variáveis, não de valores):** cada objeto nasce com a sua própria
+  variável por propriedade (Xa, Xb, Xc…). A troca muda **quem usa qual variável**; a física continua
+  alterando o valor da variável enquanto outro objeto a usa. Na restauração, o objeto pega a **sua
+  variável de volta**, com o valor que ela tiver naquele momento, e quem estava com ela fica com a
+  variável que o objeto usava. Ex.: A usa Xc e B usa Xa; A atravessa → A volta a usar Xa, B fica com Xc.
+  O peso e a energia usam o mesmo mecanismo (a variável de peso só não muda sozinha).
+- **Impacto na arquitetura:** a biblioteca `rules` guarda as variáveis e quem está usando cada uma.
+  As variáveis só são embaralhadas: cada uma está sempre com exatamente um recipiente.
 
 ---
 

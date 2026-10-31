@@ -227,3 +227,7 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   cada valor, e isso entra na spec antes do código. Energia e posição mudam sozinhas com a física,
   então a restauração vale só para propriedades estáveis (peso).
 - **Prioridade:** parede de saída no P0; fases contínuas e as outras paredes no P1.
+- **Modelo de variáveis (ideia minha):** em vez de trocar valores, trocar as variáveis. Cada objeto tem
+  a sua (Xa, Xb…), a física continua alterando o valor enquanto outro objeto a usa, e na parede cada um
+  pega a sua de volta. Com isso a energia também pode ser restaurada. O agente adotou o modelo e
+  levantou três pontos: energia cinética ou mecânica, direção na restauração, e deixar a posição fora.
