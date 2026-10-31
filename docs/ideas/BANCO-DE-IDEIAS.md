@@ -75,7 +75,9 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 - Fases seguidas com a mesma habilidade, como no Portal.
 - Controles de dificuldade: quantos objetos, quantas propriedades, ordem das trocas, limite de trocas.
 - Contra atalhos: objetos travados, objetos que só aceitam certas propriedades, só trocar com o que está à vista.
-- **Contorno no lugar de cor:** o objeto que dá para segurar ou trocar (e o que estou segurando) ganha um contorno.
+- **Cor no contorno, não no objeto:** o objeto que dá para segurar ou trocar (e o que estou segurando)
+  ganha um contorno; a **cor do contorno** mostra quais propriedades ele aceita (ex.: azul = só peso).
+  Objetos que aceitam tudo têm o contorno **branco** padrão.
 - **Alcance máximo da troca:** cada habilidade tem uma distância máxima; longe demais, a troca não
   acontece (a mira avisa, ex.: muda de cor). O alcance pode ser diferente por habilidade e é configurado
   em cada fase, servindo como mais um controle de dificuldade.

@@ -282,3 +282,4 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   objeto entra na conta. O agente explicou que na física real só a densidade exatamente igual é
   neutra, então a faixa é uma simplificação de jogo, e adotou as mesmas proporções em todos os meios.
 - **Direção na restauração:** a direção viaja junto com a variável de energia. Se a caixa vai para a direita e recebe de volta uma variável que se movia para a esquerda, ela passa a ir para a esquerda. Uma regra só para troca e restauração: você se move do jeito que a sua variável de energia se movia.
+- **Correção:** a regra das propriedades aceitas continua; a cor só sai do objeto e vai para o **contorno** (branco = aceita tudo).

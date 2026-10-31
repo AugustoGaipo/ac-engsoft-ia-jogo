@@ -205,9 +205,11 @@ public sealed class SwapOperation : IOperation
   do not count.**
 - Defaults: range **8 m** for every property, cooldown **1 s** in levels 1–6; levels 7–10 decided
   while playtesting. Tunable per level, but should rarely change.
-- **No colors for accepted properties.** The game shows an **outline** on the object you can grab or
-  swap with (and on the one you are holding). The rule `PropertyNotAccepted` stays in the library;
-  how the game shows it is decided in the `game` spec.
+- **Accepted properties are shown by the outline color, not the object color.** When the player aims
+  at or holds an object, it gets an outline whose color tells what it accepts (e.g. blue = mass only).
+  Objects that accept everything the level unlocked keep the default **white** outline. The library
+  only knows *which* properties each object accepts (`PropertyNotAccepted`); the palette is decided
+  in the `game` spec.
 - **Direction travels with the energy variable**, in swaps *and* restorations. The variable always
   mirrors how its current holder is moving (magnitude and direction, written every physics step);
   whoever takes it moves that way. Example: box A moves right using Xb = 10 J; it crosses a variable
@@ -215,5 +217,4 @@ public sealed class SwapOperation : IOperation
   One rule for everything: *you move the way your energy variable was moving*.
 
 ## Open Questions
-- How does the outline tell which properties an object accepts (icons next to the numbers?) →
-  `game` spec.
+- Outline color palette (one color per accepted property, white = all) → `game` spec.
