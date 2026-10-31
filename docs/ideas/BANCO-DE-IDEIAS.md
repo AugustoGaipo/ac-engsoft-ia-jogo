@@ -22,7 +22,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 1. **`rules`:** troca jogador ↔ objeto de posição, peso e energia; recarga; travas e cores; testes.
 2. **`levels`:** formato JSON das fases + validador + testes.
 3. **`game` mínimo:** personagem com peso e energia simulados, mira, troca, números na tela,
-   parede de saída (só entidades + restauração),
+   grade de saída (barreira 1 + barreira 3),
    botão, porta e saída → **fase 1 jogável** (critério de corte do dia 3).
 4. **Fases 1, 3, 5 e 10** (as garantidas do corte).
 5. **`profiles`:** nome + ícone, código de acesso, hash, bloqueio por tentativas, limite de envios; testes.
@@ -33,7 +33,7 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
 ### P1 — Jogo completo planejado
 - Fases 2, 4, 6, 7, 8 e 9.
 - Fases contínuas (uma leva direto à próxima).
-- Paredes "só entidades", "só objetos" e "restauração" como peças das fases.
+- Barreiras 1, 2 e 3 sozinhas como peças de puzzle, introduzidas uma por vez.
 - Tela de ranking e escolha de ícone dentro do jogo.
 - Teste da fase 1 com uma pessoa sem explicação (premissa do tutorial).
 - **Densidade:** água (afundar e boiar), peças quebradiças e **pressão parada** (peso ÷ área de contato,
@@ -126,8 +126,13 @@ O que fazer primeiro e o que fica para depois. Uma faixa só começa quando a an
   - **Barreira que só bloqueia a passagem** (de objetos ou do jogador): restringe só o **segurar**.
     Se eu atravesso segurando um objeto que não pode passar, a pegada se solta quando um dos dois
     atravessa 100% e o objeto cai.
-  - **Dúvida em aberto:** isso fica difícil de entender para o jogador? Alternativa: como no Portal,
-    toda parede que barra a passagem também barra a troca.
+  - **Decisão: 3 barreiras básicas, combináveis** (para não confundir o jogador):
+    1. **Barra objetos:** só o jogador passa; o objeto segurado cai (cor própria + ícone 📦 riscado).
+    2. **Barra o jogador:** só os objetos passam (cor própria + ícone 🧍 riscado).
+    3. **Barra variáveis:** quem passa recupera as próprias variáveis; não dá para trocar através dela
+       nem dentro dela (cor própria + ícone ⇄ riscado).
+    As outras são combinações. A **grade de saída** de cada fase = 1 + 3 (aparece desde a fase 1).
+    As barreiras sozinhas entram aos poucos, como peças de puzzle, a partir das fases do P1.
   - **Nas referências:** paredes assim são usadas no gênero para montar as fases e impedir que objetos
     e valores sejam levados para a fase seguinte.
 - **Modelo de variáveis (troca de variáveis, não de valores):** cada objeto nasce com a sua própria

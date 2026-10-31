@@ -239,3 +239,7 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Regras finas das paredes:** cada variável volta para o seu dono; dentro de uma barreira que
   bloqueia trocas não há troca; barreiras de passagem só soltam o objeto segurado. Perguntei ao agente
   se isso ficou complicado demais para o jogador.
+- **Opinião do agente:** as regras são coerentes (a parede é um filtro), mas muitos tipos de parede no
+  começo confundem o jogador. Sugeriu o modelo completo na arquitetura e paredes introduzidas aos poucos.
+- **Decisão:** 3 barreiras básicas e combináveis (barra objetos, barra o jogador, barra variáveis),
+  cada uma com cor e ícone próprios. A grade de saída = barreira 1 + 3.
