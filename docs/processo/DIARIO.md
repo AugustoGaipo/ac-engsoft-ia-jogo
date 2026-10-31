@@ -449,3 +449,10 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   intangível até o espaço liberar, em vez de ser destruído. Proposta do agente, em discussão: intangível
   **parado no lugar** (sem gravidade, semitransparente, não pode ser trocado); se o que ocupa é parede
   ou chão (nunca libera) ou se passar um tempo limite, vai para o ponto de renascimento.
+- **Teleporte forçado com destino ocupado = falha de teleporte (decisão minha).** O sentido exato da
+  falha ainda será confirmado.
+- **Atravessar paredes em alta velocidade (preocupação minha):** o agente explicou que o problema vem da
+  velocidade por passo de física (ex.: 315 J numa bola de 0,05 kg → ~112 m/s, ~1,9 m por passo a 60 Hz),
+  e que a massa pesa mais na estabilidade das pilhas. Proteções sugeridas: detecção contínua de colisão
+  (CCD) no Godot, espessura mínima de parede checada pelo validador do `levels`, zona de fora do mapa como
+  última rede e, talvez, um limite de velocidade (mudaria a física; depende de mim).
