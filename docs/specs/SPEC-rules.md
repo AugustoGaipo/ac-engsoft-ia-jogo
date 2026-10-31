@@ -191,6 +191,8 @@ public sealed class SwapOperation : IOperation
 7. Each rejection reason in the legality table has a passing test.
 8. Cooldown 2 s: swap at t = 0 → a swap at t = 1.5 is `OnCooldown`, at t = 2.0 is applied.
 9. Pressure: 10 kg on 0.01 m² → 9 800 Pa; breaks a 5 000 Pa glass, not a 10 000 Pa one.
+9b. Buoyancy: the player (70 kg, 0.07 m³) in water → **Swim**; holding a 30 kg, 0.01 m³ rock →
+    ρ = 100 ÷ 0.08 = 1 250 → **Sink**; with 0.05 kg in air → ρ ≈ 0.71 → **Swim** (flies).
 10. The invariant test passes for 1 000 random steps.
 11. `Swapping.Rules.csproj` has no reference to Godot.
 12. Line coverage ≥ 90 %.
