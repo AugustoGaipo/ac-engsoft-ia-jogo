@@ -99,6 +99,9 @@ Field rules:
   Volume is **derived**, never written, so it can't disagree with the size. The contact area is the
   bottom face for a box (x·z) and 1 % of the cross-section for a ball (it rolls on one point).
 - `bounce`: 0–1, a fixed attribute of the object (Godot's physics material `bounce`; swapping it is a P2 idea).
+- `locked` and `accepts` only limit **swaps**. Physics is untouched: a locked object (or one that refuses
+  a property) can still be pushed, held, dropped and thrown like any other. It just never takes part in a swap
+  (or in a swap of the refused property).
 - `detects`: `"any"` (player or objects) or `"objects"` (only objects press it).
 - A door opens while **all** of its `opensWith` buttons are pressed.
 - A barrier has either a `preset` (`"exitGrid"`) or explicit flags `blocksObjects`, `blocksPlayer`,

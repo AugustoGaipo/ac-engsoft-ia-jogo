@@ -79,6 +79,7 @@
       "spawn": { "position": [37.5, 0, 5], "yawDegrees": -90 },
       "exit": { "min": [47.5, 0, 4], "max": [48, 3, 6] },
       // The nearest box is locked (level 1 unlocks only position, so "refuses position" = locked).
+      // Locked only blocks swaps: it can still be pushed, held and thrown.
       "objects": [
         { "id": "box-1-4-locked", "kind": "box", "position": [46, 0.5, 4], "size": [1, 1, 1], "massKg": 10, "locked": true, "bounce": 0.1 },
         { "id": "box-1-4", "kind": "box", "position": [46.5, 0.5, 8], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }

@@ -750,3 +750,9 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 ## 2026-10-31 — Módulo `levels` concluído
 - Os 14 critérios estão cobertos. O relatório completo está em `docs/processo/RELATORIO-levels.md`.
 - Fica para eu confirmar: na sala 1.4, a caixa que recusa a posição é uma caixa travada.
+
+## 2026-11-01 — Caixa que não aceita troca
+- **Esclarecimento meu:** uma caixa que não aceita a troca de posição **continua se mexendo pela física**.
+  Dá para pegar, empurrar e arremessar; ela só não entra na troca. "Travado" e `accepts` limitam só as
+  trocas. Está escrito na spec do `levels` e no `level_1.json` (sala 1.4), para o `game` não entender
+  "travado" como "preso no lugar".
