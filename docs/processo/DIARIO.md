@@ -1184,3 +1184,30 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **O catálogo de teste com o buraco 1 → 2 → 4** é montado numa pasta temporária a partir dos níveis
   reais. Assim, mexer no conteúdo dos níveis de sexta não quebra os testes do `progress`.
 - 388 testes verdes (106 + 125 + 157), 0 avisos.
+
+### API — tarefa 9: enviar resultado e ver meu progresso ✅
+- `POST /results` (token obrigatório, limite `uploads` de 30 por minuto por perfil) e `GET /progress/me`
+  (todos os níveis do catálogo, na ordem, com `unlocked`, `bestTime` e `bestMoves`).
+- `BestResultEntity`:
+  - chave (perfil, nível, modo), então no máximo 2 linhas por perfil e nível;
+  - `GhostId` anulável e sempre nulo nesta versão;
+  - os 2 índices dos rankings já criados (o teste deles é da tarefa 10);
+  - apagar o perfil apaga as linhas.
+- **Ordem das verificações:** nível desconhecido (404) → nível travado (409) → resultado implausível
+  (422). As recusas 409 e 422 gravam um evento `ResultRefused` com o perfil, o nível, o código e os
+  números, nunca o corpo.
+- **Decisões do agente (reversíveis):**
+  - `unlockedNext` só é `true` no envio que abriu o próximo nível pela primeira vez. Um reenvio, ou o
+    último nível, dá `false`;
+  - `levelId: null` → 400 `InvalidBody` (o System.Text.Json do .NET 8 não barra `null` sozinho);
+  - se dois primeiros envios do mesmo nível chegam juntos, a chave primária deixa só um entrar, e o
+    outro lê de novo e compara. Esse caminho **não tem teste** (o envio do `sync` é em fila, um por vez).
+- **Fase vermelha:** 49 testes novos, 46 falhando. Os 3 que já passavam deviam passar: as rotas do
+  fantasma não existem (404), e a coluna `GhostId` veio do esqueleto da entidade.
+- **Um teste errado, não o código:** eu esperava que um tempo menor com as mesmas trocas não melhorasse
+  o modo `moves`. Mas ali o tempo é o desempate, então melhora. O teste passou a usar 13 trocas.
+- **Mutações:** as duas primeiras nem compilaram (avisos contam como erro), então refiz:
+  - todos os níveis destravados → 2 testes caíram;
+  - um resultado que não é melhor também sobrescreve → 3 testes caíram;
+  - `LevelLocked` sem evento de segurança → 1 teste caiu.
+- 437 testes verdes (106 + 125 + 206), 0 avisos.

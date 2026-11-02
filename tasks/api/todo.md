@@ -131,12 +131,12 @@ HTTPS redirection + HSTS outside `Development`.
 indexes), `ProgressService.SubmitAsync` and `GetProgressAsync`, `POST /results` (uses the `uploads`
 policy), `GET /progress/me`, security events for refused results.
 **Acceptance criteria:**
-- [ ] G-SC 2–6: unlocking with the gap 1 → 2 → 4; `LevelLocked`/`UnknownLevel`; best per mode;
+- [x] G-SC 2–6: unlocking with the gap 1 → 2 → 4; `LevelLocked`/`UnknownLevel`; best per mode;
       a worse re-send → 200 with both `improved…` false and rows unchanged.
-- [ ] G-SC 13, 16, 18–20, 22, 25–27: unknown fields/`ghost`/`profileId` → 400; `GhostId` nullable;
+- [x] G-SC 13, 16, 18–20, 22, 25–27: unknown fields/`ghost`/`profileId` → 400; `GhostId` nullable;
       1 000 uploads → 2 rows; no token → 401 and no row; `1.5`/`"60000"`/`3000000000` → 400;
       ghost route → 404; refused results write a `Swapping.Security` event.
-- [ ] G-SC 14: the 31st upload in a minute → 429.
+- [x] G-SC 14: the 31st upload in a minute → 429.
 **Dependencies:** Task 8
 **Files:** `Progress/BestResultEntity.cs`, `ProgressService.cs`, `ProgressEndpoints.cs`, `Data/GameDbContext.cs`,
 `tests/.../Progress/SubmitResultTests.cs`
