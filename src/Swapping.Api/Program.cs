@@ -23,6 +23,9 @@ builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Game") ?? "Data Source=swapping.db"));
 builder.Services.Configure<ProfilesOptions>(builder.Configuration.GetSection(ProfilesOptions.Section));
 builder.Services.AddScoped<ProfileService>();
+builder.Services.AddAuthentication(BearerAuth.SchemeName)
+    .AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, BearerAuth>(BearerAuth.SchemeName, null);
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -37,6 +40,8 @@ app.Use(async (context, next) =>
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseMiddleware<BodySizeLimit>();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapProfiles();
 

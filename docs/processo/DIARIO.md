@@ -1094,3 +1094,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - tirar a recusa de campos desconhecidos → 3 testes caíram;
   - tirar a checagem de nome repetido → o índice único ainda pega (é o que se espera).
 - 306 testes verdes (106 + 125 + 75), 0 avisos.
+
+### API — tarefa 4: token, "meu perfil" e logout ✅
+- `BearerAuth`: um manipulador de autenticação do ASP.NET Core que calcula o hash do token, procura uma
+  sessão ainda válida e põe o id do perfil no pedido. `GET /profiles/me`, `PATCH /profiles/me` (só o
+  ícone) e `DELETE /sessions/current`.
+- **Fase vermelha:** 16 testes novos, 16 falhando.
+- **Testes além da spec:**
+  - o código de acesso não serve como token;
+  - `Basic …` e `bearer` sem o token são recusados;
+  - o `PATCH` não troca o nome (`name` é um campo desconhecido → `InvalidBody`, A10);
+  - "meu perfil" devolve só os 4 campos públicos.
+- **Mutação:** com `>=` no lugar de `>` na validade, o teste "para de valer aos 30 dias" caiu, como
+  deveria.
+- 322 testes verdes (106 + 125 + 91), 0 avisos.

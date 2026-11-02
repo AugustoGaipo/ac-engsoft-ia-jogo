@@ -62,9 +62,9 @@ configuration), `ProfileService.CreateAsync`, `POST /profiles`, `GET /icons`. On
 **Description:** `BearerAuth` authentication handler (token hash → profile id), `GET /profiles/me`,
 `PATCH /profiles/me` (icon), `DELETE /sessions/current`, 30-day expiry with the fake clock.
 **Acceptance criteria:**
-- [ ] P-SC 2 (token part): the token from `POST /profiles` works on `GET /profiles/me`.
-- [ ] P-SC 14: at 30 days − 1 s works; at 30 days → 401 `InvalidToken`; after logout → 401.
-- [ ] Missing or unknown token → 401 `InvalidToken`; `PATCH` with an unknown icon → 400 `UnknownIcon`.
+- [x] P-SC 2 (token part): the token from `POST /profiles` works on `GET /profiles/me`.
+- [x] P-SC 14: at 30 days − 1 s works; at 30 days → 401 `InvalidToken`; after logout → 401.
+- [x] Missing or unknown token → 401 `InvalidToken`; `PATCH` with an unknown icon → 400 `UnknownIcon`.
 **Dependencies:** Task 3
 **Files:** `Profiles/BearerAuth.cs`, `ProfileService.cs`, `ProfilesEndpoints.cs`, `tests/.../Profiles/SessionTests.cs`
 **Scope:** M

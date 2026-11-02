@@ -47,6 +47,25 @@ public sealed class ProfileService(GameDbContext db, TimeProvider time, IOptions
 
         return CreateResult.Ok(new CreatedProfile(profile, code, token, session.ExpiresAt));
     }
+
+    public Task<ProfileEntity?> GetAsync(Guid profileId, CancellationToken ct) =>
+        db.Profiles.AsNoTracking().SingleOrDefaultAsync(p => p.Id == profileId, ct);
+
+    /// <summary>Changes the icon; null when the icon is not in the list.</summary>
+    public async Task<ProfileEntity?> ChangeIconAsync(Guid profileId, string? icon, CancellationToken ct)
+    {
+        if (icon is null || !Options.IconList.Contains(icon))
+            return null;
+
+        var profile = await db.Profiles.SingleAsync(p => p.Id == profileId, ct);
+        profile.Icon = icon;
+        await db.SaveChangesAsync(ct);
+        return profile;
+    }
+
+    /// <summary>Ends one session: its token stops working.</summary>
+    public Task LogoutAsync(Guid sessionId, CancellationToken ct) =>
+        db.Sessions.Where(s => s.Id == sessionId).ExecuteDeleteAsync(ct);
 }
 
 public enum ProfileError
