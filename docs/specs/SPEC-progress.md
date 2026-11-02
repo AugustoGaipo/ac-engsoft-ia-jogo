@@ -2,7 +2,7 @@
 
 > Module from [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md). Written following the process of
 > `agent-skills:spec-driven-development` (phase 1, Specify) during the autonomous loop.
-> Status: **draft, waiting for the user's review**. No code is written until it is approved.
+> Status: **approved by the user on 2026-11-02** (assumptions B1–B10 kept as written; deaths stored, not shown; top 20 in the game).
 > Depends on: [`SPEC-profiles.md`](SPEC-profiles.md) (bearer token → profile id, `uploads` rate limit)
 > and [`SPEC-levels.md`](SPEC-levels.md) (`levels/catalog.json` and the level files).
 > Sources: [ideas bank](../ideas/BANCO-DE-IDEIAS.md) ("Ranking com dois modos", "Níveis, salas e

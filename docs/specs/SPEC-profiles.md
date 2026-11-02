@@ -2,7 +2,7 @@
 
 > Module from [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md). Written following the process of
 > `agent-skills:spec-driven-development` (phase 1, Specify) during the autonomous loop.
-> Status: **draft, waiting for the user's review**. No code is written until it is approved.
+> Status: **approved by the user on 2026-11-02** (assumptions A1–A12 kept as written; the API runs on the presentation PC, `127.0.0.1`).
 > Sources: [ideas bank](../ideas/BANCO-DE-IDEIAS.md) ("Perfil sem senha", "Código de acesso"),
 > [C4 levels 1–2](../architecture/C4.md) (Game API + SQLite, bearer token, offline-first).
 

@@ -1011,3 +1011,25 @@ o que segue para um possível lançamento são as regras de troca e as fases.
      melhorou o melhor local em pelo menos um modo.
   4. Os nomes `bestTime`/`bestMoves` da API e `time`/`moves` do save local agora têm a ligação escrita.
      Também ficou escrito o que o `game` entrega ao `sync`: os mesmos campos do `POST /results`.
+
+## 2026-11-02 (segunda) — specs da API aprovadas e plano
+
+### Aprovação das specs do `profiles` e do `progress`
+- **Quem decidiu: o usuário**, numa pergunta com 4 itens:
+  - nomes sem acento e sem espaço (A1);
+  - a API roda no PC da apresentação, só em `127.0.0.1`;
+  - as mortes são guardadas, mas não aparecem no ranking (B7);
+  - os outros padrões estão aprovados como estavam: sessão de 30 dias, bloqueio de 15 min depois de
+    5 erros, código novo só com o código atual, resultado falso barrado só pela plausibilidade, top 20,
+    e nada de apagar o perfil.
+- As respostas estão em `PERGUNTAS-PARA-O-USUARIO.md` (perguntas 1 e 3 a 11).
+
+### Plano da API (`agent-skills:planning-and-task-breakdown`)
+- `tasks/api/plan.md` e `tasks/api/todo.md`: **11 tarefas** em 4 fases (base, `profiles`, `progress` e
+  fechamento).
+- **Decisão do agente:** um só plano para os dois módulos, porque eles são duas pastas de um só projeto
+  (A8). Os ids dos módulos continuam `profiles` e `progress`.
+- Cada tarefa é uma fatia vertical: entidade → serviço → rota → teste HTTP. As regras puras (código,
+  nome, ordem do ranking e plausibilidade) vêm antes, cada uma com testes pequenos.
+- **Por que as proteções do host entram na tarefa 1:** com elas no começo, todas as rotas seguintes já
+  nascem com o corpo limitado a 4 KB, o JSON estrito, os erros sem detalhes internos e o `nosniff`.
