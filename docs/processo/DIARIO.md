@@ -1129,3 +1129,20 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Banco em arquivo para os testes com pedidos em paralelo:** a conexão única em memória não aceita
   vários pedidos ao mesmo tempo. Com essa opção, a factory cria um `.db` temporário e o apaga no fim.
 - 335 testes verdes (106 + 125 + 104), 0 avisos.
+
+### API — tarefa 6: código novo e registro de segurança ✅
+- `POST /profiles/me/access-code` só funciona com o código atual (A11). O código antigo para de valer e
+  todas as outras sessões são revogadas; a sessão que pediu continua valendo. Código errado ou ausente
+  conta como erro para o bloqueio, então um token roubado não consegue chutar o código para sempre.
+- `SecurityLog` (categoria `Swapping.Security`, S14) registra: login recusado, início do bloqueio e
+  código regenerado. Cada evento leva o id do perfil e o IP, e nada vai para o banco.
+- `Cache-Control: no-store` nas 3 rotas que devolvem código ou token (S7).
+- **Fase vermelha:** 10 testes novos, 9 falhando. O de "nenhum log tem segredo" já passava, porque ainda
+  não havia log nenhum.
+- **Logger de teste:** guarda todas as linhas de log da API, inclusive as do ASP.NET Core e do EF Core,
+  no nível `Trace`. O teste procura os 2 códigos, o código errado (com e sem traços) e os 2 tokens em
+  todas elas.
+- **Mutações:**
+  - revogar também a sessão que pediu o código novo → 1 teste caiu;
+  - pôr o cabeçalho `Authorization` no registro de segurança → o teste "nenhum log tem segredo" caiu.
+- 345 testes verdes (106 + 125 + 114), 0 avisos.

@@ -18,7 +18,7 @@ public static class ProfilesEndpoints
             var profile = created.Profile;
             return Results.Created("/profiles/me", new CreateProfileResponse(
                 profile.Id, profile.Name, profile.Icon, created.AccessCode, created.Token, created.TokenExpiresAt));
-        });
+        }).AddEndpointFilter(NoStore);
 
         app.MapPost("/sessions", async (LoginRequest body, ProfileService service, HttpContext http, CancellationToken ct) =>
         {
@@ -34,7 +34,20 @@ public static class ProfilesEndpoints
                 default:
                     return ApiProblem.Result(StatusCodes.Status401Unauthorized, "InvalidCredentials");
             }
-        });
+        }).AddEndpointFilter(NoStore);
+
+        app.MapPost("/profiles/me/access-code", async (RegenerateCodeRequest body, ClaimsPrincipal user, ProfileService service, HttpContext http, CancellationToken ct) =>
+        {
+            var result = await service.RegenerateAsync(user.ProfileId(), user.SessionId(), body.AccessCode, ct);
+            if (result.NewCode is { } code)
+                return Results.Ok(new RegenerateCodeResponse(code));
+            if (result.Refusal!.Outcome == LoginOutcome.Locked)
+            {
+                http.Response.Headers.RetryAfter = RetryAfterSeconds(result.Refusal.RetryAfter);
+                return ApiProblem.Result(StatusCodes.Status423Locked, "ProfileLocked");
+            }
+            return ApiProblem.Result(StatusCodes.Status401Unauthorized, "InvalidCredentials");
+        }).RequireAuthorization().AddEndpointFilter(NoStore);
 
         app.MapGet("/icons", (IOptions<ProfilesOptions> options) => Results.Ok(options.Value.IconList));
 
@@ -57,6 +70,13 @@ public static class ProfilesEndpoints
         }).RequireAuthorization();
 
         return app;
+    }
+
+    /// <summary>Answers that carry an access code or a token must never be cached (S7).</summary>
+    private static async ValueTask<object?> NoStore(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    {
+        context.HttpContext.Response.Headers.CacheControl = "no-store";
+        return await next(context);
     }
 
     /// <summary>Whole seconds, rounded up, never 0 (a client waiting 0 s would retry at once).</summary>
@@ -89,6 +109,14 @@ public sealed class LoginRequest
 }
 
 public sealed record LoginResponse(Guid Id, string Name, string Icon, string Token, DateTimeOffset TokenExpiresAt);
+
+/// <summary>Body of <c>POST /profiles/me/access-code</c>: the current code (optional; missing = wrong).</summary>
+public sealed class RegenerateCodeRequest
+{
+    public string? AccessCode { get; init; }
+}
+
+public sealed record RegenerateCodeResponse(string AccessCode);
 
 /// <summary>Body of <c>PATCH /profiles/me</c>: only the icon can change (A10).</summary>
 public sealed class UpdateProfileRequest

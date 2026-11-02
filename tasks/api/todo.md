@@ -87,11 +87,11 @@ configuration), `ProfileService.CreateAsync`, `POST /profiles`, `GET /icons`. On
 sessions; `SecurityLog` (`ILogger` category `Swapping.Security`) for lockout, regeneration, refused
 login, rate limit hit; `Cache-Control: no-store` on routes that return a code or a token.
 **Acceptance criteria:**
-- [ ] P-SC 13, 20: old code → 401, new code logs in; the calling token works, the others → 401;
+- [x] P-SC 13, 20: old code → 401, new code logs in; the calling token works, the others → 401;
       missing/wrong current code → 401 and the failure counter goes up.
-- [ ] P-SC 22, 29: a test logger sees one event per lockout and per regeneration, and no line in the
+- [x] P-SC 22, 29: a test logger sees one event per lockout and per regeneration, and no line in the
       whole flow contains a code or a token.
-- [ ] P-SC 23: `no-store` on the 3 routes that return secrets.
+- [x] P-SC 23: `no-store` on the 3 routes that return secrets.
 **Dependencies:** Task 5
 **Files:** `Profiles/ProfileService.cs`, `ProfilesEndpoints.cs`, `Hosting/SecurityLog.cs`,
 `tests/.../Profiles/RegenerateTests.cs`, `tests/.../TestLogger.cs`

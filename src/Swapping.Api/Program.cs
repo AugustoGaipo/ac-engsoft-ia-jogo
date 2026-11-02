@@ -22,6 +22,8 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Game") ?? "Data Source=swapping.db"));
 builder.Services.Configure<ProfilesOptions>(builder.Configuration.GetSection(ProfilesOptions.Section));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<SecurityLog>();
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddAuthentication(BearerAuth.SchemeName)
     .AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, BearerAuth>(BearerAuth.SchemeName, null);

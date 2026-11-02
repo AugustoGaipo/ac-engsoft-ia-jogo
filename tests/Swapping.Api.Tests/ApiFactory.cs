@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Swapping.Api.Data;
 
 namespace Swapping.Api.Tests;
@@ -34,6 +35,12 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
 
     private string? databaseFile;
 
+    /// <summary>Every log line written by the API during the test.</summary>
+    public TestLoggerProvider Logs { get; } = new();
+
+    /// <summary>The structured security events (category <c>Swapping.Security</c>).</summary>
+    public IReadOnlyList<LogLine> SecurityEvents => Logs.Lines.Where(l => l.Category == "Swapping.Security").ToList();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         if (UseFileDatabase)
@@ -43,6 +50,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
 
         builder.UseEnvironment(EnvironmentName);
         builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(Settings));
+        builder.ConfigureLogging(logging => logging.AddProvider(Logs).SetMinimumLevel(LogLevel.Trace));
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<DbContextOptions<GameDbContext>>();

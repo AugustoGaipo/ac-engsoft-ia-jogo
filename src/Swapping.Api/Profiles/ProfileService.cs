@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Swapping.Api.Data;
+using Swapping.Api.Hosting;
 
 namespace Swapping.Api.Profiles;
 
 /// <summary>The profile rules: create, log in, lock out, regenerate the code, change the icon.</summary>
-public sealed class ProfileService(GameDbContext db, TimeProvider time, IOptions<ProfilesOptions> options)
+public sealed class ProfileService(GameDbContext db, TimeProvider time, IOptions<ProfilesOptions> options, SecurityLog security)
 {
     private ProfilesOptions Options => options.Value;
 
@@ -55,7 +56,7 @@ public sealed class ProfileService(GameDbContext db, TimeProvider time, IOptions
     public async Task<LoginResult> LoginAsync(string? name, string? accessCode, CancellationToken ct)
     {
         if (!ProfileNames.TryNormalize(name, out var cleanName))
-            return LoginResult.InvalidCredentials();
+            return Refused(null);
 
         var key = ProfileNames.Key(cleanName);
         var now = time.GetUtcNow();
@@ -67,7 +68,7 @@ public sealed class ProfileService(GameDbContext db, TimeProvider time, IOptions
 
         var profile = await db.Profiles.AsNoTracking().SingleOrDefaultAsync(p => p.NameKey == key, ct);
         if (profile is null)
-            return LoginResult.InvalidCredentials();
+            return Refused(null);
 
         if (profile.LockedUntil > now)
             return LoginResult.Locked(profile.LockedUntil.Value - now);
@@ -99,10 +100,46 @@ public sealed class ProfileService(GameDbContext db, TimeProvider time, IOptions
                 .SetProperty(p => p.FailedAttempts, p => p.FailedAttempts + 1), ct);
 
         if (counted == 1)
-            return LoginResult.InvalidCredentials();
+        {
+            var attempts = await db.Profiles.Where(p => p.Id == profileId).Select(p => p.FailedAttempts).SingleAsync(ct);
+            if (attempts >= max)
+                security.Write(SecurityEvent.LockoutStarted, profileId);
+            return Refused(profileId);
+        }
 
         var lockedUntil = await db.Profiles.Where(p => p.Id == profileId).Select(p => p.LockedUntil).SingleAsync(ct);
         return LoginResult.Locked((lockedUntil ?? lockEnd.Value) - now);
+    }
+
+    /// <summary>
+    /// A new access code, only with the current one (A11, S5): the old code stops working and every
+    /// session except the calling one is revoked. A wrong or missing current code counts as a failure.
+    /// </summary>
+    public async Task<RegenerateResult> RegenerateAsync(Guid profileId, Guid sessionId, string? currentCode, CancellationToken ct)
+    {
+        var now = time.GetUtcNow();
+        var profile = await db.Profiles.AsNoTracking().SingleAsync(p => p.Id == profileId, ct);
+        if (profile.LockedUntil > now)
+            return new RegenerateResult(null, LoginResult.Locked(profile.LockedUntil.Value - now));
+
+        if (!AccessCode.Matches(currentCode, profile.AccessCodeHash))
+            return new RegenerateResult(null, await RegisterFailureAsync(profileId, now, ct));
+
+        var code = AccessCode.Generate();
+        var hash = AccessCode.Hash(code);
+        await db.Profiles.Where(p => p.Id == profileId).ExecuteUpdateAsync(set => set
+            .SetProperty(p => p.AccessCodeHash, hash)
+            .SetProperty(p => p.FailedAttempts, 0)
+            .SetProperty(p => p.LockedUntil, (DateTimeOffset?)null), ct);
+        await db.Sessions.Where(s => s.ProfileId == profileId && s.Id != sessionId).ExecuteDeleteAsync(ct);
+        security.Write(SecurityEvent.AccessCodeRegenerated, profileId);
+        return new RegenerateResult(code, null);
+    }
+
+    private LoginResult Refused(Guid? profileId)
+    {
+        security.Write(SecurityEvent.LoginRefused, profileId);
+        return LoginResult.InvalidCredentials();
     }
 
     public Task<ProfileEntity?> GetAsync(Guid profileId, CancellationToken ct) =>
@@ -150,6 +187,9 @@ public sealed record LoginResult(LoginOutcome Outcome, ProfileEntity? Profile, s
 
     public static LoginResult Locked(TimeSpan retryAfter) => new(LoginOutcome.Locked, null, null, default, retryAfter);
 }
+
+/// <summary>Either the new code, or the refusal (wrong code or locked).</summary>
+public sealed record RegenerateResult(string? NewCode, LoginResult? Refusal);
 
 public sealed record CreateResult(CreatedProfile? Value, ProfileError? Error)
 {
