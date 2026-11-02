@@ -37,7 +37,7 @@ Regras:
         acrescentar um teste com a densidade real (7 kg → ~1,86 m), sem mudar a fórmula.
 - [x] 5. **Rascunho da spec do `sync`** (`docs/specs/SPEC-sync.md`): biblioteca C# pura com o save local
       em JSON e a fila de envio para a API (reenvio seguro, porque o servidor guarda o melhor resultado).
-- [ ] 6. **Rascunho da spec do `game`, só o nível 1** (`docs/specs/SPEC-game.md`).
+- [x] 6. **Rascunho da spec do `game`, só o nível 1** (`docs/specs/SPEC-game.md`).
       - Godot 4.7 .NET, `CharacterBody3D` e `RigidBody3D`.
       - O que levar dos relatórios:
         - a troca de posição troca centros e sobe o corpo para o ponto livre mais próximo;

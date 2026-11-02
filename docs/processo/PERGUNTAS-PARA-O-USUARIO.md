@@ -40,3 +40,15 @@ simples e fácil de desfazer (entre parênteses). Responda quando puder; nada aq
     criar ou entrar num? *(Suposição C3: sim.)*
 14. **Trocar de perfil no mesmo PC:** os melhores resultados locais do perfil anterior somem da tela e
     ficam só no servidor? *(Rascunho: sim; os envios pendentes do perfil anterior ficam esperando ele voltar.)*
+
+## Spec do `game`, nível 1 (`docs/specs/SPEC-game.md`, rascunho)
+15. **Controles:** botão direito troca, `E` segura e solta, botão esquerdo arremessa, `R` reinicia a sala.
+    Tudo bem? *(Suposição G1.)*
+16. **Morte por queda:** cair a mais de 12 m/s (uns 7 m de altura) mata? *(Suposição G3, ajustar jogando.)*
+17. **Ponto livre mais próximo:** procurar até 1,5 m de distância na troca normal? *(Suposição G2.)*
+18. **Cores do contorno:** qual cor para "só posição", "só peso" e "só energia"? *(No nível 1 só aparecem
+    branco = aceita tudo e cinza = travado.)*
+19. **Pulo:** manter o pulo fisicamente correto (70 kg → 0,5 m) ou comparar com um pulo "de jogo"? *(Fica
+    para você decidir jogando, como já estava anotado no banco de ideias.)*
+20. **Arremesso nesta primeira versão:** com força fixa, e a barra de carregamento entra junto com o nível 5?
+    *(Suposição G4.)*

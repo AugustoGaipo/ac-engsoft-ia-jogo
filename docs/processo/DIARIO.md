@@ -875,3 +875,22 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     corrompido é guardado à parte e o jogo começa um novo.
   - **Sem relógio nem temporizador** dentro da biblioteca: o jogo diz a hora e quando enviar.
   - **Token vencido:** entra de novo uma vez sozinho com o nome e o código salvos; se falhar, avisa `NeedsLogin`.
+
+### Autônomo — item 6: rascunho da spec do `game` (nível 1) ✅
+- Feito no PC com a skill `agent-skills:spec-driven-development`. `docs/specs/SPEC-game.md` (rascunho).
+- O que a primeira versão jogável faz: as 4 salas do nível 1 em primeira pessoa; segurar, arremessar e
+  trocar de posição; morte em buraco ou queda; reiniciar sala e nível; tempo e trocas na tela desde a 1.1.
+- O passo a passo da troca: mirar (com um teste a seco que pinta a mira de branco ou vermelho), medir o
+  contexto, aplicar pelo `rules`, abrir espaço com o ponto livre mais próximo (senão morte ou estouro) e,
+  a cada passo da física, `SyncFromPhysics`.
+- Levei para a spec as pendências dos relatórios: detecção contínua de colisão, paredes de pelo menos
+  0,3 m, troca de centros, caixa travada que ainda se mexe e morte por queda. São 12 critérios de sucesso.
+- **Decisões tomadas sozinho** (G1–G6 na spec, perguntas 15–20):
+  - Uma biblioteca nova `Swapping.GameLogic`, **sem Godot**, para tudo que dá para testar fora da engine
+    (cronômetro e contagem, estado da mira, cor do contorno, busca do ponto livre, morte por queda). Os
+    scripts do Godot ficam finos.
+  - Um **teste de fumaça sem janela** (`--smoke-test level-1`) que monta cada sala e executa a solução
+    planejada. Ele roda pelo `dotnet test` e é pulado onde o Godot não existe (na nuvem).
+  - Os JSON dos níveis são copiados para `game/levels/` na compilação, para o jogo e a API lerem os
+    mesmos arquivos.
+  - Tudo que é gosto (cores, pulo, sensibilidade, efeitos) ficou em "Perguntas abertas".
