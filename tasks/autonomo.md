@@ -22,7 +22,7 @@ Regras:
       - Bloqueio por tentativas, gerar código novo e limite de envios.
       - Seguir o formato das specs do `rules` e do `levels`, com critérios de sucesso testáveis.
       - Listar as suposições e as perguntas abertas.
-- [ ] 2. **Rascunho da spec do `progress`** (`docs/specs/SPEC-progress.md`).
+- [x] 2. **Rascunho da spec do `progress`** (`docs/specs/SPEC-progress.md`).
       - Níveis liberados em ordem (lidos do `levels/catalog.json`) e melhor resultado por nível.
       - Ranking nos dois modos (tempo→trocas e trocas→tempo).
       - Regras de reinício: a morte e "reiniciar sala" continuam somando; "reiniciar nível" zera.

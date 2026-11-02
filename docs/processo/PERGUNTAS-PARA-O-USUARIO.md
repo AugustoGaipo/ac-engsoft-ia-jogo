@@ -13,3 +13,11 @@ simples e fácil de desfazer (entre parênteses). Responda quando puder; nada aq
 4. **Onde a API vai rodar na apresentação:** no seu PC ou num servidor na internet? Isso decide HTTPS e
    CORS. *(Por enquanto: no PC, `dotnet run`; a revisão de segurança do item 3 trata disso.)*
 5. **Apagar o perfil ou trocar o nome:** o jogador pode? *(Suposição A10: não nesta versão.)*
+
+## Spec do `progress` (`docs/specs/SPEC-progress.md`, rascunho)
+6. **Mortes no ranking:** mostrar o número de mortes, ou uma marca para quem terminou sem morrer?
+   *(Suposição B7: as mortes e os reinícios de sala são guardados, mas não aparecem nem contam no ranking.)*
+7. **Tempo mínimo plausível:** 1 s por sala basta, ou cada nível deve ter um tempo de referência no JSON?
+   *(Suposição B4: 1 s por sala e no máximo 24 h.)*
+8. **Tamanho do ranking no jogo:** os 20 primeiros, ou os 10 primeiros mais a sua posição?
+   *(A API devolve até 100, padrão 20, e tem uma rota com a sua posição.)*

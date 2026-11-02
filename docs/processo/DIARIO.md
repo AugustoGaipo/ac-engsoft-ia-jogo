@@ -783,3 +783,27 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     com teste de arquitetura separando as duas. Banco criado com `EnsureCreated()`, sem migrations.
   - Pacotes NuGet novos listados na spec (EF Core SQLite e `Mvc.Testing`): aprovar a spec aprova os dois.
   - Sem apagar perfil e sem trocar nome nesta versão.
+
+### Autônomo — item 2: rascunho da spec do `progress` ✅
+- Escrevi `docs/specs/SPEC-progress.md` no mesmo formato (status: **rascunho, aguardando sua revisão**;
+  nenhum código). A skill `agent-skills:spec-driven-development` também não estava disponível; segui o processo à mão.
+- Conteúdo: níveis liberados na ordem do `levels/catalog.json` (o mesmo arquivo do jogo, lido com o
+  `LevelCatalog` do `levels`); envio de uma tentativa terminada; melhor resultado por nível; ranking nos
+  dois modos (tempo → trocas e trocas → tempo); tabela das regras de reinício (morte e "reiniciar sala"
+  continuam somando, "reiniciar nível" zera e começa outra tentativa); checagens de plausibilidade;
+  espaço para o fantasma. 17 critérios de sucesso testáveis.
+- 3 perguntas novas em `docs/processo/PERGUNTAS-PARA-O-USUARIO.md` (6 a 8).
+- **Decisões tomadas sozinho (B1–B8 na spec, todas reversíveis):**
+  - Duas linhas de melhor resultado por perfil e nível, uma por modo, porque a tentativa mais rápida e a
+    de menos trocas podem ser diferentes. Não guardo o histórico de tentativas.
+  - Basta um resultado qualquer no nível anterior para liberar o próximo. Buracos na numeração do
+    catálogo são pulados (sexta: 1 → 2 → 3 → 5).
+  - Reenviar um resultado igual ou pior devolve 200 ("não melhorou"), e não erro: a fila do `sync` pode
+    descartá-lo. Nível ainda travado dá 409, que o `sync` deve tentar de novo mais tarde.
+  - Plausibilidade: no mínimo 1 s por sala, no máximo 24 h, até 10 000 trocas. Sem tempo de referência por nível.
+  - Desempate final por quem chegou primeiro, pela hora do **servidor** (o relógio do PC não fura a fila).
+  - Ranking público, só com nome, ícone, tempo e trocas. Mortes e reinícios de sala são guardados mas não contam.
+  - Fantasma: só a coluna `GhostId` (vazia) e o desenho das rotas (até 256 KB, 20 amostras/s × 5 números);
+    nesta versão as rotas não existem e um campo `ghost` no envio é recusado.
+  - Nenhum pacote NuGet novo além dos da spec do `profiles`; a API referencia o `Swapping.Levels` e não
+    sobe se o catálogo tiver erro.
