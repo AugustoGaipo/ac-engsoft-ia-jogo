@@ -43,7 +43,7 @@ Host + test factory + hardening                      (Task 1)
 
 ## Task List
 ### Phase 1: Foundation
-- [ ] Task 1: Scaffold the API, the test factory and the host hardening
+- [x] Task 1: Scaffold the API, the test factory and the host hardening
 - [ ] Task 2: Access code and name rules
 
 ### Checkpoint: Foundation

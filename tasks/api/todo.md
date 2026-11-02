@@ -18,10 +18,11 @@ memory and a fake `TimeProvider`. Host rules: `ProblemDetails` with a `code` fie
 details, JSON strict (unknown fields rejected, max depth 8, integers only where ints are expected),
 body limit 4 KB, `X-Content-Type-Options: nosniff`, `Development` launch settings on `127.0.0.1` only.
 **Acceptance criteria:**
-- [ ] P-SC 1: build with zero warnings; a smoke test calls the host through the factory.
-- [ ] P-SC 16 / 26 (host part): a body over 4 KB, malformed JSON, JSON deeper than 8 levels → 400
-      `InvalidBody`, no stack trace; every response has `nosniff`.
-- [ ] P-SC 30 (part): `packages.lock.json` exists for both projects.
+- [x] P-SC 1: build with zero warnings; a smoke test calls the host through the factory.
+- [x] P-SC 16 (host part): a body over 4 KB (with or without `Content-Length`) → 400 `InvalidBody`,
+      no stack trace; every response has `nosniff`; a 404 is problem+json with `code: NotFound`.
+      *Moved to Task 3:* malformed JSON, depth > 8 and unknown fields need a route that reads a body.
+- [x] P-SC 30 (part): `packages.lock.json` exists for both projects; restore in locked mode.
 **Dependencies:** None
 **Files:** `src/Swapping.Api/Swapping.Api.csproj`, `Program.cs`, `Hosting/*.cs`, `Data/GameDbContext.cs`,
 `Properties/launchSettings.json`, `tests/Swapping.Api.Tests/*.csproj`, `ApiFactory.cs`, `HostTests.cs`
@@ -50,6 +51,8 @@ configuration), `ProfileService.CreateAsync`, `POST /profiles`, `GET /icons`. On
       unknown icon → 400 `UnknownIcon`; `GET /icons` lists 12 icons.
 - [ ] P-SC 5, 31: the database holds only SHA-256 values; no table has an IP, e-mail or plain code/token column.
 - [ ] P-SC 26 (over-posting): a body with `id` or `accessCodeHash` → 400 `InvalidBody`, nothing created.
+- [ ] From Task 1: malformed JSON, JSON deeper than 8 levels, a string where a string is not expected →
+      400 `InvalidBody`; a 500 has no exception details; the schema is created at startup.
 **Dependencies:** Task 2
 **Files:** `Profiles/ProfileEntity.cs`, `SessionEntity.cs`, `ProfilesOptions.cs`, `ProfileService.cs`,
 `ProfilesEndpoints.cs`, `tests/.../Profiles/CreateProfileTests.cs`

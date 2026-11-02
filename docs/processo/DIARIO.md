@@ -1033,3 +1033,28 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   nome, ordem do ranking e plausibilidade) vêm antes, cada uma com testes pequenos.
 - **Por que as proteções do host entram na tarefa 1:** com elas no começo, todas as rotas seguintes já
   nascem com o corpo limitado a 4 KB, o JSON estrito, os erros sem detalhes internos e o `nosniff`.
+
+### API — tarefa 1: base do projeto ✅
+- Feito com `agent-skills:test-driven-development`. Projetos `src/Swapping.Api` (ASP.NET Core, minimal
+  APIs) e `tests/Swapping.Api.Tests` (xUnit + `WebApplicationFactory`), na solução.
+- **Pacotes** (aprovados junto com a spec): `Microsoft.EntityFrameworkCore.Sqlite` 8.0.33 e
+  `Microsoft.AspNetCore.Mvc.Testing` 8.0.33, as versões 8.0 mais novas, iguais ao runtime instalado.
+  Com os arquivos de lock (`packages.lock.json`) e a restauração em modo travado (S15).
+- **Fase vermelha:** 9 testes, 6 falhando. Os 3 que passaram de primeira:
+  - os 2 dos arquivos de lock, que o `restore` criou junto com os projetos;
+  - o "corpo de 4 KB exatos passa", que já dava 404 sem nenhum código.
+- **O que a base faz:**
+  - os erros saem em `application/problem+json` com um campo `code`, sem detalhes internos;
+  - toda resposta tem `nosniff`;
+  - um corpo acima de 4 KB é recusado, mesmo sem o cabeçalho de tamanho;
+  - nos testes, o banco é o SQLite em memória;
+  - ao rodar com `dotnet run`, a API escuta só em `127.0.0.1`.
+- **Erro meu, corrigido:** um teste conferia se o esquema do banco era criado ao subir, mas sem nenhuma
+  tabela o `EnsureCreated` sempre diz "criei". Ele foi trocado por um teste que confere que os testes usam o
+  banco em memória (nenhum `.db` é criado). A checagem do esquema foi para a tarefa 3, quando já houver
+  tabelas.
+- **Passou para a tarefa 3:** JSON malformado, profundidade acima de 8 e campos desconhecidos. Para
+  testar isso é preciso uma rota que leia um corpo.
+- **Conferido de verdade:** `dotnet run` sobe em `http://127.0.0.1:5257`, e um `curl` recebe o 404 com
+  `code` e `nosniff`.
+- 240 testes verdes (106 + 125 + 9), 0 avisos.
