@@ -894,3 +894,33 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - Os JSON dos níveis são copiados para `game/levels/` na compilação, para o jogo e a API lerem os
     mesmos arquivos.
   - Tudo que é gosto (cores, pulo, sensibilidade, efeitos) ficou em "Perguntas abertas".
+
+### Autônomo — item 7: revisão de código do `rules` e do `levels` ✅
+- Feita no PC com a skill `agent-skills:code-review-and-quality` (5 eixos: correção, legibilidade,
+  arquitetura, segurança, desempenho). Revisei principalmente o `rules`, que foi escrito pela nuvem e que
+  eu ainda não tinha lido linha a linha.
+- **Teste de mutação** (a skill pede para provar que os testes pegam erros, não só ler). Troquei de propósito
+  4 condições do código, rodei os testes e restaurei o arquivo. **As 4 foram pegas.**
+  - `Box.Overlaps`: `<` virou `<=`. 15 testes falharam.
+  - `World.SyncFromPhysics`: a direção não é mais guardada quando o objeto para. 1 falhou.
+  - `RulesMapping`: a recarga da sala é ignorada. 1 falhou.
+  - `LevelRules`: `distância > alcance` virou `>=`. 1 falhou.
+- **Achados corrigidos** (obrigatórios, cada um com teste escrito antes da correção, que falhou primeiro):
+  - **Pedido de troca vazio ou com a mesma propriedade repetida:** era "aplicado", contava 1 jogada e
+    iniciava a recarga sem mudar nada. Isso inflaria a contagem do ranking por um erro do `game`. Agora o
+    `SwapRequest` recusa os dois casos com exceção (erro de programação, como manda a spec), inclusive pelo
+    `with`.
+  - **Massa ≤ 0, NaN ou infinita em `World.Add`**, e **NaN ou infinito vindo da física** em
+    `SyncFromPhysics`: um valor assim estragaria as variáveis para sempre (v = √(2E/m)). Agora dá
+    exceção e as variáveis ficam intactas.
+  - Testes: 106/106 do `rules` (8 novos em `RequestValidationTests`), 125/125 do `levels`, com e sem
+    cobertura. Cobertura do `rules`: 98,5 % das linhas.
+- **Achados anotados, sem mudança:**
+  - **FYI:** `RulesMapping.BuildWorld` supõe um nível já validado; com uma propriedade desconhecida ele
+    lança exceção. O `game` e a API sempre validam antes (a API nem sobe com catálogo inválido).
+  - **Consider:** o `LevelCatalog` lê os arquivos sem limite de tamanho. São arquivos do próprio jogo, então
+    o risco é baixo. Vale um limite se um dia vierem níveis de fora (mods).
+  - **FYI:** `EnableEntangledProperties` não é usada por ninguém, de propósito (ponto de extensão da spec);
+    não é código morto.
+  - **Arquitetura:** dependências num só sentido (`levels` → `rules`), nenhuma referência a Godot, nenhum
+    estado global. **Desempenho:** sem problemas para o tamanho das salas (dezenas de objetos).

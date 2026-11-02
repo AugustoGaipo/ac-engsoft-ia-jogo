@@ -38,6 +38,10 @@ public sealed class World
     {
         if (_containers.ContainsKey(container.Id))
             throw new ArgumentException($"Container '{container.Id}' already exists.", nameof(container));
+        if (!(massKg > 0) || double.IsInfinity(massKg))
+            throw new ArgumentOutOfRangeException(nameof(massKg), massKg, "Mass must be a finite number > 0 kg.");
+        RequireFinite(position, nameof(position));
+        RequireFinite(velocity, nameof(velocity));
 
         _containers.Add(container.Id, container);
         _order.Add(container);
@@ -83,6 +87,8 @@ public sealed class World
     /// </summary>
     public void SyncFromPhysics(string containerId, Vec3 position, Vec3 velocity)
     {
+        RequireFinite(position, nameof(position));
+        RequireFinite(velocity, nameof(velocity));
         var positionVariable = VariableUsedBy(containerId, PropertyKind.Position);
         var energyVariable = VariableUsedBy(containerId, PropertyKind.KineticEnergy);
         var mass = VariableUsedBy(containerId, PropertyKind.Mass).Value.Scalar;
@@ -121,6 +127,13 @@ public sealed class World
             }
 
         return used.Count == _users.Count && used.Count == _order.Count * PropertyKind.All.Count;
+    }
+
+    /// <summary>A NaN or infinite value from the physics would poison the variables for good.</summary>
+    private static void RequireFinite(Vec3 v, string name)
+    {
+        if (!double.IsFinite(v.X) || !double.IsFinite(v.Y) || !double.IsFinite(v.Z))
+            throw new ArgumentException($"'{name}' must be finite, got {v}.", name);
     }
 
     private void Own(Variable variable)

@@ -47,7 +47,7 @@ Regras:
         - contorno por propriedade aceita;
         - números na tela, tempo e trocas desde a sala 1.1.
       - Tudo o que for gosto (cores, sensação do pulo) vai para "Perguntas abertas".
-- [ ] 7. **Revisão de código do `rules` e do `levels`**, com a skill `agent-skills:code-review-and-quality`.
+- [x] 7. **Revisão de código do `rules` e do `levels`**, com a skill `agent-skills:code-review-and-quality`.
       - Corrigir só o que for claro e pequeno, sempre com teste.
       - Anotar o resto como achados no diário.
 - [ ] 8. **C4 nível 3 (Componentes), parcial**, em `docs/architecture/C4.md`.
