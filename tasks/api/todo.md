@@ -47,11 +47,11 @@ body limit 4 KB, `X-Content-Type-Options: nosniff`, `Development` launch setting
 **Description:** `ProfileEntity`, `SessionEntity`, `ProfilesOptions` (icons, lockout, lifetimes from
 configuration), `ProfileService.CreateAsync`, `POST /profiles`, `GET /icons`. Only hashes are stored.
 **Acceptance criteria:**
-- [ ] P-SC 2 (create part), 7, 8: 201 with a code in the format; `ANA` after `Ana` → 409 `NameTaken`;
+- [x] P-SC 2 (create part), 7, 8: 201 with a code in the format; `ANA` after `Ana` → 409 `NameTaken`;
       unknown icon → 400 `UnknownIcon`; `GET /icons` lists 12 icons.
-- [ ] P-SC 5, 31: the database holds only SHA-256 values; no table has an IP, e-mail or plain code/token column.
-- [ ] P-SC 26 (over-posting): a body with `id` or `accessCodeHash` → 400 `InvalidBody`, nothing created.
-- [ ] From Task 1: malformed JSON, JSON deeper than 8 levels, a string where a string is not expected →
+- [x] P-SC 5, 31: the database holds only SHA-256 values; no table has an IP, e-mail or plain code/token column.
+- [x] P-SC 26 (over-posting): a body with `id` or `accessCodeHash` → 400 `InvalidBody`, nothing created.
+- [x] From Task 1: malformed JSON, JSON deeper than 8 levels, a string where a string is not expected →
       400 `InvalidBody`; a 500 has no exception details; the schema is created at startup.
 **Dependencies:** Task 2
 **Files:** `Profiles/ProfileEntity.cs`, `SessionEntity.cs`, `ProfilesOptions.cs`, `ProfileService.cs`,

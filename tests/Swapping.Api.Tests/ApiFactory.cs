@@ -23,6 +23,9 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
 
     public string EnvironmentName { get; init; } = "Development";
 
+    /// <summary>Replaces the clock with one that throws, to provoke a server error.</summary>
+    public bool BreakClock { get; init; }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         connection.Open();
@@ -33,8 +36,13 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
             services.RemoveAll<DbContextOptions<GameDbContext>>();
             services.AddDbContext<GameDbContext>(options => options.UseSqlite(connection));
             services.RemoveAll<TimeProvider>();
-            services.AddSingleton<TimeProvider>(Clock);
+            services.AddSingleton<TimeProvider>(BreakClock ? new BrokenClock() : Clock);
         });
+    }
+
+    private sealed class BrokenClock : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => throw new InvalidOperationException("The test clock is broken.");
     }
 
     protected override void Dispose(bool disposing)

@@ -1071,3 +1071,26 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Erro meu num teste, não no código:** eu esperava `"0011"` para `"OIlL"`, mas lá há um `O` e três
   letras que valem 1, então o certo é `"0111"`. O teste foi corrigido e o código não mudou.
 - 279 testes verdes (106 + 125 + 48), 0 avisos.
+
+### API — tarefa 3: criar perfil ✅
+- `POST /profiles` e `GET /icons`, com as entidades `ProfileEntity` e `SessionEntity`, o `ProfileService`
+  e as opções lidas da configuração.
+- **Fase vermelha:** 27 testes novos, 25 falhando (só havia as tabelas, sem nenhuma rota).
+- **Decisões do agente:**
+  - **JSON estrito.** O padrão "Web" do ASP.NET Core **aceita número dentro de string** (`"60000"`), e
+    isso foi desligado já agora, pensando no `POST /results` (P5). Também ficaram recusados os campos
+    desconhecidos e a profundidade acima de 8.
+  - **Corpo ilegível → 400 vazio**, que vira `InvalidBody`, inclusive em `Development`. No padrão de
+    `Development`, o ASP.NET Core lançaria uma exceção.
+  - **Datas no SQLite como número.** O SQLite não sabe comparar `DateTimeOffset`, e o bloqueio e a
+    validade do token precisam disso.
+  - **Nome repetido:** a API checa antes e o índice único do banco checa de novo, caso dois pedidos
+    criem o mesmo nome ao mesmo tempo.
+- **Testes que leem o banco "cru"** (`DatabaseDump`): procuram o código e o token em texto em todas as
+  colunas de todas as tabelas, e conferem que nenhuma coluna tem cara de IP ou e-mail (P-SC 5 e 31).
+- **Teste de erro 500:** um relógio que lança exceção. A resposta tem `code: ServerError` e nenhum
+  rastro da exceção.
+- **Mutações:**
+  - tirar a recusa de campos desconhecidos → 3 testes caíram;
+  - tirar a checagem de nome repetido → o índice único ainda pega (é o que se espera).
+- 306 testes verdes (106 + 125 + 75), 0 avisos.
