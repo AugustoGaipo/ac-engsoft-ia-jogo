@@ -1058,3 +1058,16 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Conferido de verdade:** `dotnet run` sobe em `http://127.0.0.1:5257`, e um `curl` recebe o 404 com
   `code` e `nosniff`.
 - 240 testes verdes (106 + 125 + 9), 0 avisos.
+
+### API — tarefa 2: código de acesso e nome ✅ (checkpoint da base)
+- `AccessCode` (gera, normaliza, confere o formato, calcula o hash e compara em tempo constante) e
+  `ProfileNames` (as regras de nome da A1, o corte dos espaços e a chave sem maiúsculas). As duas são
+  classes puras, sem banco e sem HTTP.
+- **Fase vermelha:** primeiro só as assinaturas, que lançam `NotImplementedException`. 39 testes falharam.
+- **Testes que vão além da spec:**
+  - 1 000 códigos usam os 32 símbolos do alfabeto (pega erro na extração dos bits);
+  - um `А` cirílico, que parece um `A` latino, é recusado;
+  - um nome com tabulação é recusado.
+- **Erro meu num teste, não no código:** eu esperava `"0011"` para `"OIlL"`, mas lá há um `O` e três
+  letras que valem 1, então o certo é `"0111"`. O teste foi corrigido e o código não mudou.
+- 279 testes verdes (106 + 125 + 48), 0 avisos.

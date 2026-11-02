@@ -32,16 +32,16 @@ body limit 4 KB, `X-Content-Type-Options: nosniff`, `Development` launch setting
 **Description:** Pure classes `AccessCode` (`Generate`, `Normalize`, `Hash`, `Matches` with
 `FixedTimeEquals`) and `ProfileNames` (`Validate`, trim, `Key` ignoring case), following A1 and A3.
 **Acceptance criteria:**
-- [ ] P-SC 3, 4: 1 000 codes distinct and in the format; normalization of case, dashes, spaces, `O`/`I`/`L`.
-- [ ] P-SC 6, 25: every name rule and boundary (3, 16), accents, spaces, `[b]x[/b]`, `<i>x`; trim.
-- [ ] P-SC 24 (part): `Robert'); DROP TABLE Profiles;--` is an invalid name.
+- [x] P-SC 3, 4: 1 000 codes distinct and in the format; normalization of case, dashes, spaces, `O`/`I`/`L`.
+- [x] P-SC 6, 25: every name rule and boundary (3, 16), accents, spaces, `[b]x[/b]`, `<i>x`; trim.
+- [x] P-SC 24 (part): `Robert'); DROP TABLE Profiles;--` is an invalid name.
 **Dependencies:** Task 1
 **Files:** `Profiles/AccessCode.cs`, `Profiles/ProfileNames.cs`, `tests/.../Profiles/AccessCodeTests.cs`,
 `ProfileNamesTests.cs`
 **Scope:** S
 
 ### Checkpoint: Foundation
-- [ ] Build clean, all tests green, commit + push.
+- [x] Build clean, all tests green, commit + push.
 
 ## Task 3: Create a profile
 **Description:** `ProfileEntity`, `SessionEntity`, `ProfilesOptions` (icons, lockout, lifetimes from
