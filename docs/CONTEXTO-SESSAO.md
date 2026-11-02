@@ -106,3 +106,27 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
 - **20 perguntas** para o usuário em `docs/processo/PERGUNTAS-PARA-O-USUARIO.md` (nenhuma trava o trabalho).
 - **Próximo passo:** o usuário aprova (ou ajusta) as specs da API; depois plano e implementação da API
   (seg) e do `game` nível 1 (ter).
+
+## Onde paramos (segunda, 2026-11-02, à tarde)
+- **Specs do `profiles` e do `progress` aprovadas** pelo usuário: nomes sem acento, API no PC em
+  `127.0.0.1`, mortes guardadas mas fora do ranking, demais padrões como estavam. As specs do `sync` e
+  do `game` ainda são rascunho.
+- **API em andamento:** plano em `tasks/api/plan.md` e `tasks/api/todo.md` (11 tarefas). **Tarefas 1 a 8
+  feitas e no GitHub** (último commit `2ee9343`): 388 testes verdes (106 `rules` + 125 `levels` + 157
+  API), 0 avisos.
+  - O `profiles` está completo: criar, entrar, bloqueio atômico, token, código novo, registro de
+    segurança, limites de pedidos, HTTPS fora do PC e sem CORS.
+  - O `progress` tem as partes puras (`RankingOrder`, `ResultCheck`), o `LevelDirectory` e `GET /levels`.
+- **Próximo passo:** tarefa 9, `POST /results` + `GET /progress/me`, com `BestResultEntity` (2 linhas
+  por perfil e nível, `GhostId` anulável, 2 índices), a política `uploads` e eventos `ResultRefused`.
+  Depois a tarefa 10 (rankings) e a 11 (arquitetura, cobertura, auditoria e `RELATORIO-api.md`).
+- **Como os testes da API funcionam:**
+  - `tests/Swapping.Api.Tests/ApiFactory.cs`: SQLite em memória, relógio falso `Clock`, `Settings`
+    (os limites começam altíssimos), `UseFileDatabase` para testes com pedidos em paralelo, `Logs` e
+    `SecurityEvents`, e `BreakClock`;
+  - `ApiClientExtensions` (`CreateProfileAsync`, `SendWithTokenAsync`, `ProblemCodeAsync`);
+  - `Progress/TestCatalog` (catálogo `level-1`, `level-2`, `level-4` numa pasta temporária).
+- **Processo seguido em cada tarefa:** teste vermelho → código → uma ou duas mutações → diário →
+  marcar no `todo.md` → commit e push.
+- **Fora do projeto:** o `/doctor` desligou 7 skills pessoais sem uso e o plugin `recruiter-panel`
+  (`~/.claude/settings.json`, com cópia em `.bak-doctor`).
