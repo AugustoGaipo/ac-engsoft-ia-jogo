@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Swapping.Api.Data;
 using Swapping.Api.Hosting;
@@ -28,6 +29,20 @@ builder.Services.AddScoped<ProfileService>();
 builder.Services.AddAuthentication(BearerAuth.SchemeName)
     .AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, BearerAuth>(BearerAuth.SchemeName, null);
 builder.Services.AddAuthorization();
+builder.Services.AddGameRateLimits(builder.Configuration);
+builder.Services.AddHttpsRedirection(options => options.HttpsPort = builder.Configuration.GetValue<int?>("HttpsPort") ?? 443);
+
+// Forwarded headers are trusted only from proxies listed in configuration (none by default, S12).
+var knownProxies = builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>() ?? [];
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+    foreach (var proxy in knownProxies)
+        options.KnownProxies.Add(System.Net.IPAddress.Parse(proxy));
+});
+// No CORS policy is registered on purpose (S11): browsers never get Access-Control-Allow-Origin.
 
 var app = builder.Build();
 
@@ -40,12 +55,21 @@ app.Use(async (context, next) =>
     await next(context);
 });
 app.UseExceptionHandler();
+if (knownProxies.Length > 0)
+    app.UseForwardedHeaders();
+if (!app.Environment.IsDevelopment())
+{
+    // Outside the presentation PC every request must be HTTPS (S6).
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
 app.UseStatusCodePages();
 app.UseMiddleware<BodySizeLimit>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
-app.MapProfiles();
+app.MapGroup("").RequireRateLimiting(RateLimits.Default).MapProfiles();
 
 app.Run();
 

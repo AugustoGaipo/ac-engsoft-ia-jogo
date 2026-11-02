@@ -18,7 +18,7 @@ public static class ProfilesEndpoints
             var profile = created.Profile;
             return Results.Created("/profiles/me", new CreateProfileResponse(
                 profile.Id, profile.Name, profile.Icon, created.AccessCode, created.Token, created.TokenExpiresAt));
-        }).AddEndpointFilter(NoStore);
+        }).AddEndpointFilter(NoStore).RequireRateLimiting(RateLimits.CreateProfile);
 
         app.MapPost("/sessions", async (LoginRequest body, ProfileService service, HttpContext http, CancellationToken ct) =>
         {
@@ -34,7 +34,7 @@ public static class ProfilesEndpoints
                 default:
                     return ApiProblem.Result(StatusCodes.Status401Unauthorized, "InvalidCredentials");
             }
-        }).AddEndpointFilter(NoStore);
+        }).AddEndpointFilter(NoStore).RequireRateLimiting(RateLimits.Login);
 
         app.MapPost("/profiles/me/access-code", async (RegenerateCodeRequest body, ClaimsPrincipal user, ProfileService service, HttpContext http, CancellationToken ct) =>
         {

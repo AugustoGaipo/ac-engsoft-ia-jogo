@@ -20,7 +20,17 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
 
     public FakeTime Clock { get; } = new(new DateTimeOffset(2026, 11, 2, 12, 0, 0, TimeSpan.Zero));
 
-    public Dictionary<string, string?> Settings { get; } = new();
+    /// <summary>
+    /// Extra configuration. The rate limits start very high so tests are not limited by accident;
+    /// <c>RateLimitTests</c> set the production numbers.
+    /// </summary>
+    public Dictionary<string, string?> Settings { get; } = new()
+    {
+        ["Profiles:RateLimits:CreateProfilePerHour"] = "100000",
+        ["Profiles:RateLimits:LoginPerMinute"] = "100000",
+        ["Profiles:RateLimits:UploadsPerMinute"] = "100000",
+        ["Profiles:RateLimits:DefaultPerMinute"] = "100000",
+    };
 
     public string EnvironmentName { get; init; } = "Development";
 

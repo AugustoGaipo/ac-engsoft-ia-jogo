@@ -102,16 +102,16 @@ login, rate limit hit; `Cache-Control: no-store` on routes that return a code or
 `Profiles:RateLimits`; 429 with `Retry-After`; `X-Forwarded-For` not trusted; no CORS policy;
 HTTPS redirection + HSTS outside `Development`.
 **Acceptance criteria:**
-- [ ] P-SC 15: 6th `POST /profiles` in an hour → 429 with `Retry-After`; 11th `POST /sessions` in a minute → 429.
-- [ ] P-SC 27, 28: `Origin: https://evil.example` gets no `Access-Control-Allow-Origin`; 11 logins
+- [x] P-SC 15: 6th `POST /profiles` in an hour → 429 with `Retry-After`; 11th `POST /sessions` in a minute → 429.
+- [x] P-SC 27, 28: `Origin: https://evil.example` gets no `Access-Control-Allow-Origin`; 11 logins
       with different `X-Forwarded-For` → the 11th is 429.
-- [ ] P-SC 21: under `Production`, `http://` → redirect to `https://` and HSTS on HTTPS responses.
+- [x] P-SC 21: under `Production`, `http://` → redirect to `https://` and HSTS on HTTPS responses.
 **Dependencies:** Task 6
 **Files:** `Hosting/RateLimits.cs`, `Program.cs`, `tests/.../Profiles/RateLimitTests.cs`, `tests/.../TransportTests.cs`
 **Scope:** M
 
 ### Checkpoint: `profiles` complete
-- [ ] Every P-SC 1–31 has a test (except 17, 18, 30 → Task 11); build clean, all green, commit + push.
+- [x] Every P-SC 1–31 has a test (except 17, 18, 30 → Task 11); build clean, all green, commit + push.
 
 ## Task 8: Catalog, ranking order and plausibility
 **Description:** `LevelDirectory` (loads `levels/catalog.json` with `LevelCatalog.Load` at startup from

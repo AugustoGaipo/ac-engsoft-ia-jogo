@@ -1146,3 +1146,25 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - revogar também a sessão que pediu o código novo → 1 teste caiu;
   - pôr o cabeçalho `Authorization` no registro de segurança → o teste "nenhum log tem segredo" caiu.
 - 345 testes verdes (106 + 125 + 114), 0 avisos.
+
+### API — tarefa 7: limites e transporte ✅ (checkpoint: `profiles` completo)
+- **Limites de pedidos** (janela fixa, em memória, números lidos de `Profiles:RateLimits`):
+  - criar perfil: 5 por hora por IP;
+  - entrar: 10 por minuto por IP;
+  - envios de resultado: 30 por minuto por perfil;
+  - o resto: 120 por minuto por IP.
+  Ao passar do limite: `429` com `Retry-After` e um evento `RateLimitHit` no registro de segurança.
+- **Transporte:**
+  - fora de `Development`, HTTPS obrigatório (redireciona) e HSTS;
+  - nenhuma política de CORS;
+  - o `X-Forwarded-For` só é lido se houver proxies configurados (nenhum por padrão).
+- **Decisão do agente:** nos testes, a factory começa com os limites altíssimos, e só `RateLimitTests`
+  usa os números de produção. Senão, os testes de bloqueio (10 logins seguidos) bateriam no limite por
+  acaso.
+- **Fase vermelha:** 10 testes novos, 7 falhando. Os 3 de CORS e de `Development` já passavam, porque ali
+  o certo é justamente não fazer nada.
+- **Mutação:** tirar o limite do login (ele cairia no limite geral de 120) → 2 testes caíram.
+- **Conferido com a API rodando de verdade** (`dotnet run` + `curl`): criar um perfil, depois 11 logins
+  errados → 5 × `401`, 5 × `423` e `429` no 11º.
+- **Checkpoint:** todos os critérios do `profiles` têm teste, menos o 17, o 18 e o 30, que ficam para a
+  tarefa 11 (arquitetura, cobertura e auditoria). 355 testes verdes (106 + 125 + 124), 0 avisos.
