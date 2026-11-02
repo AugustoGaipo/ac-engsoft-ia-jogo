@@ -924,3 +924,12 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     não é código morto.
   - **Arquitetura:** dependências num só sentido (`levels` → `rules`), nenhuma referência a Godot, nenhum
     estado global. **Desempenho:** sem problemas para o tamanho das salas (dezenas de objetos).
+
+### Autônomo — item 8: C4 nível 3 (Componentes), parcial ✅
+- Acrescentei em `docs/architecture/C4.md` o diagrama de Componentes do **Game Client**, desenhado a partir do
+  código que existe: as classes principais do `levels` e do `rules`, e as setas de quem chama quem. O
+  `game` aparece tracejado, porque ainda não existe. Há também uma tabela com os testes e a cobertura de
+  cada componente.
+- **Decisão tomada sozinho:** marquei o diagrama como **parcial** e com data. O `sync`, o `GameLogic` e os
+  componentes da API entram quando forem construídos, e o nível 4 (Código) fica para o fim, como pede o
+  enunciado.

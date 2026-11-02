@@ -50,7 +50,7 @@ Regras:
 - [x] 7. **Revisão de código do `rules` e do `levels`**, com a skill `agent-skills:code-review-and-quality`.
       - Corrigir só o que for claro e pequeno, sempre com teste.
       - Anotar o resto como achados no diário.
-- [ ] 8. **C4 nível 3 (Componentes), parcial**, em `docs/architecture/C4.md`.
+- [x] 8. **C4 nível 3 (Componentes), parcial**, em `docs/architecture/C4.md`.
       - Componentes que já existem dentro do Game Client: `rules` e `levels`, com as classes principais e as setas.
       - Marcar como "parcial: `game`, `sync` e a API entram quando existirem".
 - [ ] 9. **Site que explica a arquitetura** (só para o usuário).
