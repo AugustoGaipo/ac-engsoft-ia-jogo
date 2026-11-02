@@ -91,3 +91,18 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
   - revisão pequena da spec do `rules` (exemplos de pulo, barra de lançamento, pressão de pilha);
   - raio do ponto livre mais próximo.
 - **Próximo passo:** specs do `profiles` e do `progress` (API ASP.NET Core + SQLite).
+
+## Onde paramos (madrugada de 2026-11-02)
+- Lista autônoma `tasks/autonomo.md` **concluída** (12 itens): os itens 1–4 na nuvem (sem as skills, à mão)
+  e os itens 5–12 no PC (com as skills). A rotina da nuvem está **pausada**.
+- **Specs em rascunho, esperando a aprovação do usuário:** `SPEC-profiles`, `SPEC-progress`, `SPEC-sync`,
+  `SPEC-game` (nível 1), com a segurança revisada pela skill e conferidas entre si.
+- **Feito:**
+  - correção na spec do `rules` (exemplos de pulo);
+  - revisão de código com 2 bugs corrigidos (`rules`: 106 testes, 98,5 %);
+  - C4 de Componentes parcial;
+  - site em `docs/site/index.html`;
+  - roteiro em `docs/apresentacao/ROTEIRO.md`.
+- **20 perguntas** para o usuário em `docs/processo/PERGUNTAS-PARA-O-USUARIO.md` (nenhuma trava o trabalho).
+- **Próximo passo:** o usuário aprova (ou ajusta) as specs da API; depois plano e implementação da API
+  (seg) e do `game` nível 1 (ter).
