@@ -1,8 +1,8 @@
 # Trabalho autônomo (a partir de 2026-11-01 à noite)
 
-Lista do loop autônomo: **uma rodada por hora**, cada uma com cerca de **35 minutos de trabalho**.
+Lista do loop autônomo: **uma rodada por hora**, cada uma com cerca de **30 minutos de trabalho** e 30 de descanso.
 Cada rodada pega o **primeiro item não marcado** e o faz por completo. Só começa o próximo se ainda sobrar
-tempo dos 35 minutos, e **nunca deixa um item pela metade** num commit. Ao terminar um item, marca `[x]`,
+tempo dos 30 minutos, e **nunca deixa um item pela metade** num commit. Ao terminar um item, marca `[x]`,
 registra no `docs/processo/DIARIO.md` (em português, com as decisões tomadas sozinho), faz commit e push.
 Não há horário para parar: o loop só para quando **todos os itens estiverem marcados**.
 
