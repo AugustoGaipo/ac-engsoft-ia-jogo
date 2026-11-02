@@ -756,3 +756,30 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   Dá para pegar, empurrar e arremessar; ela só não entra na troca. "Travado" e `accepts` limitam só as
   trocas. Está escrito na spec do `levels` e no `level_1.json` (sala 1.4), para o `game` não entender
   "travado" como "preso no lugar".
+
+### Autônomo — item 1: rascunho da spec do `profiles` ✅
+- Escrevi `docs/specs/SPEC-profiles.md` no formato das specs do `rules` e do `levels`. Status:
+  **rascunho, aguardando sua revisão**; nenhum código foi escrito.
+- A skill `agent-skills:spec-driven-development` não estava disponível neste ambiente (rotina na nuvem),
+  então segui o mesmo processo à mão: objetivo, stack, comandos, estrutura, estilo, testes, limites,
+  critérios de sucesso testáveis (18), suposições e perguntas abertas.
+- Conteúdo: perfil com nome e ícone; código de acesso de 16 símbolos (Crockford Base32, 80 bits) gerado
+  pelo servidor, que guarda só o SHA-256; login com nome + código devolve um token de sessão (também só o
+  hash no banco); bloqueio por tentativas; gerar código novo; limites de envio (inclusive a política
+  `uploads` que o `progress` vai usar); trocar o ícone.
+- Criei `docs/processo/PERGUNTAS-PARA-O-USUARIO.md` com 5 perguntas.
+- **Decisões tomadas sozinho (todas reversíveis, A1–A10 na spec):**
+  - Nome de 3 a 16 caracteres, só letras sem acento, números, `_` e `-`, único sem diferenciar maiúsculas
+    (evita nomes parecidos no ranking).
+  - 12 ícones fixos (`icon-01` a `icon-12`).
+  - SHA-256 em vez de hash lento: o código é aleatório com 80 bits, não dá para adivinhar fora do servidor.
+  - Token de sessão separado do código, válido 30 dias; o código só viaja no login.
+  - 5 códigos errados seguidos → 15 minutos de bloqueio. As sessões que já existem continuam valendo,
+    para um atacante não tirar o dono do próprio PC.
+  - Limites: criar perfil 5/hora por IP, login 10/min por IP, envios 30/min por perfil, resto 120/min.
+  - O "nome já existe" (409) revela o nome, o que é aceitável porque os nomes aparecem no ranking. O
+    login dá a mesma resposta para nome inexistente e código errado.
+  - `profiles` e `progress` como duas pastas de **um** projeto `Swapping.Api` (mesmo host e mesmo banco),
+    com teste de arquitetura separando as duas. Banco criado com `EnsureCreated()`, sem migrations.
+  - Pacotes NuGet novos listados na spec (EF Core SQLite e `Mvc.Testing`): aprovar a spec aprova os dois.
+  - Sem apagar perfil e sem trocar nome nesta versão.

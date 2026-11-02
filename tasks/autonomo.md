@@ -16,7 +16,7 @@ Regras:
 - Commit em português, terminando com `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 
 ## Itens (em ordem)
-- [ ] 1. **Rascunho da spec do `profiles`** (`docs/specs/SPEC-profiles.md`), com a skill
+- [x] 1. **Rascunho da spec do `profiles`** (`docs/specs/SPEC-profiles.md`), com a skill
       `agent-skills:spec-driven-development`: API ASP.NET Core + SQLite (EF Core).
       - Perfil sem senha: nome e ícone, mais um código de acesso gerado pelo servidor, que guarda só o hash.
       - Bloqueio por tentativas, gerar código novo e limite de envios.
