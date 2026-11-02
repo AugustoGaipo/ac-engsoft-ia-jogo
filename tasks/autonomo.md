@@ -61,7 +61,7 @@ Regras:
       - Tabela de evidências: cada skill usada e onde, testes e cobertura, bugs achados na revisão e as
         decisões do diário.
       - Lista dos prints e trechos de vídeo que o usuário precisa capturar.
-- [ ] 11. **Refazer a revisão de segurança com a skill de verdade** (`agent-skills:security-and-hardening`).
+- [x] 11. **Refazer a revisão de segurança com a skill de verdade** (`agent-skills:security-and-hardening`).
       - O item 3 foi feito na nuvem, à mão, sem a skill.
       - Revisar as seções "Security" do `SPEC-profiles.md` e do `SPEC-progress.md` e acrescentar uma no
         `SPEC-sync.md` se faltar algo.

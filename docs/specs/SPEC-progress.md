@@ -162,7 +162,8 @@ Security review of this draft, done during the autonomous loop following the pro
 `agent-skills:security-and-hardening` (threat → protection → testable criterion). The transport and host
 protections (HTTPS, no CORS, security headers, untrusted `X-Forwarded-For`, no raw SQL) are shared with
 [`SPEC-profiles.md`](SPEC-profiles.md#security) (S6–S12) because both modules run in one host; here they
-get one criterion each on the `progress` routes. Criteria 18–26.
+get one criterion each on the `progress` routes. Criteria 18–27. Checked on the PC with the skill
+`agent-skills:security-and-hardening` on 2026-11-02: P1–P10 were already right; P11 was added.
 
 | # | Threat | Protection | Criterion |
 |---|---|---|---|
@@ -176,6 +177,7 @@ get one criterion each on the `progress` routes. Criteria 18–26.
 | P8 | **CORS on the public rankings** | No CORS policy (shared host, profiles S11): no `Access-Control-Allow-Origin`. A future web ranking gets an explicit origin list, `GET` only. | 24 |
 | P9 | **Stolen token replayed to post results** | HTTPS outside `Development`, `127.0.0.1` only in `Development` (profiles S6); the token stops working on logout and on code regeneration. | 25 |
 | P10 | **Ghost uploads (future): huge or malformed binary** | Design rule for later: per-route `MaxRequestBodySize` of 256 KB enforced **before** reading the body; version byte and sample count checked before storing; only for the profile's own current best row. Not built now: the routes return 404. | 13, 26 |
+| P11 | **Repudiation: a cheater or a broken client leaves no trace** (added in the review with the skill) | Refused results (`422 ImplausibleResult`, `409 LevelLocked`) write a `Swapping.Security` event (profiles S14) with the profile id, the level id and the code, so a fake result found in the ranking can be traced to its profile. The values are logged; the body is not stored. Dependencies and privacy are shared with profiles S15 and S16 (one host, one database). | 27 |
 
 ## Success Criteria
 1. `dotnet build` and `dotnet test` pass with no warnings (warnings are errors).
@@ -214,6 +216,8 @@ Security criteria (see the Security section):
     `Origin: https://evil.example` → no `Access-Control-Allow-Origin` header.
 25. **P9:** after `DELETE /sessions/current`, `POST /results` with that token → 401 and no row is written.
 26. **P10:** `PUT /results/{levelId}/time/ghost` with any body → 404 in this version (no route).
+27. **P11:** a `422 ImplausibleResult` and a `409 LevelLocked` each write one `Swapping.Security` event
+    with the profile id and the level id (test logger); the event never has the body.
 
 ## Decisions / assumptions (taken alone, reversible — waiting for the user's review)
 - **B1. Two best rows per (profile, level)**, one per mode, instead of storing every run.

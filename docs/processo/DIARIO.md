@@ -961,3 +961,29 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 ## 2026-11-02 — Lista autônoma concluída
 - Os 10 itens de `tasks/autonomo.md` estão marcados. A nuvem fez os itens 1 a 4 sem as skills, seguindo o
   processo à mão; o PC fez os itens 5 a 10 com as skills. O loop do PC se cancela sozinho.
+
+### Autônomo — item 11: revisão de segurança refeita com a skill ✅
+- Feita no PC com a skill `agent-skills:security-and-hardening` carregada de verdade. Ela segue a ordem
+  modelo de ameaças primeiro (fronteiras de confiança, bens, STRIDE), depois o checklist (OWASP, segredos,
+  dependências, privacidade, LLM).
+- **O que a nuvem já tinha feito certo** (S1–S13 e P1–P10, sem mudança): força bruta e bloqueio (com
+  contador atômico contra pedidos em paralelo), comparação de hash em tempo constante, consultas
+  parametrizadas, validação da entrada com limite de tamanho e campos desconhecidos recusados, erros sem
+  detalhes internos, sem CORS, `X-Forwarded-For` não confiável, HTTPS fora do PC da apresentação.
+- **O que faltava e entrou** (cada item com um critério de sucesso testável):
+  - **S14 / P11 — repúdio (o "R" do STRIDE):** um registro pequeno de eventos de segurança (bloqueio,
+    código novo, login recusado, limite atingido, resultado recusado). Grava o perfil, o IP e o nome do
+    evento, **nunca** o código, o token ou o corpo do pedido. Assim um resultado falso achado no ranking
+    pode ser ligado ao perfil que o enviou.
+  - **S15 — dependências (cadeia de suprimentos):** versões fixas, arquivo de travamento do NuGet
+    (`packages.lock.json`) e `dotnet list package --vulnerable` antes da apresentação.
+  - **S16 — privacidade (LGPD):** classificação dos dados. Nome e ícone são públicos; o IP só fica na
+    memória e **nunca é gravado** no banco; não há e-mail nem senha. Apagar um perfil é um passo manual em SQL
+    documentado, até você responder a pergunta 5.
+  - **`sync` — transporte:**
+    - não aceita `http://` fora do próprio PC;
+    - nunca desliga a checagem de certificado (um "atalho" comum que deixaria o token ser roubado);
+    - não segue redirecionamentos;
+    - limita o tamanho das respostas (256 KB) e do save (1 MB).
+- **Não se aplica** (anotado na spec): cookies e CSRF (o cliente é nativo e o token vai no cabeçalho), XSS
+  em HTML (não há página web), upload de arquivo e SSRF (não existem nesta versão), recursos de IA no jogo.

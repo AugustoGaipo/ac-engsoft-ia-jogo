@@ -196,9 +196,21 @@ not a web page: there are no cookies and no browser session, which removes CSRF 
 | S11 | **CORS: a web page calling the API with a player's token** | No CORS policy is registered (default deny): browsers get no `Access-Control-Allow-Origin`. The token lives in an `Authorization` header, never in a cookie. If a web ranking is ever added, it gets an explicit origin list for `GET` only. | 27 |
 | S12 | **Rate-limit bypass with a fake client IP** (`X-Forwarded-For`) | Forwarded headers are **not** trusted unless `ForwardedHeaders:KnownProxies` is configured (empty by default); the limiter keys on the connection's remote IP. | 28 |
 | S13 | **Mass profile creation / name squatting** | `create-profile` 5 per hour per IP. | 15 |
+| S14 | **Repudiation / no trace of an attack** (STRIDE "R"; added in the review with the skill) | A small **security event log** through `ILogger` (category `Swapping.Security`): lockout started, access code regenerated, login refused, rate limit hit, result refused as implausible. Each event has the time, the profile id (if known), the remote IP and the event name. **Never** the code, the token or the request body. Kept in the server log only; nothing is added to the database. | 29 |
+| S15 | **Vulnerable or tampered NuGet packages** (A06, supply chain) | The API is the only project with packages (EF Core SQLite, and `Microsoft.AspNetCore.Mvc.Testing` in tests). Exact versions are pinned and **NuGet lock files** are on (`RestorePackagesWithLockFile`, `packages.lock.json` committed, `--locked-mode` in the build). Before the presentation: `dotnet list package --vulnerable --include-transitive` shows nothing high or critical, and any exception is written in the diary with a reason. | 30 |
+| S16 | **Personal data held without need** (privacy, LGPD) | Data classification: the **name** and the **icon** are public pseudonymous data; the hashes, the lockout counters and the session rows are security data; the **IP** is used only in memory by the rate limiter and is **never stored** (only the security log of S14 has it, and server logs are not kept). There is no e-mail, no real name and no password. Deleting a profile is a documented manual SQL step (`DELETE` of the profile, its sessions and its results), until the user decides on question 5. | 31 |
 
-Out of scope for this version (documented, not built): CAPTCHA, account recovery, audit log, a
-distributed rate limiter (one server process is enough for the class).
+Out of scope for this version (documented, not built): CAPTCHA, account recovery, an audit table in the
+database (S14 logs only), a distributed rate limiter (one server process is enough for the class).
+
+**Review with the skill (2026-11-02, on the PC).** The table above was first written in the cloud, by hand.
+Then it was checked against the checklist of `agent-skills:security-and-hardening`:
+- **Already right:** authentication and lockout (S1, S2, S5), timing-safe hash comparison, no secrets in
+  code, parameterized queries (S8), input validation at the boundary (S10), generic errors (S7), CORS (S11),
+  rate limits with an untrusted `X-Forwarded-For` (S12), and HTTPS (S6).
+- **Added:** S14 (repudiation), S15 (supply chain) and S16 (privacy).
+- **Not applicable:** cookies and CSRF (bearer header, native client), XSS through HTML (no web page; the
+  Godot markup case is S9), file uploads and SSRF (none in this version), and LLM features (none).
 
 ## Success Criteria
 1. `dotnet build` and `dotnet test` pass with no warnings (warnings are errors).
@@ -245,6 +257,12 @@ Security criteria (see the Security section):
     `Access-Control-Allow-Origin` header in the response.
 28. **S12:** 11 logins within a minute from one client, each with a different `X-Forwarded-For` → the
     11th is 429.
+29. **S14:** a lockout and a code regeneration each write one `Swapping.Security` event (checked with a
+    test logger). No logged text in the whole test run contains an access code or a token.
+30. **S15:** `packages.lock.json` exists for `Swapping.Api` and its tests, and the build uses
+    `--locked-mode`. `dotnet list package --vulnerable --include-transitive` was run and its result is in the diary.
+31. **S16:** after creating a profile and logging in, no table has a column with an IP address, an e-mail
+    or a plain code or token (schema test).
 
 ## Decisions / assumptions (taken alone, reversible — waiting for the user's review)
 - **A1. Name:** ASCII letters, digits, `_`, `-`, 3–16 characters, unique ignoring case. No accents or

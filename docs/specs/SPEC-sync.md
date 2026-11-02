@@ -175,6 +175,14 @@ public static QueueAction Decide(ApiAnswer answer) => answer switch
   - negative or absurd values are ignored;
   - the save never takes a field it does not know.
 - **No path from the catalog or the server:** the save path comes only from the game (`user://`).
+- **Transport** (added in the review with `agent-skills:security-and-hardening`):
+  - `HttpGameApi` refuses a base URL that is not `https://`, unless the host is loopback (`127.0.0.1`,
+    `localhost`, `::1`), which is the presentation setup;
+  - it never sets a custom certificate check (`ServerCertificateCustomValidationCallback`), so a bad
+    certificate fails as a network error instead of being accepted;
+  - redirects are not followed, so the token is never sent to another host.
+- **Size caps:** a response body larger than 256 KB is read as a network error, so a broken or hostile
+  server cannot fill the memory. A save file larger than 1 MB is treated as corrupt (recovered as above).
 
 ## Success Criteria
 1. `dotnet build` and `dotnet test` pass with no warnings; `Swapping.Sync.csproj` has no project or package reference.
@@ -202,6 +210,10 @@ public static QueueAction Decide(ApiAnswer answer) => answer switch
     10 s timeout into a network error (not an exception).
 15. **No secrets in reports:** no `FlushReport` or error text contains the access code or the token (checked by a test).
 16. Line coverage ≥ 90 %.
+17. **Transport:**
+    - `HttpGameApi` with `http://example.com` fails at construction; `http://127.0.0.1:5000` is accepted;
+    - a `302` answer is not followed (fake handler: no second request) and counts as "try later".
+18. **Size caps:** a 300 KB response becomes a network error, and a 2 MB save file is recovered as corrupt.
 
 ## Decisions to confirm (assumptions in this draft)
 - **C1:** access code and token stay in plain text in the save (player's own PC).
