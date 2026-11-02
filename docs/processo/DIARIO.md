@@ -840,3 +840,19 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - Dois índices para os dois modos do ranking, e a posição do jogador calculada com `COUNT`.
   - Corrigi o número do critério de força bruta para a conta certa (2⁷⁹ ÷ 175 200 tentativas por ano).
 - 3 perguntas novas em `docs/processo/PERGUNTAS-PARA-O-USUARIO.md` (9 a 11).
+
+### Autônomo — item 4: revisão da spec do `rules` (critério 12, exemplos de pulo) ✅
+- Refiz as contas com o volume fixo do jogador (0,07 m³), ou seja, densidade = massa ÷ 0,07, no ar (1,2 kg/m³):
+  70 kg → 0,5006 m; 35 kg → 1,0024 m; **7 kg → 1,859 m**; 300 kg → 0,1167 m.
+  Só o caso de 7 kg mudava de verdade: com 7 kg a densidade cai para 100 kg/m³, o empuxo do ar pesa um
+  pouco mais e o pulo vai de 1,84 para **1,86 m**. Os outros três continuam dentro de ±0,01.
+- `SPEC-rules.md`: o texto do pulo e o critério 12 agora dizem que a densidade vem do volume fixo e
+  trazem 1,86 m para 7 kg, com uma nota explicando de onde vinha o 1,84. **A fórmula não mudou.**
+- Teste novo `FormulaTests.JumpHeight_InAir_WithPlayerFixedVolume` (4 casos, densidade calculada com
+  `Formulas.Density(m, 0,07)`). O teste antigo `JumpHeight_InAir` (densidade 1 000) **ficou como estava**,
+  porque continua certo para um corpo de densidade 1 000; nenhum teste foi apagado ou afrouxado.
+- Build com 0 avisos; testes 98/98 do `rules` (eram 94) e 125/125 do `levels`, também na rodada com
+  cobertura (`Swapping.Rules` 98,3 % das linhas, `Swapping.Levels` 96,7 %).
+- **Decisão tomada sozinho:** corrigi também o número em `docs/design/PROGRESSAO-NIVEIS.md` (sala 3.2:
+  "~1,86 m"). É só o texto do número; a sala em `levels/level_3.json` não foi tocada e continua passando
+  no teste de design (saída a pelo menos 1,2 m).

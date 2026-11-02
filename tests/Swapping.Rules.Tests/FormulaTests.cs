@@ -108,6 +108,18 @@ public class FormulaTests
         Assert.Equal(expected, h, 0.01);
     }
 
+    [Theory] // SC 12 with the real density of the player: fixed volume 0.07 m3, so rho = m / 0.07
+    [InlineData(70, 0.50)]
+    [InlineData(35, 1.00)]
+    [InlineData(7, 1.86)]
+    [InlineData(300, 0.12)]
+    public void JumpHeight_InAir_WithPlayerFixedVolume(double mass, double expected)
+    {
+        var density = Formulas.Density(mass, volumeM3: 0.07);
+        var h = Formulas.JumpHeight(mass, density, fluidDensity: Medium.Air.Density);
+        Assert.Equal(expected, h, 0.01);
+    }
+
     [Fact]
     public void JumpTakeoffSpeed_IsCappedByLegs() =>
         Assert.Equal(6.0, Formulas.JumpTakeoffSpeed(7), Tol);

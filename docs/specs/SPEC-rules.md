@@ -115,8 +115,10 @@ properties; the game always uses "all" for now.
   - Effective gravity near the medium's density: g_eff = g · (1 − ρ_fluid ÷ ρ) when ρ > ρ_fluid. A
     lighter body jumps higher but falls at the normal speed; only close to the medium's density does
     the fall become slow, "moon-like".
-  - Jump height h = v² ÷ (2·g_eff). Examples in air: 70 kg → 0.50 m; 35 kg → 1.00 m;
-    7 kg → capped at 6 m/s → 1.84 m; 300 kg → 0.12 m.
+  - Jump height h = v² ÷ (2·g_eff). Examples in air (ρ_air = 1.2), with the player's **fixed volume
+    of 0.07 m³**, so ρ = m ÷ 0.07: 70 kg (ρ 1 000) → 0.50 m; 35 kg (ρ 500) → 1.00 m;
+    7 kg (ρ 100, capped at 6 m/s) → **1.86 m**; 300 kg (ρ ≈ 4 286) → 0.12 m. (An earlier draft said
+    1.84 m for 7 kg: that value only holds if the body keeps ρ ≈ 1 000, i.e. if the volume changed.)
   - ⚠️ **Note for later:** compare this with a tuned, gameplay-first jump in playtests and keep the one
     that feels better.
 - Static pressure P = m·g ÷ A_contact, with g = 9.8 m/s²; a fragile piece breaks when P > its limit.
@@ -222,7 +224,8 @@ public sealed class SwapOperation : IOperation
 10. Pressure: 10 kg on 0.01 m² → 9 800 Pa; breaks a 5 000 Pa glass, not a 10 000 Pa one.
 11. Buoyancy: the player (70 kg, 0.07 m³) in water → **Swim**; holding a 30 kg, 0.01 m³ rock →
     ρ = 100 ÷ 0.08 = 1 250 → **Sink**; with 0.05 kg in air → ρ ≈ 0.71 → **Swim** (flies).
-12. Jump in air: 70 kg → 0.50 m, 35 kg → 1.00 m, 7 kg → 1.84 m (speed cap), 300 kg → 0.12 m (± 0.01).
+12. Jump in air with the player's fixed volume 0.07 m³ (ρ = m ÷ 0.07): 70 kg → 0.50 m, 35 kg → 1.00 m,
+    7 kg → 1.86 m (speed cap), 300 kg → 0.12 m (± 0.01).
 13. The invariant test passes for 1 000 random steps.
 14. `Swapping.Rules.csproj` has no reference to Godot.
 15. Line coverage ≥ 90 %.

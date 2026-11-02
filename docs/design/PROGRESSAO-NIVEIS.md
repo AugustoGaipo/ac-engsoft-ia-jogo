@@ -26,7 +26,7 @@ Base da spec do módulo `levels`. Estado: **aprovada** (2026-10-31).
 | Sala | O que o jogador aprende |
 |---|---|
 | **3.1** | **Botão que exige mais peso que o jogador**: trocar o peso com uma caixa leve. |
-| **3.2** | **O pulo depende da massa**: com 7 kg, o jogador pula 1,84 m. |
+| **3.2** | **O pulo depende da massa**: com 7 kg, o jogador pula ~1,86 m. |
 | **3.3** | **Vidro quebradiço**: ficar pesado para quebrar o vidro ou leve para passar por cima. |
 | **3.4** | Junta as três ideias. |
 | **4.1** | **Água**: pesado afunda e anda no fundo, leve boia. **Barra de ar** (15 s) e afogamento. |
