@@ -56,7 +56,7 @@ Regras:
 - [x] 9. **Site que explica a arquitetura** (só para o usuário).
       - Simples e compreensível, com analogias do dia a dia, ligando cada ideia do banco de ideias ao código.
       - Um arquivo HTML em `docs/site/`; não precisa ser bonito.
-- [ ] 10. **Roteiro da apresentação** (`docs/apresentacao/ROTEIRO.md`): 10 minutos divididos pelos
+- [x] 10. **Roteiro da apresentação** (`docs/apresentacao/ROTEIRO.md`): 10 minutos divididos pelos
       critérios e pesos do trabalho.
       - Tabela de evidências: cada skill usada e onde, testes e cobertura, bugs achados na revisão e as
         decisões do diário.

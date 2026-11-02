@@ -947,3 +947,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   troca e uma tabela "ideia do banco → onde está no código".
 - **Decisão tomada sozinho:** é um arquivo local (não publiquei em lugar nenhum) e tem modo escuro
   automático. Para abrir: dois cliques em `docs/site/index.html`.
+
+### Autônomo — item 10: roteiro da apresentação ✅
+- `docs/apresentacao/ROTEIRO.md` (rascunho). Divide os 10 minutos pelos critérios e pesos: 1 min de
+  complexidade, 1 min 30 de spec e arquitetura, 2 min de skills, 2 min de qualidade, 1 min 30 de
+  evidências e 2 min de demo.
+- Inclui a tabela "fase → skill → arquivo de evidência", os 4 bugs achados revisando o trabalho da IA, o
+  passo a passo da demo com um vídeo de reserva e a **lista de prints** que só você pode capturar.
+- **Decisão tomada sozinho:** a demo fica no fim, porque vale 10 pontos e é o que mais pode falhar.
+- **Pendência anotada:** refazer a revisão de segurança (item 3) com a skill de verdade. Na nuvem ela foi
+  feita à mão.
+
+## 2026-11-02 — Lista autônoma concluída
+- Os 10 itens de `tasks/autonomo.md` estão marcados. A nuvem fez os itens 1 a 4 sem as skills, seguindo o
+  processo à mão; o PC fez os itens 5 a 10 com as skills. O loop do PC se cancela sozinho.
