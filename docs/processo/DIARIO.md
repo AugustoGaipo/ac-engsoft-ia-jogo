@@ -933,3 +933,17 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Decisão tomada sozinho:** marquei o diagrama como **parcial** e com data. O `sync`, o `GameLogic` e os
   componentes da API entram quando forem construídos, e o nível 4 (Código) fica para o fim, como pede o
   enunciado.
+
+### Autônomo — item 9: site que explica a arquitetura ✅
+- `docs/site/index.html`: uma página só, que abre direto no navegador, sem internet e sem instalar nada.
+  Em português, com analogias:
+  - variáveis = **crachás**;
+  - módulos = **restaurante** (`rules` = chef, `levels` = cardápio, `game` = garçom, `sync` = caderneta
+    do fiado, `profiles` = portaria, `progress` = quadro de recordes);
+  - barreiras = **aeroporto e alfândega**;
+  - testes = **inspetor que tenta quebrar**.
+- Tem um **simulador clicável** do exemplo da spec (10/2/3 → 3/10/2 → A atravessa → 3/2/10). Ele usa a
+  mesma lógica do `World`; conferi a conta rodando o script no Node. Também mostra o passo a passo de uma
+  troca e uma tabela "ideia do banco → onde está no código".
+- **Decisão tomada sozinho:** é um arquivo local (não publiquei em lugar nenhum) e tem modo escuro
+  automático. Para abrir: dois cliques em `docs/site/index.html`.

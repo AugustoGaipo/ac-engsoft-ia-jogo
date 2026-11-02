@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swapping por dentro</title>
+<style>
+  :root { --bg:#fbfaf7; --fg:#1f2328; --muted:#5b6570; --card:#ffffff; --line:#d9dde3;
+          --accent:#2f6fde; --ok:#1f8a4c; --warn:#b4541a; --mass:#2f6fde; --pos:#8a4bd6; --energy:#d18a00; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16181c; --fg:#e7e9ec; --muted:#9aa4af; --card:#1f2228; --line:#343a43;
+            --accent:#6ea0ff; --ok:#4cc27e; --warn:#f08a4b; --mass:#6ea0ff; --pos:#b58cf0; --energy:#f2b33d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.9rem; margin: .2em 0; }
+  h2 { margin-top: 2.2em; border-top: 1px solid var(--line); padding-top: 1em; }
+  .lead { color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
+  .analogy { border-left: 4px solid var(--accent); }
+  .analogy b.tag { color: var(--accent); }
+  code { background: rgba(127,127,127,.15); padding: 1px 5px; border-radius: 4px; font-size: .92em; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  nav a { margin-right: 12px; color: var(--accent); text-decoration: none; }
+  nav { margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 4px 0; }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  /* simulator */
+  .sim { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .body { background: var(--card); border: 2px solid var(--line); border-radius: 10px; padding: 10px; text-align: center; }
+  .body h4 { margin: 0 0 6px; }
+  .tagv { display: inline-block; margin: 3px 0; padding: 3px 8px; border-radius: 999px; color: #fff; background: var(--mass); font-weight: 600; }
+  .tagv.borrowed { outline: 3px dashed var(--warn); outline-offset: 1px; }
+  .kg { font-size: 1.4rem; font-weight: 700; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  button { font: inherit; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  .log { font-family: ui-monospace, Consolas, monospace; font-size: .9rem; color: var(--muted); min-height: 3em; }
+  .ok { color: var(--ok); font-weight: 600; }
+  .steps li { margin: 6px 0; }
+  @media (max-width: 560px) { .sim { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Swapping por dentro</h1>
+  <p class="lead">Um guia só para você: o que cada parte do projeto faz, com comparações do dia a dia,
+    e onde cada ideia do banco de ideias virou código. Feito no loop autônomo de 2026-11-02, a partir do código real.</p>
+  <nav>
+    <a href="#ideia">A grande ideia</a><a href="#simulador">Simulador</a><a href="#modulos">Os módulos</a>
+    <a href="#troca">Uma troca, passo a passo</a><a href="#barreiras">Barreiras</a><a href="#niveis">Níveis</a>
+    <a href="#testes">Testes</a><a href="#mapa">Ideia → código</a>
+  </nav>
+
+  <h2 id="ideia">1. A grande ideia: trocar variáveis, não valores</h2>
+  <div class="card analogy">
+    <b class="tag">Analogia: crachás.</b> Cada objeto nasce com um <b>crachá</b> para cada propriedade: um
+    crachá de posição, um de peso, um de energia. Trocar o peso não é "copiar o número 10 para lá": é
+    <b>trocar os crachás de peso</b> entre os dois. Quem estiver com o crachá "peso do A" usa o valor escrito nele.
+  </div>
+  <ul>
+    <li><b>Regra de ouro (o invariante):</b> cada crachá está sempre com <b>uma única</b> pessoa, e cada
+      pessoa tem <b>exatamente um</b> crachá de cada tipo. Os crachás só são embaralhados, nunca criados nem
+      jogados fora. Um teste embaralha 1 000 vezes ao acaso e confere essa regra depois de cada vez.</li>
+    <li><b>A física escreve no crachá:</b> quando a caixa que está com o crachá "energia do jogador" acelera,
+      é o valor <i>desse crachá</i> que muda. Por isso ele é uma variável e não uma cópia.</li>
+    <li><b>Restauração:</b> passar por uma barreira de variáveis é como a <b>portaria</b> pedir de volta os
+      crachás com o seu nome. Quem estava com eles recebe em troca os que você usava.</li>
+  </ul>
+  <p>No código: <code>src/Swapping.Rules/World.cs</code> guarda quem usa qual variável
+    (<code>ExchangeVariables</code>, <code>CheckInvariant</code>), e <code>Model/Variable.cs</code> é o crachá.</p>
+
+  <h2 id="simulador">2. Simulador (o exemplo da spec)</h2>
+  <p>Jogador 10 kg, caixa A 2 kg, caixa B 3 kg. Clique na ordem que quiser. O tracejado laranja quer dizer
+    "está usando o crachá de outro".</p>
+  <div class="sim" id="sim"></div>
+  <div class="buttons">
+    <button data-act="A">Trocar peso: jogador ↔ A</button>
+    <button data-act="B">Trocar peso: jogador ↔ B</button>
+    <button data-act="AB">Trocar peso: A ↔ B (upgrade futuro)</button>
+    <button data-act="rA">A atravessa a barreira de variáveis</button>
+    <button data-act="reset">Recomeçar</button>
+  </div>
+  <div class="log" id="log">Experimente: troque com A, depois com B, depois faça A atravessar a barreira.
+    É o critério 2 da spec do <code>rules</code>: 10/2/3 → 3/10/2 → 3/2/10.</div>
+
+  <h2 id="modulos">3. Os módulos: um restaurante</h2>
+  <div class="card analogy"><b class="tag">Analogia: um restaurante.</b> Cada módulo é uma função no restaurante.
+    Ninguém faz o trabalho do outro, e por isso dá para testar cada um sozinho.</div>
+  <table>
+    <tr><th>Módulo</th><th>No restaurante</th><th>O que faz de verdade</th><th>Estado</th></tr>
+    <tr><td><code>rules</code></td><td>O <b>chef e o livro de receitas</b>: decide o que pode e como fica o prato</td>
+      <td>Decide se a troca é permitida (11 motivos de recusa) e o que cada corpo vira depois. Também tem as fórmulas de física. Não sabe nada do Godot.</td><td>✅ pronto, 106 testes</td></tr>
+    <tr><td><code>levels</code></td><td>O <b>cardápio</b>: o que existe em cada mesa (sala)</td>
+      <td>Lê e confere os JSON dos níveis (21 tipos de erro) e monta o mundo do <code>rules</code> de cada sala</td><td>✅ pronto, 125 testes</td></tr>
+    <tr><td><code>game</code></td><td>O <b>garçom</b>: leva e traz, mas não cozinha</td>
+      <td>O Godot: mira, mede distância e linha de visão, aplica o resultado na física e desenha</td><td>📝 spec em rascunho</td></tr>
+    <tr><td><code>sync</code></td><td>A <b>caderneta do fiado</b>: anota tudo e acerta quando dá</td>
+      <td>Save local e fila de envio. O jogo funciona sem internet, e o envio acontece quando ela volta</td><td>📝 spec em rascunho</td></tr>
+    <tr><td><code>profiles</code></td><td>A <b>portaria com crachá de visitante</b></td>
+      <td>Perfil com nome e ícone, mais um código gerado pelo servidor, que guarda só o "resumo" (hash). Bloqueia depois de 5 erros</td><td>📝 spec em rascunho</td></tr>
+    <tr><td><code>progress</code></td><td>O <b>quadro de recordes</b> na parede</td>
+      <td>Libera os níveis em ordem, guarda o melhor resultado e mostra o ranking nos dois modos</td><td>📝 spec em rascunho</td></tr>
+  </table>
+  <p>As setas só vão num sentido: <code>game → levels → rules</code>. O <code>rules</code> não conhece ninguém.
+    Isso aparece no C4 de Componentes em <code>docs/architecture/C4.md</code>.</p>
+
+  <h2 id="troca">4. Uma troca, passo a passo</h2>
+  <ol class="steps">
+    <li><b>Mirar.</b> O Godot vê para qual objeto você está olhando e pergunta ao <code>rules</code> "pode?",
+      sem mudar nada (um teste a seco). A mira fica branca ou vermelha. <i>(Como perguntar ao chef se dá
+      para fazer o prato antes de pedir.)</i></li>
+    <li><b>Medir.</b> O Godot mede o que só ele sabe: a distância, se a linha de visão está livre e se há
+      uma barreira no caminho. Vai tudo num <code>SwapContext</code>.</li>
+    <li><b>Decidir.</b> <code>SwapOperation.Apply</code> confere a tabela de recusas, nesta ordem: o mesmo
+      objeto, modo, propriedade liberada, propriedade aceita, travado, alcance, visão, barreira, dentro da
+      barreira, recarga e quantidade. Se passar, troca os crachás.</li>
+    <li><b>Aplicar.</b> O <code>rules</code> devolve, para cada corpo, a nova posição, massa e velocidade. A
+      regra é uma só: <i>você anda para onde a sua variável de energia andava</i>, com v = √(2·E ÷ m).</li>
+    <li><b>Abrir espaço.</b> Se a posição nova estiver ocupada, procura o ponto livre mais próximo. Se não
+      houver, o jogador morre ou o objeto estoura e renasce (decisão sua).</li>
+    <li><b>Seguir a física.</b> A cada passo da física, o Godot devolve a posição e a velocidade de cada corpo
+      (<code>SyncFromPhysics</code>), e os crachás ficam sempre atualizados.</li>
+  </ol>
+  <details><summary>Os três tipos de troca, com números</summary>
+    <ul>
+      <li><b>Posição:</b> os dois trocam de lugar e cada um mantém a própria velocidade.</li>
+      <li><b>Peso:</b> a energia fica, a velocidade se ajusta. 2 kg a 3 m/s que vira 8 kg → 1,5 m/s.</li>
+      <li><b>Energia:</b> quem recebe sai na direção de quem deu. Bola de 1 kg a 4 m/s → jogador de 70 kg a ≈ 0,478 m/s.</li>
+    </ul>
+  </details>
+
+  <h2 id="barreiras">5. Barreiras: a alfândega</h2>
+  <div class="card analogy"><b class="tag">Analogia: um aeroporto.</b> A barreira 1 é o <b>portão só para
+    passageiros</b> (a mala não passa). A barreira 2 é a <b>esteira de bagagem</b> (só a mala passa). A
+    barreira 3 é a <b>alfândega</b>: cada um sai com as próprias coisas de volta.</div>
+  <table>
+    <tr><th>Barreira</th><th>Quem passa</th><th>Efeito</th></tr>
+    <tr><td>1 · barra objetos 📦</td><td>só o jogador</td><td>o objeto segurado cai</td></tr>
+    <tr><td>2 · barra o jogador 🧍</td><td>só os objetos</td><td>o jogador precisa trocar para atravessar</td></tr>
+    <tr><td>3 · barra variáveis ⇄</td><td>todos</td><td>restaura tudo; não dá para trocar através nem dentro dela</td></tr>
+    <tr><td>Grade de saída (1 + 3)</td><td>só o jogador</td><td>no fim de cada sala: nada passa de uma sala para a outra</td></tr>
+  </table>
+  <p>No código: <code>Model/BarrierFilter.cs</code> (o filtro) e <code>Operations/Restoration.cs</code> (a alfândega).</p>
+
+  <h2 id="niveis">6. Níveis: o cardápio que o computador confere</h2>
+  <div class="card analogy"><b class="tag">Analogia: a receita conferida antes de ir para a cozinha.</b> Cada
+    nível é um arquivo JSON escrito à mão. Antes do jogo usar o arquivo, o validador procura erros, como
+    caixa dentro do buraco, porta sem botão, sala sem grade de saída ou caixa mais densa que o ósmio. Ele
+    diz o lugar exato do problema, por exemplo: <code>level_1.json:rooms[0].objects[0].massKg</code>.</div>
+  <ul>
+    <li>4 níveis prontos para sexta (1, 2, 3 e 5), com 11 salas, em <code>levels/</code>.</li>
+    <li>Cada sala tem um <b>teste de design</b> que confere se as peças da lição dela existem. Por exemplo, a
+      3.1 precisa de um botão mais pesado que o jogador e de uma caixa pesada o bastante.</li>
+    <li><b>Reiniciar a sala</b> = montar o mundo dela de novo a partir do arquivo
+      (<code>RulesMapping.BuildWorld</code>). O tempo e as trocas continuam somando.</li>
+  </ul>
+
+  <h2 id="testes">7. Testes: o controle de qualidade</h2>
+  <div class="card analogy"><b class="tag">Analogia: o inspetor que tenta quebrar o produto.</b> Um teste não
+    serve só para passar: ele precisa <b>falhar quando o código está errado</b>. Na revisão, o código foi
+    estragado de propósito em 4 lugares, e os testes pegaram os 4 (teste de mutação).</div>
+  <ul>
+    <li><b>Teste antes do código</b> (TDD): primeiro o teste vermelho, depois o código que o deixa verde.</li>
+    <li><b>Bugs achados revisando o trabalho autônomo:</b>
+      <ul>
+        <li>um teste quebrava só com a medição de cobertura ligada (duas vezes, por motivos diferentes);</li>
+        <li>um pedido de troca vazio contava uma jogada.</li>
+      </ul>
+      Os três estão no diário. São boa evidência para a apresentação.</li>
+    <li><b>Cobertura:</b> 98,5 % no <code>rules</code> e 96,7 % no <code>levels</code>. A meta era 90 %.</li>
+  </ul>
+
+  <h2 id="mapa">8. Do banco de ideias para o código</h2>
+  <table>
+    <tr><th>Ideia (sua)</th><th>Onde está</th></tr>
+    <tr><td>Troca de variáveis, regra de ouro</td><td><code>World.cs</code>, <code>InvariantTests</code></td></tr>
+    <tr><td>Peso muda a densidade (volume fixo)</td><td><code>Formulas.Density</code>, <code>Container.VolumeM3</code></td></tr>
+    <tr><td>Direção viaja com a energia</td><td><code>World.BodyUpdateFor</code>, <code>SyncFromPhysics</code></td></tr>
+    <tr><td>Recarga entre quaisquer trocas (1 s)</td><td><code>Policies/Cooldown.cs</code>, <code>LevelRules</code></td></tr>
+    <tr><td>Contorno = o que o objeto aceita</td><td><code>Container.AcceptedProperties</code> → <code>PropertyNotAccepted</code>; a cor vem no <code>game</code></td></tr>
+    <tr><td>3 barreiras combináveis + grade de saída</td><td><code>BarrierFilter</code>, <code>Restoration</code></td></tr>
+    <tr><td>Afunda / nada / boia nos 3 meios</td><td><code>Formulas.Buoyancy*</code>, <code>Medium</code></td></tr>
+    <tr><td>Pulo fisicamente correto</td><td><code>Formulas.JumpTakeoffSpeed</code>, <code>JumpHeight</code></td></tr>
+    <tr><td>Recuo só quando lança fora do chão</td><td><code>Formulas.RecoilSpeed</code></td></tr>
+    <tr><td>Cada troca = 1 jogada; restauração = 0</td><td><code>SwapLog</code>, <code>World.MoveCount</code></td></tr>
+    <tr><td>Níveis com várias salas, morte reinicia a sala</td><td><code>levels/*.json</code>, <code>RulesMapping.BuildWorld</code></td></tr>
+    <tr><td>Travada não troca, mas se mexe</td><td><code>Container.Locked</code> + spec do <code>levels</code></td></tr>
+    <tr><td>Futuro: quântico, tempo, objeto↔objeto, duração</td><td>pontos de extensão: <code>IPropertyKind</code>, <code>IOperation</code>, <code>ISwapDurationPolicy</code>, <code>ICooldownModifier</code></td></tr>
+  </table>
+  <p class="lead">Para ver tudo em detalhe: <code>docs/specs/</code> (o que cada módulo promete),
+    <code>docs/processo/DIARIO.md</code> (cada decisão) e <code>docs/processo/RELATORIO-*.md</code> (o que foi entregue).</p>
+</main>
+<script>
+  // Same model as Swapping.Rules.World, only for mass: who uses which variable.
+  const start = { player: 10, A: 2, B: 3 };
+  let uses;
+  function reset() { uses = { player: "player", A: "A", B: "B" }; }
+  function swap(x, y) { [uses[x], uses[y]] = [uses[y], uses[x]]; }
+  function restore(id) {
+    const holder = Object.keys(uses).find(k => uses[k] === id);
+    if (holder !== id) swap(id, holder);
+  }
+  const names = { player: "Jogador", A: "Caixa A", B: "Caixa B" };
+  function render(msg) {
+    document.getElementById("sim").innerHTML = Object.keys(uses).map(id => {
+      const v = uses[id], borrowed = v !== id;
+      return `<div class="body"><h4>${names[id]}</h4><div class="kg">${start[v]} kg</div>
+        <span class="tagv ${borrowed ? "borrowed" : ""}">crachá "peso do ${names[v].replace("Caixa ", "")}"</span></div>`;
+    }).join("");
+    const ok = Object.values(uses).sort().join() === "A,B,player";
+    document.getElementById("log").innerHTML = (msg ? msg + "<br>" : "") +
+      `Regra de ouro: <span class="ok">${ok ? "cada crachá está com uma pessoa só ✓" : "QUEBRADA"}</span>`;
+  }
+  document.querySelectorAll("button[data-act]").forEach(b => b.addEventListener("click", () => {
+    const a = b.dataset.act;
+    if (a === "reset") { reset(); return render("Recomeçou."); }
+    if (a === "A") swap("player", "A");
+    if (a === "B") swap("player", "B");
+    if (a === "AB") swap("A", "B");
+    if (a === "rA") { restore("A"); return render("A atravessou: pegou de volta o próprio crachá de quem estava com ele."); }
+    render("Trocou os crachás de peso.");
+  }));
+  reset(); render();
+</script>
+</body>
+</html>

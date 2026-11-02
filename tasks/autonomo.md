@@ -53,7 +53,7 @@ Regras:
 - [x] 8. **C4 nível 3 (Componentes), parcial**, em `docs/architecture/C4.md`.
       - Componentes que já existem dentro do Game Client: `rules` e `levels`, com as classes principais e as setas.
       - Marcar como "parcial: `game`, `sync` e a API entram quando existirem".
-- [ ] 9. **Site que explica a arquitetura** (só para o usuário).
+- [x] 9. **Site que explica a arquitetura** (só para o usuário).
       - Simples e compreensível, com analogias do dia a dia, ligando cada ideia do banco de ideias ao código.
       - Um arquivo HTML em `docs/site/`; não precisa ser bonito.
 - [ ] 10. **Roteiro da apresentação** (`docs/apresentacao/ROTEIRO.md`): 10 minutos divididos pelos
