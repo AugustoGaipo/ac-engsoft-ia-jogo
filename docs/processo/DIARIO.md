@@ -987,3 +987,27 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     - limita o tamanho das respostas (256 KB) e do save (1 MB).
 - **Não se aplica** (anotado na spec): cookies e CSRF (o cliente é nativo e o token vai no cabeçalho), XSS
   em HTML (não há página web), upload de arquivo e SSRF (não existem nesta versão), recursos de IA no jogo.
+
+### Autônomo — item 12: os rascunhos combinam entre si? ✅
+- Feito com a skill `agent-skills:spec-driven-development`, na parte "manter a spec viva". Cruzei
+  `SPEC-profiles`, `SPEC-progress`, `SPEC-sync` e `SPEC-game`.
+- **O que já combinava:**
+  - todas as respostas de `POST /results` (200, 400, 401, 404, 409, 422, 423, 429, 5xx) têm uma ação na
+    tabela do `sync`;
+  - os campos do resultado têm o mesmo nome no `progress` e no `sync`;
+  - as duas ordens do ranking são iguais no servidor e no save local;
+  - o `409 LevelLocked` é tentado de novo, como o `progress` pede;
+  - o reenvio é seguro (resposta 200 "não melhorou");
+  - a fila (no máximo 2 por nível, 8 com os 4 níveis de sexta) cabe com folga no limite de 30 envios
+    por minuto;
+  - o `http://` aceito só no próprio PC bate com o `127.0.0.1` da API na apresentação.
+- **Diferenças achadas e corrigidas nos rascunhos:**
+  1. A spec do `profiles` (S9) pedia que o `game` mostrasse os nomes num `Label` simples, mas a spec do
+     `game` não falava disso. Agora fala.
+  2. A spec do `sync` não dizia o que fazer com os erros de **criar ou entrar** num perfil (`InvalidName`,
+     `NameTaken`, `InvalidCredentials`...). Agora diz: não vão para a fila, voltam direto para o jogo
+     mostrar, e no sucesso os envios sem perfil ganham o id novo.
+  3. A fila podia mandar uma partida pior que o melhor local. Agora só entra na fila a partida que
+     melhorou o melhor local em pelo menos um modo.
+  4. Os nomes `bestTime`/`bestMoves` da API e `time`/`moves` do save local agora têm a ligação escrita.
+     Também ficou escrito o que o `game` entrega ao `sync`: os mesmos campos do `POST /results`.

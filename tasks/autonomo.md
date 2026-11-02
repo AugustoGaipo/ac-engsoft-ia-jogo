@@ -67,7 +67,7 @@ Regras:
         `SPEC-sync.md` se faltar algo.
       - Comparar com o checklist da skill (OWASP, segredos, limites, entrada não confiável) e registrar o
         que mudou e o que já estava certo.
-- [ ] 12. **Conferir se os rascunhos combinam** (`agent-skills:spec-driven-development`, "keeping the spec alive").
+- [x] 12. **Conferir se os rascunhos combinam** (`agent-skills:spec-driven-development`, "keeping the spec alive").
       - Cruzar `SPEC-profiles`, `SPEC-progress`, `SPEC-sync` e `SPEC-game`:
         - cada resposta da API tem uma ação no `sync`;
         - os nomes dos campos são iguais;

@@ -89,6 +89,12 @@ The guiding rule: **Godot does physics and drawing; the decisions come from the 
 - **Barriers:** their own color and the crossed icon decided in the ideas bank (📦, 🧍, ⇄). The exit grid
   shows both icons.
 - **Visual style:** simple geometric shapes and flat colors (ideas bank).
+- **Player names** (ranking, profile screen) are always shown in a plain `Label`, never in a
+  `RichTextLabel` with BBCode on, so a name can never inject markup (profiles spec, S9).
+- **What a finished run hands to `sync`:** `levelId` (the catalog id, e.g. `level-1`), `timeMs`, `swaps`,
+  `deaths`, `roomRestarts` and `finishedAt`. These are the same fields and names as `POST /results` in
+  the progress spec. The time is paused while the pause menu is open; the server's floor of 1 s per room
+  is far below any real run.
 
 ### Physics settings (from the reports)
 - **Continuous collision detection** on every `RigidBody3D` (fast light objects after an energy swap

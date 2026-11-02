@@ -50,7 +50,9 @@ favors "send again" over "maybe lost": an item leaves the queue only after the s
   - a level is unlocked once the previous one has a local best.
 - **Queue coalescing:** only the best matters, so the queue keeps **at most 2 items per (profile, level)**:
   - the best for `time` and the best for `moves` (1 item if the same run is best in both);
-  - a new run that is worse than both queued items of its level is not queued (it is still not the best).
+  - a new run that is worse than both queued items of its level is not queued (it is still not the best);
+  - more generally, a run is queued **only if it improved the local best in at least one mode**: if it did
+    not, the server already has (or the queue already holds) something at least as good.
   - So the queue can never grow past 2 × number of levels per profile.
 - **Flush:** sends the items of the **current profile**, oldest first, one at a time, and stops at the
   first answer that means "try later". Every API answer maps to one action:
@@ -66,9 +68,18 @@ favors "send again" over "maybe lost": an item leaves the queue only after the s
 | network error, timeout (10 s), `5xx` | keep the item; `attempts + 1`; `nextAttemptAt = now + backoff`; stop |
 
   Backoff: 5 s, 10 s, 20 s… doubling, at most 10 minutes. A successful send resets it.
+- **Profile calls** (`CreateProfileAsync`, `EnterProfileAsync`) are **not** queued. They need the network
+  now, and their answer goes straight back to the game so it can show it to the player:
+  - `400 InvalidName` / `UnknownIcon`, `409 NameTaken` → "choose another name/icon";
+  - `401 InvalidCredentials` → "name or code wrong";
+  - `423` / `429` → "try again in N s";
+  - a network error → "no internet: you can keep playing without a profile".
+
+  On success the profile (with code and token) is saved, and every queued item with `profileId: null`
+  takes the new id (C3).
 - **Merge:** after a successful flush, `GET /progress/me` is read and merged: for each level and mode the
-  better of local and server wins. A server best that is better than the local one is copied down (the
-  player played on another PC).
+  better of local and server wins (the server's `bestTime` / `bestMoves` map to the save's `time` / `moves`).
+  A server best that is better than the local one is copied down (the player played on another PC).
 
 ### Public API (shape, not final names)
 ```csharp
