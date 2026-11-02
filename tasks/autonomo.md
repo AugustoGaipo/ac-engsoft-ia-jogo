@@ -61,3 +61,16 @@ Regras:
       - Tabela de evidências: cada skill usada e onde, testes e cobertura, bugs achados na revisão e as
         decisões do diário.
       - Lista dos prints e trechos de vídeo que o usuário precisa capturar.
+- [ ] 11. **Refazer a revisão de segurança com a skill de verdade** (`agent-skills:security-and-hardening`).
+      - O item 3 foi feito na nuvem, à mão, sem a skill.
+      - Revisar as seções "Security" do `SPEC-profiles.md` e do `SPEC-progress.md` e acrescentar uma no
+        `SPEC-sync.md` se faltar algo.
+      - Comparar com o checklist da skill (OWASP, segredos, limites, entrada não confiável) e registrar o
+        que mudou e o que já estava certo.
+- [ ] 12. **Conferir se os rascunhos combinam** (`agent-skills:spec-driven-development`, "keeping the spec alive").
+      - Cruzar `SPEC-profiles`, `SPEC-progress`, `SPEC-sync` e `SPEC-game`:
+        - cada resposta da API tem uma ação no `sync`;
+        - os nomes dos campos são iguais;
+        - o `game` produz o que o `sync` e o `progress` esperam (tempo, trocas, mortes, reinícios);
+        - os limites (tempo mínimo por sala, 30 envios por minuto) são compatíveis com a fila.
+      - Corrigir as diferenças nos rascunhos e listá-las no diário.
