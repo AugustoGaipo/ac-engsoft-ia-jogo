@@ -35,7 +35,7 @@ Regras:
       - Os valores 0,50 / 1,00 / 1,84 / 0,12 m só batem com densidade ~1 000 kg/m³.
       - Corrigir o texto da spec com os valores certos para o volume fixo do jogador (0,07 m³) e
         acrescentar um teste com a densidade real (7 kg → ~1,86 m), sem mudar a fórmula.
-- [ ] 5. **Rascunho da spec do `sync`** (`docs/specs/SPEC-sync.md`): biblioteca C# pura com o save local
+- [x] 5. **Rascunho da spec do `sync`** (`docs/specs/SPEC-sync.md`): biblioteca C# pura com o save local
       em JSON e a fila de envio para a API (reenvio seguro, porque o servidor guarda o melhor resultado).
 - [ ] 6. **Rascunho da spec do `game`, só o nível 1** (`docs/specs/SPEC-game.md`).
       - Godot 4.7 .NET, `CharacterBody3D` e `RigidBody3D`.

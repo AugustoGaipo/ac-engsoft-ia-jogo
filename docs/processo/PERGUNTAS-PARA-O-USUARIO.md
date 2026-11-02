@@ -32,3 +32,11 @@ simples e fácil de desfazer (entre parênteses). Responda quando puder; nada aq
     *(Suposição B9: sim, risco aceito e escrito na spec.)*
 11. **Gerar código novo pede o código atual:** para quem roubar o token não conseguir tomar o perfil.
     O jogo manda o código do save, então você não digita nada. Tudo bem? *(Suposição A11: sim.)*
+
+## Spec do `sync` (`docs/specs/SPEC-sync.md`, rascunho)
+12. **Código e token no save sem criptografia:** ficam em texto no arquivo do seu PC (`user://save.json`).
+    Tudo bem? *(Suposição C1: sim. Criptografar com o DPAPI do Windows só funcionaria no Windows.)*
+13. **Jogar sem perfil:** pode jogar antes de criar um perfil, e os resultados são enviados quando você
+    criar ou entrar num? *(Suposição C3: sim.)*
+14. **Trocar de perfil no mesmo PC:** os melhores resultados locais do perfil anterior somem da tela e
+    ficam só no servidor? *(Rascunho: sim; os envios pendentes do perfil anterior ficam esperando ele voltar.)*

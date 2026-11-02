@@ -856,3 +856,22 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Decisão tomada sozinho:** corrigi também o número em `docs/design/PROGRESSAO-NIVEIS.md` (sala 3.2:
   "~1,86 m"). É só o texto do número; a sala em `levels/level_3.json` não foi tocada e continua passando
   no teste de design (saída a pelo menos 1,2 m).
+
+### Autônomo — item 5: rascunho da spec do `sync` ✅
+- Feito **no PC**, com a skill `agent-skills:spec-driven-development` carregada de verdade (a rotina da
+  nuvem foi pausada porque lá as skills não existem; os itens 1 a 4 foram feitos na nuvem seguindo o
+  processo à mão).
+- `docs/specs/SPEC-sync.md` (rascunho, aguardando aprovação). Biblioteca C# pura, sem referência a projeto
+  nem NuGet. Ela guarda o save local (perfil, melhores resultados por modo, fila de envio, recusados) e
+  registra a partida na hora, sem rede. Depois manda a fila em ordem, com uma tabela que diz o que fazer
+  com cada resposta da API (200, 401, 409, 423/429, 400/404/422, erro de rede/5xx), espera crescente entre
+  tentativas (5 s dobrando até 10 min) e no fim junta o progresso do servidor com o local.
+  São 16 critérios de sucesso.
+- **Decisões tomadas sozinho** (C1–C7 na spec, com as perguntas 12–14 em `PERGUNTAS-PARA-O-USUARIO.md`):
+  - **Fila enxuta:** guarda no máximo 2 envios por nível e perfil (o melhor de cada modo), porque o
+    servidor só guarda o melhor.
+  - **Erros permanentes** (400, 404, 422) vão para uma lista de recusados e não travam a fila.
+  - **Save:** gravado de forma atômica (arquivo temporário e troca) e regravado a cada mudança. Save
+    corrompido é guardado à parte e o jogo começa um novo.
+  - **Sem relógio nem temporizador** dentro da biblioteca: o jogo diz a hora e quando enviar.
+  - **Token vencido:** entra de novo uma vez sozinho com o nome e o código salvos; se falhar, avisa `NeedsLogin`.
