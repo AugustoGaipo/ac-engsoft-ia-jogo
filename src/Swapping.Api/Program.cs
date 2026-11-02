@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Swapping.Api.Data;
 using Swapping.Api.Hosting;
 using Swapping.Api.Profiles;
+using Swapping.Api.Progress;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services.AddAuthentication(BearerAuth.SchemeName)
     .AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, BearerAuth>(BearerAuth.SchemeName, null);
 builder.Services.AddAuthorization();
 builder.Services.AddGameRateLimits(builder.Configuration);
+builder.Services.AddProgress(builder.Configuration);
 builder.Services.AddHttpsRedirection(options => options.HttpsPort = builder.Configuration.GetValue<int?>("HttpsPort") ?? 443);
 
 // Forwarded headers are trusted only from proxies listed in configuration (none by default, S12).
@@ -45,6 +47,9 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 // No CORS policy is registered on purpose (S11): browsers never get Access-Control-Allow-Origin.
 
 var app = builder.Build();
+
+// The level catalog is loaded now: a broken catalog stops the API before it serves anything.
+_ = app.Services.GetRequiredService<LevelDirectory>();
 
 using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<GameDbContext>().Database.EnsureCreated();
@@ -69,7 +74,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 
-app.MapGroup("").RequireRateLimiting(RateLimits.Default).MapProfiles();
+var api = app.MapGroup("").RequireRateLimiting(RateLimits.Default);
+api.MapProfiles();
+api.MapProgress();
 
 app.Run();
 

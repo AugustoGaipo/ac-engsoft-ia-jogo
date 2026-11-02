@@ -118,9 +118,9 @@ HTTPS redirection + HSTS outside `Development`.
 `Progress:LevelsDirectory`; the API refuses to start on catalog errors), pure `RankingOrder` and
 `ResultCheck`, `GET /levels`. Test catalog with levels 1, 2, 4 built in the test.
 **Acceptance criteria:**
-- [ ] G-SC 7 (as pure comparers), 12: both orders and tie-breaks; every plausibility boundary.
-- [ ] G-SC 15: with the real `levels/`, `GET /levels` lists 1, 2, 3, 5 with 4, 3, 2, 2 rooms.
-- [ ] A broken catalog stops the host from starting (test).
+- [x] G-SC 7 (as pure comparers), 12: both orders and tie-breaks; every plausibility boundary.
+- [x] G-SC 15: with the real `levels/`, `GET /levels` lists 1, 2, 3, 5 with 4, 3, 2, 2 rooms.
+- [x] A broken catalog stops the host from starting (test).
 **Dependencies:** Task 7
 **Files:** `Progress/LevelDirectory.cs`, `RankingOrder.cs`, `ResultCheck.cs`, `ProgressEndpoints.cs`,
 `tests/.../Progress/RankingOrderTests.cs`, `ResultCheckTests.cs`, `LevelsEndpointTests.cs`

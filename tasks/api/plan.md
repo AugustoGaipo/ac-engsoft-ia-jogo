@@ -58,7 +58,7 @@ Host + test factory + hardening                      (Task 1)
 ### Checkpoint: `profiles` complete
 
 ### Phase 3: `progress`
-- [ ] Task 8: Catalog, ranking order and plausibility
+- [x] Task 8: Catalog, ranking order and plausibility
 - [ ] Task 9: Send a result and see my progress
 - [ ] Task 10: Rankings
 

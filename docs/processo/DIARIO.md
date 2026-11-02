@@ -1168,3 +1168,19 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   errados → 5 × `401`, 5 × `423` e `429` no 11º.
 - **Checkpoint:** todos os critérios do `profiles` têm teste, menos o 17, o 18 e o 30, que ficam para a
   tarefa 11 (arquitetura, cobertura e auditoria). 355 testes verdes (106 + 125 + 124), 0 avisos.
+
+### API — tarefa 8: catálogo, ordem do ranking e plausibilidade ✅
+- `RankingOrder` (os 2 modos como dados, com os desempates) e `ResultCheck` (≥ 1 s por sala, ≤ 24 h,
+  contagens de 0 a 10 000) são classes puras. `LevelDirectory` carrega o `levels/catalog.json` com o
+  `LevelCatalog.Load` do módulo `levels`, o mesmo arquivo que o jogo lê. `GET /levels` lista os níveis.
+- **A API não sobe com um catálogo quebrado ou vazio.** O catálogo é carregado logo depois do
+  `Build()`, antes de atender qualquer pedido.
+- **Fase vermelha:** 33 testes novos, 33 falhando (só as assinaturas).
+- **Dois tropeços no helper de teste, não no código:**
+  1. os arquivos de nível têm comentários `//`, e o `JsonNode.Parse` precisa da opção de pular
+     comentários;
+  2. eu tinha usado os ids `t-1`, `t-2` e `t-4`, mas o validador do `levels` exige `level-N` e salas
+     `N.k`. O catálogo de teste agora usa `level-1`, `level-2` e `level-4` e renumera as salas.
+- **O catálogo de teste com o buraco 1 → 2 → 4** é montado numa pasta temporária a partir dos níveis
+  reais. Assim, mexer no conteúdo dos níveis de sexta não quebra os testes do `progress`.
+- 388 testes verdes (106 + 125 + 157), 0 avisos.
