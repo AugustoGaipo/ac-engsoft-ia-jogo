@@ -1108,3 +1108,24 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Mutação:** com `>=` no lugar de `>` na validade, o teste "para de valer aos 30 dias" caiu, como
   deveria.
 - 322 testes verdes (106 + 125 + 91), 0 avisos.
+
+### API — tarefa 5: entrar e bloqueio ✅
+- `POST /sessions`: nome + código → token novo. Nome desconhecido, nome inválido e código errado recebem
+  a **mesma resposta, byte a byte**. Para isso, o `traceId` saiu dos erros, já que ele mudava a cada
+  pedido e tornava as duas respostas diferentes.
+- **Bloqueio:** 5 erros seguidos → `423 ProfileLocked` com `Retry-After` em segundos. Quando o bloqueio
+  acaba, o contador volta a zero. A contagem do erro é **um único `UPDATE … WHERE FailedAttempts < 5`**
+  no banco (S2), e não "ler, somar 1 e gravar".
+- **Fase vermelha:** 12 testes novos, 11 falhando.
+- **Problema achado pela mutação (o melhor do dia):**
+  - tirei o `FailedAttempts < 5` do `UPDATE` e o teste "20 tentativas ao mesmo tempo" **continuou
+    verde**;
+  - motivo: os pedidos acabavam rodando quase em fila, e depois do 5º erro os outros já viam o perfil
+    bloqueado antes de chegar no contador, então a corrida nunca acontecia;
+  - correção: um teste novo que força o pior caso, 20 contagens em paralelo, cada uma com o seu próprio
+    contexto do banco, como se todas já tivessem passado da checagem do bloqueio;
+  - com a mutação, os 2 testes caem; sem ela, os 2 passam;
+  - o teste HTTP rodou 5 vezes seguidas sem falhar.
+- **Banco em arquivo para os testes com pedidos em paralelo:** a conexão única em memória não aceita
+  vários pedidos ao mesmo tempo. Com essa opção, a factory cria um `.db` temporário e o apaga no fim.
+- 335 testes verdes (106 + 125 + 104), 0 avisos.

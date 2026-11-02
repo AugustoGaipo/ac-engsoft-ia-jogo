@@ -20,6 +20,22 @@ public static class ProfilesEndpoints
                 profile.Id, profile.Name, profile.Icon, created.AccessCode, created.Token, created.TokenExpiresAt));
         });
 
+        app.MapPost("/sessions", async (LoginRequest body, ProfileService service, HttpContext http, CancellationToken ct) =>
+        {
+            var result = await service.LoginAsync(body.Name, body.AccessCode, ct);
+            switch (result.Outcome)
+            {
+                case LoginOutcome.Ok:
+                    var profile = result.Profile!;
+                    return Results.Ok(new LoginResponse(profile.Id, profile.Name, profile.Icon, result.Token!, result.TokenExpiresAt));
+                case LoginOutcome.Locked:
+                    http.Response.Headers.RetryAfter = RetryAfterSeconds(result.RetryAfter);
+                    return ApiProblem.Result(StatusCodes.Status423Locked, "ProfileLocked");
+                default:
+                    return ApiProblem.Result(StatusCodes.Status401Unauthorized, "InvalidCredentials");
+            }
+        });
+
         app.MapGet("/icons", (IOptions<ProfilesOptions> options) => Results.Ok(options.Value.IconList));
 
         app.MapGet("/profiles/me", async (ClaimsPrincipal user, ProfileService service, CancellationToken ct) =>
@@ -43,6 +59,10 @@ public static class ProfilesEndpoints
         return app;
     }
 
+    /// <summary>Whole seconds, rounded up, never 0 (a client waiting 0 s would retry at once).</summary>
+    public static string RetryAfterSeconds(TimeSpan wait) =>
+        Math.Max(1, (long)Math.Ceiling(wait.TotalSeconds)).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
     private static IResult Problem(ProfileError error) => error switch
     {
         ProfileError.InvalidName => ApiProblem.Result(StatusCodes.Status400BadRequest, "InvalidName"),
@@ -59,6 +79,16 @@ public sealed class CreateProfileRequest
 
     public required string? Icon { get; init; }
 }
+
+/// <summary>Body of <c>POST /sessions</c>.</summary>
+public sealed class LoginRequest
+{
+    public required string? Name { get; init; }
+
+    public required string? AccessCode { get; init; }
+}
+
+public sealed record LoginResponse(Guid Id, string Name, string Icon, string Token, DateTimeOffset TokenExpiresAt);
 
 /// <summary>Body of <c>PATCH /profiles/me</c>: only the icon can change (A10).</summary>
 public sealed class UpdateProfileRequest

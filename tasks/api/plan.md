@@ -51,7 +51,7 @@ Host + test factory + hardening                      (Task 1)
 ### Phase 2: `profiles`
 - [x] Task 3: Create a profile
 - [x] Task 4: Bearer token, my profile and logout
-- [ ] Task 5: Login and lockout
+- [x] Task 5: Login and lockout
 - [ ] Task 6: Regenerate the code and the security log
 - [ ] Task 7: Rate limits and transport rules
 

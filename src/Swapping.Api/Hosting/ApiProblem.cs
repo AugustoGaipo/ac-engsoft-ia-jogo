@@ -38,6 +38,8 @@ public static class ApiProblem
         var problem = context.ProblemDetails;
         problem.Extensions.Remove("exception");
         problem.Extensions.Remove("errors");
+        // No per-request id: two refusals that must look the same (unknown name, wrong code) are byte-equal.
+        problem.Extensions.Remove("traceId");
         problem.Extensions.TryAdd("code", DefaultCode(problem.Status ?? context.HttpContext.Response.StatusCode));
         if (problem.Status >= 500)
             problem.Detail = null;

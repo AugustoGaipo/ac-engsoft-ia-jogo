@@ -73,11 +73,11 @@ configuration), `ProfileService.CreateAsync`, `POST /profiles`, `GET /icons`. On
 **Description:** `ProfileService.LoginAsync`, `POST /sessions`, lockout with one atomic SQL update
 (S2), `423 ProfileLocked` with `Retry-After`.
 **Acceptance criteria:**
-- [ ] P-SC 9, 10: right code in any case/with or without dashes → 200; wrong code and unknown name →
+- [x] P-SC 9, 10: right code in any case/with or without dashes → 200; wrong code and unknown name →
       the **same** 401 body.
-- [ ] P-SC 11, 12: 6th attempt → 423 with `Retry-After`; at +15 min it works and the counter is 0;
+- [x] P-SC 11, 12: 6th attempt → 423 with `Retry-After`; at +15 min it works and the counter is 0;
       an older token works while locked.
-- [ ] P-SC 19: 20 concurrent wrong logins → exactly 5 × 401 and 15 × 423.
+- [x] P-SC 19: 20 concurrent wrong logins → exactly 5 × 401 and 15 × 423.
 **Dependencies:** Task 4
 **Files:** `Profiles/ProfileService.cs`, `ProfileEntity.cs`, `ProfilesEndpoints.cs`, `tests/.../Profiles/LoginTests.cs`
 **Scope:** M
