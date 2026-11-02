@@ -27,7 +27,7 @@ Regras:
       - Ranking nos dois modos (tempo→trocas e trocas→tempo).
       - Regras de reinício: a morte e "reiniciar sala" continuam somando; "reiniciar nível" zera.
       - Espaço para o fantasma no futuro. Mesmo formato e suposições listadas.
-- [ ] 3. **Revisão de segurança das duas specs da API**, com a skill `agent-skills:security-and-hardening`.
+- [x] 3. **Revisão de segurança das duas specs da API**, com a skill `agent-skills:security-and-hardening`.
       - Ameaças: força bruta no código, enumeração de nomes, envio de resultado falso ou em excesso,
         injeção de dados e CORS.
       - Acrescentar a cada spec uma seção "Security" com as proteções e um critério de sucesso para cada uma.

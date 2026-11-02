@@ -21,3 +21,14 @@ simples e fácil de desfazer (entre parênteses). Responda quando puder; nada aq
    *(Suposição B4: 1 s por sala e no máximo 24 h.)*
 8. **Tamanho do ranking no jogo:** os 20 primeiros, ou os 10 primeiros mais a sua posição?
    *(A API devolve até 100, padrão 20, e tem uma rota com a sua posição.)*
+
+## Revisão de segurança das specs da API (item 3)
+9. **Bloqueio usado para atrapalhar:** como os nomes aparecem no ranking, qualquer pessoa pode errar o
+   código 5 vezes e bloquear o seu nome por 15 minutos num PC novo (no PC em que você já jogou a sessão
+   continua valendo). Aceita, ou contar os erros por perfil **e** por IP? *(Suposição: aceitar; o código
+   de 80 bits já torna a força bruta impossível, o bloqueio é só uma camada a mais.)*
+10. **Resultado falso:** sem o servidor refazer a partida, um jogo modificado pode mandar um tempo bom
+    mas plausível. Tudo bem só checar a plausibilidade e apagar à mão um resultado trapaceado?
+    *(Suposição B9: sim, risco aceito e escrito na spec.)*
+11. **Gerar código novo pede o código atual:** para quem roubar o token não conseguir tomar o perfil.
+    O jogo manda o código do save, então você não digita nada. Tudo bem? *(Suposição A11: sim.)*

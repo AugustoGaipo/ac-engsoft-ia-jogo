@@ -807,3 +807,36 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     nesta versão as rotas não existem e um campo `ghost` no envio é recusado.
   - Nenhum pacote NuGet novo além dos da spec do `profiles`; a API referencia o `Swapping.Levels` e não
     sobe se o catálogo tiver erro.
+
+### Autônomo — item 3: revisão de segurança das specs do `profiles` e do `progress` ✅
+- A skill `agent-skills:security-and-hardening` não estava disponível neste ambiente (rotina na nuvem);
+  segui o mesmo processo à mão: para cada ameaça, uma proteção e um critério de sucesso testável.
+- `SPEC-profiles.md` ganhou a seção **Security** (S1–S13) e os critérios 19–28. `SPEC-progress.md`
+  ganhou a seção **Security** (P1–P10) e os critérios 18–26. As duas continuam **rascunho, aguardando
+  sua revisão**; nenhum código foi escrito.
+- Ameaças pedidas e o que ficou:
+  - **Força bruta no código:** 80 bits + bloqueio 5/15 min + 10 logins/min por IP (uns 3 × 10¹⁸ anos
+    em média). Achado: tentativas em paralelo podiam passar do limite de 5 lendo o contador ao mesmo
+    tempo → o contador agora sobe numa **única atualização SQL atômica** (critério 19).
+  - **Enumeração de nomes:** risco aceito, porque os nomes já são públicos no ranking; o login responde
+    igual para nome inexistente e código errado, e o limite de criação (5/hora por IP) impede varrer
+    nomes pelo `409`. O bloqueio pode ser usado para atrapalhar um nome conhecido (pergunta 9).
+  - **Resultado falso ou em excesso:** o perfil vem só do token (campo `profileId` no corpo → 400);
+    30 envios/min por perfil; no máximo 2 linhas por perfil e nível, envie quantas vezes for.
+    O resultado falso plausível é **risco aceito** (sem replay no servidor), escrito na spec (B9, pergunta 10).
+  - **Injeção de dados:** só LINQ do EF Core (teste que procura `FromSqlRaw` e afins no código), nomes
+    com lista de caracteres permitidos (também evita BBCode no `RichTextLabel` do Godot), JSON com
+    profundidade máxima 8, sem campos desconhecidos, números só inteiros; `levelId` conferido no catálogo
+    antes de qualquer consulta.
+  - **CORS:** o jogo é um programa nativo, não uma página, então **nenhuma política de CORS** (tudo
+    negado) e o token vai no cabeçalho, nunca em cookie (sem CSRF).
+- **Decisões tomadas sozinho (reversíveis):**
+  - **A11:** gerar código novo exige o código atual no corpo, senão quem roubasse o token derrubaria as
+    outras sessões e tomaria o perfil (pergunta 11). Mudei a linha da rota na tabela de endpoints.
+  - **A12:** HTTPS + HSTS fora do `Development`; no `Development` (o PC da apresentação) o Kestrel escuta
+    só em `127.0.0.1`. Isso responde em parte a pergunta 4. `X-Forwarded-For` não é confiável por padrão.
+  - `Cache-Control: no-store` nas respostas com código ou token; `X-Content-Type-Options: nosniff` em todas.
+  - **B10:** código de erro novo `InvalidQuery` para `mode`/`top` inválidos no ranking.
+  - Dois índices para os dois modos do ranking, e a posição do jogador calculada com `COUNT`.
+  - Corrigi o número do critério de força bruta para a conta certa (2⁷⁹ ÷ 175 200 tentativas por ano).
+- 3 perguntas novas em `docs/processo/PERGUNTAS-PARA-O-USUARIO.md` (9 a 11).
