@@ -74,7 +74,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 
 ### Phase 4: The level
 - [x] Task 8: Deaths, restarts, exits, end of run and pause menu
-- [ ] Task 9: HUD and outline
+- [x] Task 9: HUD and outline
 - [ ] Task 10: Level 1 solved by script, end to end
 
 ### Phase 5: Wrap-up

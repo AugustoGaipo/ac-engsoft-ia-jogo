@@ -1646,3 +1646,22 @@ câmera acompanha o olho. São 69 no total.
   - O teste do estado foi trocado antes do código (vermelho → verde). No teste sem janela, entraram duas
     verificações ("+" num objeto, "•" olhando para o céu). São 129. A captura confirmou o ponto no
     centro.
+
+### Game — tarefa 9: HUD e contorno ✅
+- Boa parte da HUD já tinha sido adiantada a pedido do usuário: os números do jogador e do objeto
+  mirado, o tempo e as trocas, e a mira sempre visível.
+- **No `GameLogic`** (14 testes, vermelhos antes):
+  - `OutlineColor`: branco se aceita o que a sala liberou (ou várias coisas disso); cinza se está
+    travado ou não aceita nada; a cor da propriedade se aceita só uma entre várias liberadas;
+  - `CooldownRing.Progress`: de 0 logo depois da troca até 1 quando a próxima é permitida.
+- **No Godot:**
+  - **contorno pela "casca invertida":** uma cópia 0,1 m maior, desenhada só por dentro e sem luz, sem
+    shader próprio (o plano previa um `outline.gdshader`, que não foi preciso). Aparece no objeto
+    mirado e no segurado;
+  - **anel de recarga:** um arco em volta da mira (`CooldownRingControl`).
+- `--screenshot … --aim x y z` faz o jogador olhar para um ponto. Capturas da 1.4: contorno cinza na
+  travada e branco na outra.
+- **Teste sem janela** (133 verificações): contorno cinza e branco na 1.4; o anel começa vazio logo depois
+  da troca e enche em 1 s.
+- **Para o teste de jogo:** o contorno cinza sobre a caixa cinza fica discreto. A paleta é pergunta aberta.
+- 581 testes verdes (106 + 125 + 248 + 102), 0 avisos.

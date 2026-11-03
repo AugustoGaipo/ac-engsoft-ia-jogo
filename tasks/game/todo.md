@@ -193,10 +193,10 @@ A popped object respawns at its start values.
 - `outline.gdshader` on the aimed or held object.
 - Names are always shown in a plain `Label`.
 **Acceptance criteria:**
-- [ ] Unit tests: the outline color for every case; energy and speed text formats.
-- [ ] SC 9: smoke test reads the HUD labels in room 1.1 (time ticking, swaps 0, player 70 kg) and, aiming
+- [x] Unit tests: the outline color for every case; energy and speed text formats.
+- [x] SC 9: smoke test reads the HUD labels in room 1.1 (time ticking, swaps 0, player 70 kg) and, aiming
       at the box of 1.2, its numbers.
-- [ ] `--screenshot 1.4` shows the white and the gray outlines (opened and checked by the agent).
+- [x] `--screenshot 1.4` shows the white and the gray outlines (opened and checked by the agent).
 **Dependencies:** Task 8
 **Files:** `src/Swapping.GameLogic/OutlineColor.cs`, `tests/.../OutlineColorTests.cs`, `game/scenes/hud.tscn`
 + `game/scripts/Hud.cs`, `game/shaders/outline.gdshader`

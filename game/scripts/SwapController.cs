@@ -26,6 +26,11 @@ public partial class SwapController : Node
 
     public Crosshair Crosshair { get; private set; } = new(CrosshairLook.Idle, "");
 
+    /// <summary>0 right after a swap, 1 when the next one is allowed (the ring around the crosshair).</summary>
+    public double CooldownProgress => _runner?.Room is null
+        ? 1
+        : CooldownRing.Progress(_now, _runner.World.Cooldown.LastSwapAt, _runner.World.Rules.EffectiveCooldownSeconds);
+
     /// <summary>Seconds of play, the clock of the rules' cooldown.</summary>
     public double Now => _now;
 
@@ -83,6 +88,13 @@ public partial class SwapController : Node
         Target = _player.Aim(AimReach) as Body;
         var reason = Target is null ? null : _runner.World.Rules.Check(_runner.World, Request(Target), _now);
         Crosshair = CrosshairState.For(Target is not null, reason);
+
+        // Task 9: the aimed or held object shows what it accepts (OutlineColor); the others show nothing.
+        foreach (var body in _runner.Bodies)
+        {
+            var shown = body == Target || body == _player.Held;
+            body.ShowOutline(shown ? OutlineColor.For(_runner.World.Get(body.ContainerId), _runner.World.Rules.UnlockedProperties) : null);
+        }
     }
 
     private SwapRequest Request(Body target) =>

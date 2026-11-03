@@ -71,6 +71,16 @@ public partial class Main : Node3D
         if (shot >= 0 && shot + 2 < args.Length)
         {
             ShowRoom(args[shot + 1]);
+            // --aim x y z: look at that point (to check outlines and the crosshair in a picture).
+            var aim = Array.IndexOf(args, "--aim");
+            if (aim >= 0 && aim + 3 < args.Length)
+            {
+                var point = new Vector3(float.Parse(args[aim + 1], System.Globalization.CultureInfo.InvariantCulture),
+                    float.Parse(args[aim + 2], System.Globalization.CultureInfo.InvariantCulture),
+                    float.Parse(args[aim + 3], System.Globalization.CultureInfo.InvariantCulture));
+                var to = point - Player.Eye.Origin;
+                Player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
+            }
             _ = SaveScreenshot(args[shot + 2]);
         }
     }

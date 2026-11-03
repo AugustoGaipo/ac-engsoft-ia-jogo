@@ -21,6 +21,9 @@ public partial class Hud : CanvasLayer
     private Label _mine = null!;
     private Label _target = null!;
     private Label _run = null!;
+    private CooldownRingControl _ring = null!;
+
+    public double RingProgress => _ring.Progress;
     private RunFlow? _flow;
 
     public string CrosshairText => _crosshair.Text;
@@ -42,6 +45,9 @@ public partial class Hud : CanvasLayer
         root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         AddChild(root);
 
+        _ring = new CooldownRingControl { MouseFilter = Control.MouseFilterEnum.Ignore };
+        _ring.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        root.AddChild(_ring);
         _crosshair = Centered(root, "+", 40, 0);
         _reason = Centered(root, "", 20, 34);
         _target = Centered(root, "", 18, 62);
@@ -69,6 +75,7 @@ public partial class Hud : CanvasLayer
         if (_flow is not null)
             _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}";
 
+        _ring.Progress = _swaps.CooldownProgress;
         var crosshair = _swaps.Crosshair;
         // Always a crosshair (user's request): a small faint dot at rest, a bigger "+" on an object.
         var idle = crosshair.Look == CrosshairLook.Idle;
@@ -112,5 +119,31 @@ public partial class Hud : CanvasLayer
     {
         label.AddThemeColorOverride("font_outline_color", Colors.Black);
         label.AddThemeConstantOverride("outline_size", 6);
+    }
+}
+
+/// <summary>The cooldown ring around the crosshair: an arc that fills up until the next swap is allowed.</summary>
+public partial class CooldownRingControl : Control
+{
+    private double _progress = 1;
+
+    public double Progress
+    {
+        get => _progress;
+        set
+        {
+            if (Mathf.IsEqualApprox(value, _progress))
+                return;
+            _progress = value;
+            QueueRedraw();
+        }
+    }
+
+    public override void _Draw()
+    {
+        if (_progress >= 1)
+            return;
+        var center = Size / 2;
+        DrawArc(center, 22, -Mathf.Pi / 2, -Mathf.Pi / 2 + Mathf.Tau * (float)_progress, 48, new Color(1, 1, 1, 0.8f), 3, antialiased: true);
     }
 }

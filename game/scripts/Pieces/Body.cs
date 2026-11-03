@@ -141,6 +141,39 @@ public partial class Body : RigidBody3D, IHasWeight
             body.AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = size, Material = material } });
             body.AddChild(new CollisionShape3D { Shape = new BoxShape3D { Size = size } });
         }
+        // The outline (Task 9): a slightly bigger copy drawn from the inside only, unshaded ("inverted hull").
+        body._outlineMaterial = new StandardMaterial3D
+        {
+            ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+            CullMode = BaseMaterial3D.CullModeEnum.Front,
+        };
+        PrimitiveMesh hull = def.Kind == ObjectKind.Ball
+            ? new SphereMesh { Radius = size.X / 2 + 0.05f, Height = size.X + 0.1f }
+            : new BoxMesh { Size = size + new Vector3(0.1f, 0.1f, 0.1f) };
+        hull.Material = body._outlineMaterial;
+        body._outline = new MeshInstance3D { Name = "Outline", Mesh = hull, Visible = false };
+        body.AddChild(body._outline);
         return body;
+    }
+
+    private MeshInstance3D _outline = null!;
+    private StandardMaterial3D _outlineMaterial = null!;
+
+    /// <summary>The outline shown now, or null when the body is neither aimed nor held.</summary>
+    public Swapping.GameLogic.Outline? OutlineShown { get; private set; }
+
+    public void ShowOutline(Swapping.GameLogic.Outline? outline)
+    {
+        OutlineShown = outline;
+        _outline.Visible = outline is not null;
+        if (outline is { } kind)
+            _outlineMaterial.AlbedoColor = kind switch
+            {
+                Swapping.GameLogic.Outline.White => Colors.White,
+                Swapping.GameLogic.Outline.Gray => new Color(0.5f, 0.5f, 0.5f),
+                Swapping.GameLogic.Outline.Position => new Color(0.3f, 0.85f, 1f),   // draft palette (open question of the spec)
+                Swapping.GameLogic.Outline.Mass => new Color(1f, 0.6f, 0.2f),
+                _ => new Color(1f, 0.35f, 0.8f),
+            };
     }
 }

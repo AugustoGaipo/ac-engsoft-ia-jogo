@@ -271,6 +271,7 @@ public partial class SmokeTest : Node
         await LookAt(player, box.GlobalPosition);
         var result = swaps.TrySwap();
         Check("swap: the position swap is applied", result is { IsApplied: true }, $"{result?.Reason}");
+        Check("cooldown ring: empty right after the swap", swaps.CooldownProgress < 0.1, $"{swaps.CooldownProgress:0.00}");
         Check("make room (SC 4): after the swap of room 1.2 the feet are on the floor, not inside it",
             swaps.LastMakeRoom == Swapping.GameLogic.MakeRoomOutcome.Moved && player.GlobalPosition.Y is >= -0.01f and < 0.26f && player.GlobalPosition.X > 20,
             $"{swaps.LastMakeRoom}, feet {player.GlobalPosition}");
@@ -292,6 +293,7 @@ public partial class SmokeTest : Node
             GD.Print($"[smoke] info +{(i + 1) * 10} frames: box {box.GlobalPosition} v {box.LinearVelocity}, player {player.GlobalPosition}");
         }
         Check("make room (SC 4): the player then stands on the floor across the pit", player.IsOnFloor() && Mathf.Abs(player.GlobalPosition.Y) < 0.02f && player.GlobalPosition.X > 20, $"feet {player.GlobalPosition}");
+        Check("cooldown ring: full again one second later", swaps.CooldownProgress >= 1 && main.Hud.RingProgress >= 1, $"{swaps.CooldownProgress:0.00}");
         Check("swap: the box is not shot away (it settles under where the player was)",
             new Vector2(box.GlobalPosition.X - playerCenter.X, box.GlobalPosition.Z - playerCenter.Z).Length() < 0.05f && box.LinearVelocity.Length() < 0.1f,
             $"box {box.GlobalPosition} v {box.LinearVelocity}, player was {playerCenter}");
@@ -307,6 +309,13 @@ public partial class SmokeTest : Node
         Check("swap: the locked box → red \"travado\"",
             swaps.Target == locked && swaps.Crosshair.Reason == "travado", $"target {swaps.Target?.Name ?? "none"}, {swaps.Crosshair}");
         Check("swap: the locked box refuses the swap", swaps.TrySwap() is { IsApplied: false, Reason: RejectReasonLocked }, "applied");
+        var other = main.Runner.Bodies.Single(b => !b.Def.Locked);
+        Check("outline: the aimed locked box is gray and the others show nothing",
+            locked.OutlineShown == Swapping.GameLogic.Outline.Gray && other.OutlineShown is null, $"{locked.OutlineShown} / {other.OutlineShown}");
+        await LookAt(player, other.GlobalPosition);
+        Check("outline: the aimed box that accepts position is white and the locked one shows nothing",
+            other.OutlineShown == Swapping.GameLogic.Outline.White && locked.OutlineShown is null, $"{other.OutlineShown} / {locked.OutlineShown}");
+        await LookAt(player, locked.GlobalPosition);
         player.ToggleHold();
         Check("swap: the locked box can still be held", player.Held == locked, $"held {player.Held?.Name ?? "nothing"}");
         await PhysicsFrames(10);
