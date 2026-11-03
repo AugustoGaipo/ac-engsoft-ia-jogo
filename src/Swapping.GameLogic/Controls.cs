@@ -12,6 +12,11 @@ public enum GameAction
     Swap,
     RestartRoom,
     Pause,
+    ChoosePosition,
+    ChooseMass,
+    ChooseEnergy,
+    RotateHeldLeft,
+    RotateHeldRight,
 }
 
 public enum InputKind { Key, MouseButton }
@@ -34,6 +39,11 @@ public static class Controls
         new(GameAction.Swap, InputKind.MouseButton, "Right"),
         new(GameAction.RestartRoom, InputKind.Key, "R"),
         new(GameAction.Pause, InputKind.Key, "Escape"),
+        new(GameAction.ChoosePosition, InputKind.Key, "Key1"),
+        new(GameAction.ChooseMass, InputKind.Key, "Key2"),
+        new(GameAction.ChooseEnergy, InputKind.Key, "Key3"),
+        new(GameAction.RotateHeldLeft, InputKind.MouseButton, "WheelUp"),
+        new(GameAction.RotateHeldRight, InputKind.MouseButton, "WheelDown"),
     ];
 
     /// <summary>The action's name in the engine: snake case of the enum name (<c>MoveForward</c> → <c>move_forward</c>).</summary>

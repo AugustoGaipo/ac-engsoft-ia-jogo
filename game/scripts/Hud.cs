@@ -59,7 +59,7 @@ public partial class Hud : CanvasLayer
         // Time and swaps, always (top right).
         _run = new Label { HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = Control.MouseFilterEnum.Ignore };
         _run.SetAnchorsPreset(Control.LayoutPreset.TopRight);
-        _run.Size = new Vector2(320, 70);
+        _run.Size = new Vector2(320, 100);
         _run.Position = new Vector2(-336, 12);
         _run.AddThemeFontSizeOverride("font_size", 26);
         Outline(_run);
@@ -73,7 +73,7 @@ public partial class Hud : CanvasLayer
         var me = Readout.Of(_player.MassKg, _player.Velocity.ToLevel());
         _mine.Text = $"Você\n{me.Mass}\n{me.Speed}\n{me.Energy}";
         if (_flow is not null)
-            _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}";
+            _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}\nTroca por: {PropertyKeys.Label(_swaps.Choice)}";
 
         _ring.Progress = _swaps.CooldownProgress;
         var crosshair = _swaps.Crosshair;

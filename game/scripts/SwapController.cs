@@ -2,6 +2,7 @@ using Godot;
 using Swapping.Game.Pieces;
 using Swapping.GameLogic;
 using Swapping.Levels;
+using Swapping.Rules.Model;
 using Swapping.Rules.Operations;
 
 namespace Swapping.Game;
@@ -21,6 +22,10 @@ public partial class SwapController : Node
     private Player _player = null!;
     private double _now;
     private bool _swapRequested;
+    private string? _levelId;
+
+    /// <summary>The property the swap asks for (keys 1/2/3); starts as the first unlocked one in each level.</summary>
+    public IPropertyKind Choice { get; private set; } = PropertyKind.Position;
 
     public Body? Target { get; private set; }
 
@@ -45,6 +50,9 @@ public partial class SwapController : Node
         // The click only asks; the swap runs inside the next physics step, so every body moves together.
         if (@event.IsActionPressed(Controls.Name(GameAction.Swap)))
             _swapRequested = true;
+        foreach (var key in new[] { GameAction.ChoosePosition, GameAction.ChooseMass, GameAction.ChooseEnergy })
+            if (_runner?.Room is not null && @event.IsActionPressed(Controls.Name(key)))
+                Choice = PropertyKeys.Choose(key, Choice, _runner.World.Rules.UnlockedProperties);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -52,6 +60,13 @@ public partial class SwapController : Node
         if (_runner?.Room is null)
             return;
         _now += delta;
+        var unlocked = _runner.World.Rules.UnlockedProperties;
+        if (_levelId != _runner.Level.Id)
+        {
+            _levelId = _runner.Level.Id;
+            Choice = PropertyKeys.Default(unlocked);
+        }
+        Choice = PropertyKeys.Valid(Choice, unlocked);
         SyncWorld();
         UpdateAim();
         if (_swapRequested)
@@ -93,12 +108,12 @@ public partial class SwapController : Node
         foreach (var body in _runner.Bodies)
         {
             var shown = body == Target || body == _player.Held;
-            body.ShowOutline(shown ? OutlineColor.For(_runner.World.Get(body.ContainerId), _runner.World.Rules.UnlockedProperties) : null);
+            body.ShowOutline(shown ? OutlineColor.For(_runner.World.Get(body.ContainerId), new HashSet<IPropertyKind> { Choice }) : null);
         }
     }
 
     private SwapRequest Request(Body target) =>
-        new(LevelValidator.PlayerId, target.ContainerId, SwapChoice.Property(_runner.World.Rules.UnlockedProperties))
+        new(LevelValidator.PlayerId, target.ContainerId, Choice)
         {
             Context = Measure(target),
         };

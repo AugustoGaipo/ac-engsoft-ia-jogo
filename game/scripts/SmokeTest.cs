@@ -466,6 +466,12 @@ public partial class SmokeTest : Node
         var player = main.Player;
         var swaps = main.Swaps;
         flow.StartLevel();
+        // Task 14 (SC 15): level 1 unlocks only position, so keys 2 and 3 do nothing.
+        PressKey(main.Swaps, Key.Key2);
+        PressKey(main.Swaps, Key.Key3);
+        Check("keys (SC 15): in level 1 keys 2 and 3 are refused, the choice stays position",
+            main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Position, $"{main.Swaps.Choice.Name}");
+        Check("keys: the HUD shows the chosen property", main.Hud.RunText.Contains("Posição"), main.Hud.RunText);
         await PhysicsFrames(10);
 
         // 1.1 — carry the box onto the button, walk through the door and the exit grid.
@@ -474,6 +480,12 @@ public partial class SmokeTest : Node
         await LookAt(player, box.GlobalPosition);
         player.ToggleHold();
         Check("full run 1.1: the box is picked up", player.Held == box, $"held {player.Held?.Name ?? "nothing"}");
+        // Task 14 (SC 15): wheel turns the held box 15° around the vertical axis.
+        var yawBefore = box.GlobalBasis.GetEuler().Y;
+        player._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelUp, Pressed = true });
+        var turned = Mathf.RadToDeg(Mathf.AngleDifference(yawBefore, box.GlobalBasis.GetEuler().Y));
+        Check("full run 1.1 (SC 17): the wheel turns the held box 15°", Mathf.Abs(turned - 15) < 0.5f && player.Held == box, $"turned {turned}°");
+        player._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
         await WalkTo(player, 6.3f, 5);
         player.Look(-90, -0.35f);                                // facing +X, a bit down: the box hangs over the button
         await PhysicsFrames(30);
@@ -547,6 +559,9 @@ public partial class SmokeTest : Node
         flow.RestartLevel();
     }
 
+    private static void PressKey(SwapController swaps, Key key) =>
+        swaps._UnhandledInput(new InputEventKey { PhysicalKeycode = key, Pressed = true });
+
     /// <summary>Walks like a player: turns towards the point and holds "forward" until there (or a timeout).</summary>
     private async Task WalkTo(Player player, float x, float z, int maxFrames = 600)
     {
@@ -600,6 +615,17 @@ public partial class SmokeTest : Node
 
         // The user's case (game log 2026-11-03): the 2 kg ball rolled next to the 300 kg crate; swapping with it killed.
         main.ShowRoom("0.1");
+        // Task 14 (SC 15): the sandbox unlocks all three; keys 2 and 3 choose mass and energy, key 1 position again.
+        await PhysicsFrames(3);
+        Check("keys: the sandbox starts on position", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Position, $"{main.Swaps.Choice.Name}");
+        PressKey(main.Swaps, Key.Key2);
+        Check("keys: 2 chooses mass", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Mass, $"{main.Swaps.Choice.Name}");
+        await PhysicsFrames(2);
+        Check("keys: the HUD shows Massa", main.Hud.RunText.Contains("Massa"), main.Hud.RunText);
+        PressKey(main.Swaps, Key.Key3);
+        Check("keys: 3 chooses energy", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.KineticEnergy, $"{main.Swaps.Choice.Name}");
+        PressKey(main.Swaps, Key.Key1);
+        Check("keys: 1 chooses position again", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Position, $"{main.Swaps.Choice.Name}");
         await PhysicsFrames(3);
         var rolledBall = main.Runner.Bodies.Single(b => b.ContainerId == "ball-2kg");
         rolledBall.Teleport(new Vector3(5.30f, 0.25f, 6.08f), Vector3.Zero);

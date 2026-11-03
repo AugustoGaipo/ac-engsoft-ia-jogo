@@ -9,8 +9,8 @@
   "name": "Sala de testes",
   "scene": "res://sandbox/sandbox.tscn",
   "rules": {
-    "unlockedProperties": ["position"],
-    "rangeMeters": { "position": 8.0 },
+    "unlockedProperties": ["position", "mass", "kineticEnergy"],
+    "rangeMeters": { "position": 8.0, "mass": 8.0, "kineticEnergy": 8.0 },
     "cooldownSeconds": 1.0
   },
   "rooms": [

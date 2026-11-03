@@ -93,6 +93,14 @@ public partial class Player : CharacterBody3D, IHasWeight
         {
             Throw();
         }
+        else if (Held is not null && @event.IsActionPressed(Controls.Name(GameAction.RotateHeldLeft)))
+        {
+            SpinHeld(HeldSpin.Degrees(GameAction.RotateHeldLeft));
+        }
+        else if (Held is not null && @event.IsActionPressed(Controls.Name(GameAction.RotateHeldRight)))
+        {
+            SpinHeld(HeldSpin.Degrees(GameAction.RotateHeldRight));
+        }
         else if (@event.IsActionPressed(Controls.Name(GameAction.Jump)))
         {
             Jump();
@@ -175,6 +183,13 @@ public partial class Player : CharacterBody3D, IHasWeight
             // player, and the box squeezed the player through a wall (user's play test).
             body.IgnoreWhileHeld(this);
         }
+    }
+
+    /// <summary>The wheel: turns the held body around the vertical axis.</summary>
+    public void SpinHeld(double degrees)
+    {
+        if (Held is { } body && IsInstanceValid(body))
+            body.SpinYaw(degrees);
     }
 
     /// <summary>Left button: throw the held body forward with a fixed energy (G4).</summary>

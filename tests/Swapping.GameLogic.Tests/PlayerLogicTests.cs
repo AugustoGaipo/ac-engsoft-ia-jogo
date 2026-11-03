@@ -13,6 +13,11 @@ public sealed class ControlsTests
     [InlineData(GameAction.Swap, InputKind.MouseButton, "Right")]
     [InlineData(GameAction.RestartRoom, InputKind.Key, "R")]
     [InlineData(GameAction.Pause, InputKind.Key, "Escape")]
+    [InlineData(GameAction.ChoosePosition, InputKind.Key, "Key1")]
+    [InlineData(GameAction.ChooseMass, InputKind.Key, "Key2")]
+    [InlineData(GameAction.ChooseEnergy, InputKind.Key, "Key3")]
+    [InlineData(GameAction.RotateHeldLeft, InputKind.MouseButton, "WheelUp")]
+    [InlineData(GameAction.RotateHeldRight, InputKind.MouseButton, "WheelDown")]
     public void Every_control_of_G1_has_its_binding(GameAction action, InputKind kind, string code)
     {
         Assert.Contains(new InputBinding(action, kind, code), Controls.Bindings);

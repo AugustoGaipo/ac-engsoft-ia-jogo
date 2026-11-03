@@ -1721,3 +1721,16 @@ câmera acompanha o olho. São 69 no total.
 - **Pendência:** a tela Controles ainda não lista as teclas 1/2/3 e a roda do mouse (tarefa 14, não feita);
   acrescentar quando ela entrar. Hoje os níveis 2 e 3 aparecem "Em construção" até as tarefas 16 e 17.
 - 602 testes verdes.
+
+### Game — tarefa 14: teclas de propriedade e roda do mouse ✅
+- **Regra pura (`PropertyKeys`, `HeldSpin` em `Swapping.GameLogic`):** teclas 1/2/3 = posição/massa/energia;
+  propriedade que o nível não libera é recusada (a escolha fica); o padrão é a primeira liberada; uma
+  escolha que deixou de valer volta ao padrão; cada clique da roda gira 15°. Cinco novos controles em
+  `Controls` (Key1–Key3, WheelUp/WheelDown). 20 testes novos; mutações pegas: aceitar tecla de propriedade
+  não liberada e inverter o sentido da roda.
+- **Godot:** `SwapController.Choice` (reinicia no padrão a cada nível), usada pelo pedido de troca, pela mira
+  e pelo contorno; o HUD mostra "Troca por: …"; `Player.SpinHeld` → `Body.SpinYaw` gira o item segurado; a
+  tela Controles ganhou as duas linhas.
+- **Mapa de teste:** `sandbox.json` agora libera as três propriedades (antes só posição), como diz a spec.
+- **Sem janela:** nível 1 recusa 2 e 3; o mapa de teste troca entre 1/2/3 e o HUD acompanha; a roda gira a
+  caixa segurada em 15° no roteiro do nível 1. 141 testes no GameLogic, tudo verde.

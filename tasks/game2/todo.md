@@ -7,7 +7,7 @@ Each task: red test → code → mutation → diary → tick → commit and push
 - [x] **Task 13 — New catalog (M).** `levels/level_2.json` = Peso (2.1, 2.2, old 3.1/3.2 as 2.3/2.4),
       `level_3.json` = Energia (old 5.1/5.2), `level_5.json` removed, `accepts`; Levels design tests and
       API tests updated. SC 16.
-- [ ] **Task 14 — Property keys and wheel rotation (S/M).** `PropertyKeys` in GameLogic (tests), keys in
+- [x] **Task 14 — Property keys and wheel rotation (S/M).** `PropertyKeys` in GameLogic (tests), keys in
       `Controls`, HUD shows the property, `SwapController` uses it; wheel turns the held object. SC 15.
 - [x] **Task 15 — Menu, level select, test map, end and pause buttons (M).** `Menu.cs`, `Main.cs`,
       `RunFlow.cs`, progress file, headless menu checks. SC 17.
