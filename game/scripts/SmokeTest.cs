@@ -192,6 +192,9 @@ public partial class SmokeTest : Node
         await PhysicsFrames(60);
         player.ScriptedMove = null;
         Check("player: walks through the exit grid", player.GlobalPosition.X > 12.3f, $"x {player.GlobalPosition.X}");
+        Check("exit: crossing the exit of 1.1 builds room 1.2 with its box",
+            main.Runner.Room.Id == "1.2" && main.Runner.Bodies.Any(b => b.ContainerId == "box-1-2"),
+            $"room {main.Runner.Room.Id}, bodies {string.Join(",", main.Runner.Bodies.Select(b => b.ContainerId))}");
 
         // Play test 2026-11-03: the player's weight counts on the buttons of level 1 ("detects": "any").
         main.ShowRoom("1.1");

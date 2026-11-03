@@ -1,4 +1,5 @@
 using Godot;
+using Swapping.Game.Pieces;
 using Swapping.GameLogic;
 
 namespace Swapping.Game;
@@ -64,14 +65,45 @@ public partial class Main : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (_runner.Room is null)
+            return;
         // Provisional until Task 8 (deaths): falling into a pit restarts the room.
-        if (_runner.Room is not null && Player.GlobalPosition.Y < -2.5f && !OS.GetCmdlineUserArgs().Contains("--smoke-test"))
+        if (Player.GlobalPosition.Y < -2.5f && !OS.GetCmdlineUserArgs().Contains("--smoke-test"))
+        {
             ShowRoom(_runner.Room.Id);
+            return;
+        }
+        // Crossing the room's exit builds the next room; the player keeps walking (part of Task 8).
+        if (_runner.Room.Exit.Contains(Player.Center.ToLevel()))
+            EnterNextRoom();
     }
+
+    /// <summary>Raised when the exit of the last room is crossed.</summary>
+    public event Action? LevelFinished;
+
+    private void EnterNextRoom()
+    {
+        var rooms = _runner.Level.Rooms;
+        var index = rooms.ToList().FindIndex(r => r.Id == _runner.Room.Id);
+        if (index + 1 < rooms.Count)
+        {
+            _runner.BuildRoom(rooms[index + 1].Id);
+            GD.Print($"[game] entered room {_runner.Room.Id}");
+        }
+        else if (!_finished)
+        {
+            _finished = true;
+            GD.Print("[game] level finished");
+            LevelFinished?.Invoke();
+        }
+    }
+
+    private bool _finished;
 
     /// <summary>Builds (or rebuilds) a room and puts the player at its spawn.</summary>
     public void ShowRoom(string roomId)
     {
+        _finished = false;
         _runner.BuildRoom(roomId);
         Player.SpawnAt(_runner.Room.Spawn);
     }

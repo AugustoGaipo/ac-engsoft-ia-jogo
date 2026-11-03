@@ -1462,3 +1462,10 @@ câmera acompanha o olho. São 69 no total.
   não bastaria.
 - **Mutação:** distância medida sempre 0 → "fora de alcance" caiu.
 - 548 testes verdes (106 + 125 + 248 + 69), 0 avisos.
+- **Teste de jogo do usuário:** "não tinha caixa para eu trocar do outro lado". A próxima sala só era
+  montada na tarefa 8, então na 1.2 o jogo ainda tinha as peças da 1.1.
+  - **Adiantei a parte das saídas da tarefa 8:** quando o centro do jogador entra na caixa de saída da
+    sala, a próxima sala é montada sem mexer no jogador. Na saída da última, o evento `LevelFinished`.
+  - Verificação nova no teste sem janela: atravessar a saída da 1.1 monta a 1.2 com a caixa. São 81.
+  - **Lição de processo:** os testes montavam cada sala com `ShowRoom` e nunca passavam de uma sala
+    para a outra andando, por isso o buraco só apareceu jogando.
