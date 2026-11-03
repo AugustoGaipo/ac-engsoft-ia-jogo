@@ -59,18 +59,75 @@ public sealed class PropertyKeysTests
     }
 }
 
-public sealed class HeldSpinTests
+public sealed class PropertyWheelTests
 {
+    private static HashSet<IPropertyKind> Unlocked(params IPropertyKind[] kinds) => [.. kinds];
+
     [Fact]
-    public void Each_wheel_notch_turns_fifteen_degrees()
+    public void The_wheel_goes_to_the_next_unlocked_property_and_wraps_around()
     {
-        Assert.Equal(15, HeldSpin.Degrees(GameAction.RotateHeldLeft));
-        Assert.Equal(-15, HeldSpin.Degrees(GameAction.RotateHeldRight));
+        var all = Unlocked(PropertyKind.Position, PropertyKind.Mass, PropertyKind.KineticEnergy);
+        Assert.Same(PropertyKind.Mass, PropertyKeys.Cycle(PropertyKind.Position, +1, all));
+        Assert.Same(PropertyKind.KineticEnergy, PropertyKeys.Cycle(PropertyKind.Mass, +1, all));
+        Assert.Same(PropertyKind.Position, PropertyKeys.Cycle(PropertyKind.KineticEnergy, +1, all));
     }
 
     [Fact]
-    public void Other_actions_do_not_turn_it()
+    public void The_wheel_the_other_way_goes_back_and_wraps_around()
     {
-        Assert.Equal(0, HeldSpin.Degrees(GameAction.Swap));
+        var all = Unlocked(PropertyKind.Position, PropertyKind.Mass, PropertyKind.KineticEnergy);
+        Assert.Same(PropertyKind.KineticEnergy, PropertyKeys.Cycle(PropertyKind.Position, -1, all));
+        Assert.Same(PropertyKind.Position, PropertyKeys.Cycle(PropertyKind.Mass, -1, all));
+    }
+
+    [Fact]
+    public void The_wheel_skips_properties_the_level_does_not_unlock()
+    {
+        var positionAndEnergy = Unlocked(PropertyKind.Position, PropertyKind.KineticEnergy);
+        Assert.Same(PropertyKind.KineticEnergy, PropertyKeys.Cycle(PropertyKind.Position, +1, positionAndEnergy));
+        Assert.Same(PropertyKind.Position, PropertyKeys.Cycle(PropertyKind.KineticEnergy, +1, positionAndEnergy));
+    }
+
+    [Fact]
+    public void With_a_single_unlocked_property_the_wheel_changes_nothing()
+    {
+        Assert.Same(PropertyKind.Position, PropertyKeys.Cycle(PropertyKind.Position, +1, Unlocked(PropertyKind.Position)));
+    }
+
+    [Fact]
+    public void A_choice_that_is_not_unlocked_goes_to_the_default_first()
+    {
+        Assert.Same(PropertyKind.Position, PropertyKeys.Cycle(PropertyKind.KineticEnergy, +1, Unlocked(PropertyKind.Position)));
+    }
+
+    [Theory]
+    [InlineData(GameAction.PropertyPrevious, -1)]
+    [InlineData(GameAction.PropertyNext, +1)]
+    [InlineData(GameAction.Swap, 0)]
+    public void Wheel_actions_have_a_direction(GameAction action, int direction)
+    {
+        Assert.Equal(direction, PropertyKeys.WheelDirection(action));
+    }
+}
+
+public sealed class HeldSpinTests
+{
+    [Fact]
+    public void The_mouse_to_the_right_turns_the_object_the_same_way_the_view_turns()
+    {
+        // 0.0025 rad per pixel (the player's sensitivity): 100 px to the right = -0.25 rad.
+        Assert.Equal(-0.25 * 180 / Math.PI, HeldSpin.Degrees(100, 0.0025), 6);
+    }
+
+    [Fact]
+    public void The_mouse_to_the_left_turns_it_the_other_way()
+    {
+        Assert.True(HeldSpin.Degrees(-40, 0.0025) > 0);
+    }
+
+    [Fact]
+    public void No_mouse_motion_no_turn()
+    {
+        Assert.Equal(0, HeldSpin.Degrees(0, 0.0025));
     }
 }

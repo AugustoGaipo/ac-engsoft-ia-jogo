@@ -1,5 +1,6 @@
 using Godot;
 using Swapping.Game.Pieces;
+using Swapping.GameLogic;
 using Swapping.Levels;
 
 namespace Swapping.Game;
@@ -480,12 +481,16 @@ public partial class SmokeTest : Node
         await LookAt(player, box.GlobalPosition);
         player.ToggleHold();
         Check("full run 1.1: the box is picked up", player.Held == box, $"held {player.Held?.Name ?? "nothing"}");
-        // Task 14 (SC 15): wheel turns the held box 15° around the vertical axis.
+        // Task 14: holding the rotate button, the mouse turns the held box and the view stays still.
         var yawBefore = box.GlobalBasis.GetEuler().Y;
-        player._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelUp, Pressed = true });
+        var viewBefore = player.Rotation.Y;
+        Input.ActionPress(Controls.Name(GameAction.HoldToRotate));
+        player._UnhandledInput(new InputEventMouseMotion { Relative = new Vector2(-100, 0) });
+        Input.ActionRelease(Controls.Name(GameAction.HoldToRotate));
         var turned = Mathf.RadToDeg(Mathf.AngleDifference(yawBefore, box.GlobalBasis.GetEuler().Y));
-        Check("full run 1.1 (SC 17): the wheel turns the held box 15°", Mathf.Abs(turned - 15) < 0.5f && player.Held == box, $"turned {turned}°");
-        player._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
+        var expected = (float)HeldSpin.Degrees(-100, Player.MouseSensitivity);
+        Check("full run 1.1: rotate button + mouse turns the held box", Mathf.Abs(turned - expected) < 0.5f && player.Held == box, $"turned {turned}°, expected {expected}°");
+        Check("full run 1.1: the view does not turn while rotating the box", Mathf.IsEqualApprox(player.Rotation.Y, viewBefore), $"{player.Rotation.Y} vs {viewBefore}");
         await WalkTo(player, 6.3f, 5);
         player.Look(-90, -0.35f);                                // facing +X, a bit down: the box hangs over the button
         await PhysicsFrames(30);
@@ -626,6 +631,12 @@ public partial class SmokeTest : Node
         Check("keys: 3 chooses energy", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.KineticEnergy, $"{main.Swaps.Choice.Name}");
         PressKey(main.Swaps, Key.Key1);
         Check("keys: 1 chooses position again", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Position, $"{main.Swaps.Choice.Name}");
+        main.Swaps._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
+        Check("wheel: down goes to the next property (position → mass)", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Mass, $"{main.Swaps.Choice.Name}");
+        main.Swaps._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelUp, Pressed = true });
+        main.Swaps._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelUp, Pressed = true });
+        Check("wheel: up twice from mass wraps to energy", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.KineticEnergy, $"{main.Swaps.Choice.Name}");
+        PressKey(main.Swaps, Key.Key1);
         await PhysicsFrames(3);
         var rolledBall = main.Runner.Bodies.Single(b => b.ContainerId == "ball-2kg");
         rolledBall.Teleport(new Vector3(5.30f, 0.25f, 6.08f), Vector3.Zero);

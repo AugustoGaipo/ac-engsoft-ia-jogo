@@ -15,8 +15,9 @@ public enum GameAction
     ChoosePosition,
     ChooseMass,
     ChooseEnergy,
-    RotateHeldLeft,
-    RotateHeldRight,
+    PropertyPrevious,
+    PropertyNext,
+    HoldToRotate,
 }
 
 public enum InputKind { Key, MouseButton }
@@ -42,8 +43,9 @@ public static class Controls
         new(GameAction.ChoosePosition, InputKind.Key, "Key1"),
         new(GameAction.ChooseMass, InputKind.Key, "Key2"),
         new(GameAction.ChooseEnergy, InputKind.Key, "Key3"),
-        new(GameAction.RotateHeldLeft, InputKind.MouseButton, "WheelUp"),
-        new(GameAction.RotateHeldRight, InputKind.MouseButton, "WheelDown"),
+        new(GameAction.PropertyPrevious, InputKind.MouseButton, "WheelUp"),
+        new(GameAction.PropertyNext, InputKind.MouseButton, "WheelDown"),
+        new(GameAction.HoldToRotate, InputKind.Key, "F"),
     ];
 
     /// <summary>The action's name in the engine: snake case of the enum name (<c>MoveForward</c> → <c>move_forward</c>).</summary>

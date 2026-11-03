@@ -54,7 +54,7 @@ public partial class Menu : CanvasLayer
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             Text = "W A S D  andar        Espaço  pular\nMouse  olhar        E  segurar / soltar\n" +
-                   "Botão esquerdo  arremessar        Botão direito  trocar\n1 2 3  escolher a troca (posição, massa, energia)\nRoda do mouse  girar o item segurado\nR  reiniciar a sala        Esc  pausa",
+                   "Botão esquerdo  arremessar        Botão direito  trocar\n1 2 3  escolher a troca (posição, massa, energia)\nRoda do mouse  trocar a propriedade\nSegurar F + mover o mouse  girar o item segurado\nR  reiniciar a sala        Esc  pausa",
         };
         controls.AddThemeFontSizeOverride("font_size", 22);
         _controlsScreen.AddChild(controls);

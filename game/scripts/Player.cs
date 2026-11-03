@@ -77,9 +77,16 @@ public partial class Player : CharacterBody3D, IHasWeight
             Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
+    /// <summary>True while the rotate button is down with an object in hand: the mouse turns the object, not the view.</summary>
+    public bool IsRotatingHeld => Held is not null && Input.IsActionPressed(Controls.Name(GameAction.HoldToRotate));
+
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventMouseMotion motion && Input.MouseMode == Input.MouseModeEnum.Captured)
+        if (@event is InputEventMouseMotion spin && IsRotatingHeld)
+        {
+            SpinHeld(HeldSpin.Degrees(spin.Relative.X, MouseSensitivity));
+        }
+        else if (@event is InputEventMouseMotion motion && Input.MouseMode == Input.MouseModeEnum.Captured)
         {
             _yaw -= motion.Relative.X * MouseSensitivity;
             _pitch = Mathf.Clamp(_pitch - motion.Relative.Y * MouseSensitivity, -1.5f, 1.5f);
@@ -92,14 +99,6 @@ public partial class Player : CharacterBody3D, IHasWeight
         else if (@event.IsActionPressed(Controls.Name(GameAction.Throw)))
         {
             Throw();
-        }
-        else if (Held is not null && @event.IsActionPressed(Controls.Name(GameAction.RotateHeldLeft)))
-        {
-            SpinHeld(HeldSpin.Degrees(GameAction.RotateHeldLeft));
-        }
-        else if (Held is not null && @event.IsActionPressed(Controls.Name(GameAction.RotateHeldRight)))
-        {
-            SpinHeld(HeldSpin.Degrees(GameAction.RotateHeldRight));
         }
         else if (@event.IsActionPressed(Controls.Name(GameAction.Jump)))
         {

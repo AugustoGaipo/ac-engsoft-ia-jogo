@@ -241,7 +241,7 @@ rooms **accept only that property** (`accepts`), so an earlier skill can't skip 
 - **Property keys:** `1` position, `2` mass, `3` kinetic energy. A key of a property the level does not
   unlock does nothing. The chosen property starts as the first unlocked one in each level, is shown on the
   HUD, and the crosshair and the outline use it (aiming at an object that refuses it → red crosshair).
-- **Mouse wheel rotates the held object** around the vertical axis (15° per notch).
+- **Mouse wheel changes the property** (next/previous unlocked, wrapping), besides keys 1/2/3. **Holding `F` with an object in hand turns it with the mouse** (the view stays still), like Superliminal. Changed by the user on 2026-11-03.
 - **Main menu** (first screen): title, **Jogar** (continue), **Níveis**, **Mapa de teste**, **Controles**, **Sair**.
 - **Level select:** one card per catalog level in order; locked cards show a lock and can't be chosen;
   finished cards show the best time and the fewest swaps.
@@ -267,5 +267,5 @@ rooms **accept only that property** (`accepts`), so an earlier skill can't skip 
     tests still pass with the new catalog.
 17. Headless checks: no arguments opens the menu; a locked card can't start; finishing level 1 opens
     level 2 and writes the progress file; scripted runs of levels 2 and 3 finish (exit code 0), each room
-    the planned way (mass swap for 2.3/2.4, energy swap for 3.1/3.2); the wheel rotates a held box.
+    the planned way (mass swap for 2.3/2.4, energy swap for 3.1/3.2); F + mouse turns a held box and the wheel cycles the property.
 18. Line coverage of `Swapping.GameLogic` stays ≥ 90 %; zero warnings; all tests green.

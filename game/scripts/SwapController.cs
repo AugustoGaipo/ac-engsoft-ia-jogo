@@ -53,6 +53,9 @@ public partial class SwapController : Node
         foreach (var key in new[] { GameAction.ChoosePosition, GameAction.ChooseMass, GameAction.ChooseEnergy })
             if (_runner?.Room is not null && @event.IsActionPressed(Controls.Name(key)))
                 Choice = PropertyKeys.Choose(key, Choice, _runner.World.Rules.UnlockedProperties);
+        foreach (var wheel in new[] { GameAction.PropertyPrevious, GameAction.PropertyNext })
+            if (_runner?.Room is not null && @event.IsActionPressed(Controls.Name(wheel)))
+                Choice = PropertyKeys.Cycle(Choice, PropertyKeys.WheelDirection(wheel), _runner.World.Rules.UnlockedProperties);
     }
 
     public override void _PhysicsProcess(double delta)

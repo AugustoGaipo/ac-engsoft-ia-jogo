@@ -1734,3 +1734,15 @@ câmera acompanha o olho. São 69 no total.
 - **Mapa de teste:** `sandbox.json` agora libera as três propriedades (antes só posição), como diz a spec.
 - **Sem janela:** nível 1 recusa 2 e 3; o mapa de teste troca entre 1/2/3 e o HUD acompanha; a roda gira a
   caixa segurada em 15° no roteiro do nível 1. 141 testes no GameLogic, tudo verde.
+
+### Game — tarefa 14 (revisão pedida pelo usuário): roda troca a propriedade, F + mouse gira o item
+- **Pedido:** a roda do mouse passa a mudar a propriedade (as teclas 1/2/3 ficam); para girar o item, segurar
+  um botão e mexer o mouse, com a câmera parada, como no Superliminal. O botão escolhido é **F**
+  (trocar é uma linha em `Controls`).
+- `PropertyKeys.Cycle` (próxima/anterior liberada, dá a volta, pula as bloqueadas) e `HeldSpin.Degrees`
+  (movimento do mouse → graus, mesmo sentido da câmera). `Player` gasta o movimento do mouse no item
+  enquanto F está apertado e há item na mão; sem item, o mouse olha normal. 10 testes novos; mutações
+  pegas: sentido da roda invertido (1 falha) e sem dar a volta (3 falhas).
+- Sem janela: F + mouse gira a caixa e a câmera não gira; a roda vai posição → massa e dá a volta até energia.
+- **Lição:** um erro de sintaxe que o meu `sed` colocou no `Menu.cs` deixou o jogo sem compilar e os testes
+  do Godot rodaram com o binário antigo (verdes sem valer). Passei a rodar `dotnet build game` antes do teste.

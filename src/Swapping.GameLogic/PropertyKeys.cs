@@ -19,6 +19,24 @@ public static class PropertyKeys
     public static IPropertyKind Valid(IPropertyKind current, IReadOnlySet<IPropertyKind> unlocked) =>
         unlocked.Contains(current) ? current : Default(unlocked);
 
+    /// <summary>The mouse wheel: the next (+1) or previous (-1) unlocked property in key order, wrapping around.</summary>
+    public static IPropertyKind Cycle(IPropertyKind current, int direction, IReadOnlySet<IPropertyKind> unlocked)
+    {
+        var options = PropertyKind.All.Where(unlocked.Contains).ToList();
+        var at = options.IndexOf(Valid(current, unlocked));
+        if (options.Count == 0 || at < 0)
+            return Default(unlocked);
+        return options[(at + direction % options.Count + options.Count) % options.Count];
+    }
+
+    /// <summary>+1 for the "next" wheel action, -1 for "previous", 0 for anything else.</summary>
+    public static int WheelDirection(GameAction action) => action switch
+    {
+        GameAction.PropertyNext => 1,
+        GameAction.PropertyPrevious => -1,
+        _ => 0,
+    };
+
     /// <summary>The name shown on the HUD.</summary>
     public static string Label(IPropertyKind kind) => kind.Name switch
     {
@@ -37,15 +55,12 @@ public static class PropertyKeys
     };
 }
 
-/// <summary>The mouse wheel turns the held object around the vertical axis, 15° per notch.</summary>
+/// <summary>Holding the rotate button turns the held object with the mouse (the view stays still), like Superliminal.</summary>
 public static class HeldSpin
 {
-    public const double DegreesPerNotch = 15;
+    private const double RadiansToDegrees = 180 / Math.PI;
 
-    public static double Degrees(GameAction action) => action switch
-    {
-        GameAction.RotateHeldLeft => DegreesPerNotch,
-        GameAction.RotateHeldRight => -DegreesPerNotch,
-        _ => 0,
-    };
+    /// <summary>Degrees around the vertical axis for a horizontal mouse motion; same sense as the view's own turn.</summary>
+    public static double Degrees(double mouseRelativeX, double radiansPerPixel) =>
+        -mouseRelativeX * radiansPerPixel * RadiansToDegrees;
 }
