@@ -150,3 +150,25 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
   - 479 testes verdes (106 + 125 + 248).
 - **Próximo passo:** o `game` nível 1 no Godot, depois que o usuário aprovar a `SPEC-game.md`.
   Depois, o plano e as tarefas em `tasks/game/`.
+
+## Onde paramos (terça, 2026-11-03, fim do dia)
+- **`game` (nível 1): tarefas 1 a 10 feitas.** O nível 1 é jogável do começo ao fim, e o teste sem
+  janela o joga inteiro (145 verificações).
+- **Pedidos do usuário que entraram:**
+  - sala de testes (`--sandbox`) e prévia das peças no editor;
+  - mira sempre visível e números na HUD;
+  - empurrar com peso;
+  - correções vindas do teste de jogo: câmera, caixa lançada, caixa segurada, sair do mapa, busca de
+    espaço na diagonal.
+  Está tudo no diário.
+- **Falta:**
+  - tarefa 11: cobertura do `Swapping.GameLogic` ≥ 90 %, ficha do teste de jogo
+    (`PLAYTEST-nivel-1.md`), `RELATORIO-game.md`, C4 do cliente e README com os controles;
+  - quinta: slides e ensaio.
+- **Perguntas pendentes ao usuário:**
+  - como ele passou a sala 1.3 com uma troca só (talvez um atalho);
+  - as cores do contorno.
+- **Comandos:**
+  - jogo: `Godot…exe --path game` (`-- --sandbox` abre a sala de testes);
+  - teste sem janela: `…console.exe --headless --path game -- --smoke-test level-1`, também rodado
+    pelo `dotnet test`.

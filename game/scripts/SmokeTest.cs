@@ -40,6 +40,7 @@ public partial class SmokeTest : Node
             await CheckPlayer(main);
             await CheckSwap(main);
             await CheckRunFlow(main);
+            await CheckFullRun(main);
             await CheckSandbox(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
@@ -455,6 +456,98 @@ public partial class SmokeTest : Node
         Check("run: the player outside the map dies at once (\"saiu do mapa\")", flow.Run.Deaths == deathsBefore + 1,
             $"deaths {flow.Run.Deaths - deathsBefore}, player {player.GlobalPosition}");
         flow.RestartLevel();
+    }
+
+    // ---- Task 10 (SC 8, 10): level 1 played from the first room to the end screen, the planned way ----
+
+    private async Task CheckFullRun(Main main)
+    {
+        var flow = main.Flow;
+        var player = main.Player;
+        var swaps = main.Swaps;
+        flow.StartLevel();
+        await PhysicsFrames(10);
+
+        // 1.1 — carry the box onto the button, walk through the door and the exit grid.
+        var box = main.Runner.Bodies.Single();
+        await WalkTo(player, 4, 4.7f);
+        await LookAt(player, box.GlobalPosition);
+        player.ToggleHold();
+        Check("full run 1.1: the box is picked up", player.Held == box, $"held {player.Held?.Name ?? "nothing"}");
+        await WalkTo(player, 6.3f, 5);
+        player.Look(-90, -0.35f);                                // facing +X, a bit down: the box hangs over the button
+        await PhysicsFrames(30);
+        player.Drop();
+        await PhysicsFrames(60);
+        Check("full run 1.1: the box on the button opens the door", main.Runner.Doors.Single().IsOpen,
+            $"box {box.GlobalPosition}, pressed {main.Runner.Buttons.Single().IsPressed}");
+        await WalkTo(player, 8, 7.2f);                          // around the button (the box stays on it)
+        await WalkTo(player, 9.6f, 5);
+        await WalkTo(player, 12.6f, 5);
+        Check("full run 1.1: through the door and the exit grid into room 1.2", main.Runner.Room.Id == "1.2", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 1.2 — the first swap, across the pit.
+        await WalkTo(player, 13.5f, 5);
+        box = main.Runner.Bodies.Single();
+        await LookAt(player, box.GlobalPosition);
+        Check("full run 1.2: the swap across the pit", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(20);
+        await WalkTo(player, 24.6f, 5);
+        Check("full run 1.2: into room 1.3", main.Runner.Room.Id == "1.3", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 1.3 (SC 8) — swap with the ball (up the ledge), stand on the button, swap with the box below.
+        await WalkTo(player, 25.2f, 5);
+        var ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-1-3");
+        box = main.Runner.Bodies.Single(b => b.ContainerId == "box-1-3");
+        await LookAt(player, ball.GlobalPosition);
+        Check("full run 1.3: swap with the ball on the ledge", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(70);                                // cooldown and landing on the ledge
+        await WalkTo(player, 32.75f, 5);
+        await LookAt(player, box.GlobalPosition);
+        Check("full run 1.3: swap with the box from the button", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(60);
+        Check("full run 1.3 (SC 8): the box lands on the high button and the door opens", main.Runner.Doors.Single().IsOpen,
+            $"box {box.GlobalPosition}, player {player.GlobalPosition}");
+        await WalkTo(player, 29, 8);                            // along the ground corridor beside the ledge
+        await WalkTo(player, 34.6f, 8);
+        await WalkTo(player, 36.8f, 5);
+        Check("full run 1.3: through the door into room 1.4", main.Runner.Room.Id == "1.4", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 1.4 — the locked box refuses; swap with the other one, then the exit ends the level.
+        await WalkTo(player, 39.6f, 7);
+        var free = main.Runner.Bodies.Single(b => !b.Def.Locked);
+        await LookAt(player, free.GlobalPosition);
+        Check("full run 1.4: swap with the box that accepts position", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(20);
+        await WalkTo(player, 47.9f, 5);
+        await PhysicsFrames(5);
+
+        Check("full run (SC 10): the level ends with the end screen", flow.Result is not null && flow.EndScreenVisible,
+            $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+        var result = flow.Result!;
+        Check("full run (SC 10): 4 swaps, no death, time above the API floor (1 000 ms × 4 rooms)",
+            result is { LevelId: "level-1", Swaps: 4, Deaths: 0, RoomRestarts: 0 } && result.TimeMs >= 4_000,
+            $"{result}");
+        GD.Print($"[smoke] info full run of level 1: {result}");
+        flow.RestartLevel();
+    }
+
+    /// <summary>Walks like a player: turns towards the point and holds "forward" until there (or a timeout).</summary>
+    private async Task WalkTo(Player player, float x, float z, int maxFrames = 600)
+    {
+        var target = new Vector2(x, z);
+        for (var i = 0; i < maxFrames; i++)
+        {
+            var at = new Vector2(player.GlobalPosition.X, player.GlobalPosition.Z);
+            var to = target - at;
+            if (to.Length() < 0.15f)
+                break;
+            player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Y)), 0);
+            player.ScriptedMove = new Vector2(0, 1);
+            await PhysicsFrames(1);
+        }
+        player.ScriptedMove = null;
+        await PhysicsFrames(2);
     }
 
     // ---- The test room (sandbox) loads with the levels' validator and builds every station ----

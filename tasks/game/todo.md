@@ -213,10 +213,10 @@ scenes:
 It checks the end screen and the run result. Any room that turns out unsolvable is fixed in
 `level_1.json` with its design test in `levels` (the room's lesson does not change: ask first).
 **Acceptance criteria:**
-- [ ] SC 8: room 1.3 solved the planned way (the door opens).
-- [ ] SC 10: the full scripted run of level 1 exits 0; the run result has 4 rooms' worth of swaps, `timeMs`
+- [x] SC 8: room 1.3 solved the planned way (the door opens).
+- [x] SC 10: the full scripted run of level 1 exits 0; the run result has 4 rooms' worth of swaps, `timeMs`
       ≥ the API floor (1 000 × 4) and the API field names.
-- [ ] `dotnet test Swapping.sln` runs it on the PC.
+- [x] `dotnet test Swapping.sln` runs it on the PC.
 **Dependencies:** Task 9
 **Files:** `game/scripts/SmokeTest.cs`, `game/scripts/ScriptedInput.cs`, maybe `levels/level_1.json` and
 `tests/Swapping.Levels.Tests/RoomDesignTests.cs`

@@ -1665,3 +1665,15 @@ câmera acompanha o olho. São 69 no total.
   da troca e enche em 1 s.
 - **Para o teste de jogo:** o contorno cinza sobre a caixa cinza fica discreto. A paleta é pergunta aberta.
 - 581 testes verdes (106 + 125 + 248 + 102), 0 avisos.
+
+### Game — tarefa 10: o nível 1 jogado inteiro pelo teste sem janela ✅
+- O roteiro joga como um jogador (`WalkTo`: vira e anda para a frente), usando segurar e trocar:
+  - 1.1: leva a caixa ao botão, contorna o botão e passa pela porta e pela grade;
+  - 1.2: troca através do buraco;
+  - 1.3: troca com a bola, para no botão e troca com a caixa (SC 8);
+  - 1.4: troca com a caixa que aceita e cruza a saída.
+- Resultado: `level-1`, 28,6 s, 4 trocas, 0 mortes, a tela de fim e os campos da API (SC 10).
+- **Erro meu de desenho achado pelo roteiro:** a plataforma da sala 1.3 ocupava a largura toda, e o
+  caminho planejado deixava o jogador no chão sem acesso à porta. A plataforma agora vai de z 0 a 6,
+  com um corredor no chão até a porta. A lição da sala não mudou.
+- 145 verificações sem janela.
