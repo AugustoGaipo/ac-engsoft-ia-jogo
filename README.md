@@ -74,3 +74,35 @@ dotnet list Swapping.sln package --vulnerable --include-transitive   # auditoria
 
 Os erros vêm em `application/problem+json` com um campo `code` (ex.: `InvalidBody`, `NameTaken`,
 `ProfileLocked`, `LevelLocked`, `InvalidQuery`). Fora de `Development`, a API exige HTTPS.
+
+## O jogo (Godot 4.7 .NET) — nível 1
+
+Requer o **Godot 4.7.2 .NET** (o executável `…_mono_win64.exe`; o `…_console.exe` mostra o log). Antes,
+`dotnet build Swapping.sln`: isso compila o jogo e copia `levels/*.json` para `game/levels/`.
+
+```
+Godot_v4.7.2-stable_mono_win64.exe --path game                  # joga o nível 1
+Godot_v4.7.2-stable_mono_win64.exe --path game -- --sandbox     # sala de testes (um posto por mecânica)
+Godot_v4.7.2-stable_mono_win64.exe --editor --path game         # editor, com a prévia das peças nas cenas
+Godot_..._console.exe --headless --path game -- --smoke-test level-1   # teste sem janela (o dotnet test também roda)
+```
+
+| Controle | Ação |
+|---|---|
+| WASD + mouse | andar e olhar |
+| Espaço | pular |
+| `E` | segurar / soltar o objeto mirado (até 2,5 m) |
+| Botão esquerdo | arremessar o objeto segurado |
+| Botão direito | **trocar de posição** com o objeto mirado (mira branca = vai funcionar) |
+| `R` | reiniciar a sala (na tela de fim: jogar de novo) |
+| `Esc` | menu de pausa (o tempo para) |
+
+- `game/`: o cliente Godot. Os scripts só medem e aplicam; quem decide são as bibliotecas.
+  Spec: [`SPEC-game.md`](docs/specs/SPEC-game.md). Relatório: [`RELATORIO-game.md`](docs/processo/RELATORIO-game.md).
+- `src/Swapping.GameLogic/`: as decisões do jogo que não precisam do motor (contador da partida, mira,
+  contorno, busca de espaço depois da troca, morte por queda, botões, controles). Sem Godot.
+- `tests/Swapping.GameLogic.Tests/`: testes xUnit da biblioteca e o teste que roda o Godot sem janela
+  (pulado onde não houver Godot).
+- `game/sandbox/`: a sala de testes, fora do catálogo (a API não a vê).
+- `tools/scenery/`: tabelas e gerador do cenário (`gen.sh`). Edite a tabela, não o `.tscn` gerado.
+- Ficha do teste de jogo: [`PLAYTEST-nivel-1.md`](docs/processo/PLAYTEST-nivel-1.md).

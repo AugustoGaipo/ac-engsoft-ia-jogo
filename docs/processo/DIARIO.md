@@ -1677,3 +1677,15 @@ câmera acompanha o olho. São 69 no total.
   caminho planejado deixava o jogador no chão sem acesso à porta. A plataforma agora vai de z 0 a 6,
   com um corredor no chão até a porta. A lição da sala não mudou.
 - 145 verificações sem janela.
+
+### Game — tarefa 11: cobertura, ficha do teste de jogo, relatório, C4 e README ✅ (checkpoint: completo)
+- **Cobertura do `Swapping.GameLogic`:** 98,8 % das linhas e 96,4 % dos ramos (meta ≥ 90 %), numa rodada
+  com os 102 testes passando. Ficaram de fora o ramo `default` de um `switch` e uma linha de um caso
+  degenerado da geometria.
+- **`PLAYTEST-nivel-1.md`:** os 9 relatos do usuário e as correções, uma tabela por sala, as perguntas de
+  gosto da spec e as partidas.
+- **`RELATORIO-game.md`:** SC 1–11 com verificação automática (o texto do `Check` ou o teste xUnit); o
+  SC 12 (60 fps) fica com o teste de jogo.
+- **C4:** o componente `game` deixou de ser "ainda não feito", e entrou o diagrama de Componentes do
+  Game Client.
+- **README:** como jogar, os controles, a sala de testes, o editor e o teste sem janela.

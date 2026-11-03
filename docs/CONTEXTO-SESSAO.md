@@ -172,3 +172,10 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
   - jogo: `Godot…exe --path game` (`-- --sandbox` abre a sala de testes);
   - teste sem janela: `…console.exe --headless --path game -- --smoke-test level-1`, também rodado
     pelo `dotnet test`.
+- **Atualização (tarefa 11):** o `game` do nível 1 está **completo**.
+  - Relatório: `docs/processo/RELATORIO-game.md` (SC 1–11 automáticos; SC 12 no teste de jogo).
+  - Ficha: `docs/processo/PLAYTEST-nivel-1.md`.
+  - C4 com os componentes do cliente; README com os controles.
+  - Cobertura do `GameLogic`: 98,8 %. 581 testes + 145 verificações sem janela.
+- **Próximo passo:** quinta, slides e ensaio (roteiro em `docs/apresentacao/ROTEIRO.md`). Atualizar o site
+  da arquitetura (`docs/site/`) com o `game` e a API prontos.

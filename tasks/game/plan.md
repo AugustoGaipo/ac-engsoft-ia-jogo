@@ -70,7 +70,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 - [x] Task 7: Make room after a position swap
 
 ### Checkpoint: The swap is playable
-- [ ] Room 1.2 works by script (SC 3, 4) and **the user plays rooms 1.1–1.2** before Phase 4
+- [x] Room 1.2 works by script (SC 3, 4) and **the user plays rooms 1.1–1.2** before Phase 4
 
 ### Phase 4: The level
 - [x] Task 8: Deaths, restarts, exits, end of run and pause menu
@@ -78,10 +78,10 @@ Godot project + level copy + headless smoke entry (Task 1)
 - [x] Task 10: Level 1 solved by script, end to end
 
 ### Phase 5: Wrap-up
-- [ ] Task 11: Architecture, coverage, play-test sheet, screenshots and report
+- [x] Task 11: Architecture, coverage, play-test sheet, screenshots and report
 
 ### Checkpoint: Complete
-- [ ] SC 1–11 have an automated check; SC 12 and the feel are in the user's play-test sheet
+- [x] SC 1–11 have an automated check; SC 12 and the feel are in the user's play-test sheet
 
 ## Risks and Mitigations
 | Risk | Impact | Mitigation |

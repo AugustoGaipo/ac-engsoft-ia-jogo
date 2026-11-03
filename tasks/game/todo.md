@@ -160,8 +160,8 @@ A popped object respawns at its start values.
 **Scope:** M
 
 ### Checkpoint: The swap is playable
-- [ ] Build clean, all tests and the smoke test green, commit + push.
-- [ ] **The user plays rooms 1.1–1.2** (window, mouse and keyboard) and says what feels wrong before Phase 4.
+- [x] Build clean, all tests and the smoke test green, commit + push.
+- [x] **The user plays rooms 1.1–1.2** (window, mouse and keyboard) and says what feels wrong before Phase 4.
 
 ## Task 8: Deaths, restarts, exits, end of run and pause menu
 **Description:**
@@ -231,13 +231,13 @@ It checks the end screen and the run result. Any room that turns out unsolvable 
 - `docs/processo/RELATORIO-game.md` (criterion → check).
 - C4 components of the Game Client, README (how to play, controls).
 **Acceptance criteria:**
-- [ ] SC 11: architecture test green; line coverage of `Swapping.GameLogic` ≥ 90 %.
-- [ ] SC 1: the solution and `game/` build with zero warnings; everything green.
-- [ ] SC 12 and the feel: the sheet is ready for the user; the report maps SC 1–11 to their checks.
+- [x] SC 11: architecture test green; line coverage of `Swapping.GameLogic` ≥ 90 %.
+- [x] SC 1: the solution and `game/` build with zero warnings; everything green.
+- [x] SC 12 and the feel: the sheet is ready for the user; the report maps SC 1–11 to their checks.
 **Dependencies:** Task 10
 **Files:** `docs/processo/PLAYTEST-nivel-1.md`, `docs/processo/RELATORIO-game.md`, `docs/architecture/C4.md`,
 `README.md`, `docs/processo/DIARIO.md`
 **Scope:** M
 
 ### Checkpoint: Complete
-- [ ] SC 1–11 have an automated check; build clean; all green; pushed; the user has the play-test sheet.
+- [x] SC 1–11 have an automated check; build clean; all green; pushed; the user has the play-test sheet.
