@@ -1211,3 +1211,26 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - um resultado que não é melhor também sobrescreve → 3 testes caíram;
   - `LevelLocked` sem evento de segurança → 1 teste caiu.
 - 437 testes verdes (106 + 125 + 206), 0 avisos.
+
+### API — tarefa 10: rankings ✅
+- `GET /rankings/{levelId}?mode=time|moves&top=N` (público) e `GET /rankings/{levelId}/me?mode=…`
+  (token). Cada linha do ranking tem só `rank, name, icon, timeMs, swaps`; o `…/me` devolve
+  `rank, timeMs, swaps, totalPlayers` ou 404 `NoResult`.
+- **A ordem é uma só, escrita duas vezes:** em memória (`RankingOrder.For`, já testada) e para o
+  banco (`InOrder` para o top N e `AheadOf` para a posição com um `COUNT`, sem carregar a tabela).
+  Um teste com empates na primeira e na segunda chave confere, nos dois modos, que a posição do
+  `…/me` é a mesma da lista completa.
+- **Leitura da query (`RankingQuery`), estrita:** `mode` só `time` ou `moves` (exatos, sem `TIME`);
+  `top` só dígitos de 1 a 100 (padrão 20); parâmetro repetido → 400 `InvalidQuery`. Parâmetros
+  desconhecidos são ignorados. O `levelId` é conferido no catálogo **antes** de qualquer consulta,
+  então `..%2F..%2Fetc` e `x' OR 1=1` dão 404 `UnknownLevel` nas duas rotas.
+- **Decisão do agente (reversível):** depois da data do servidor, o desempate final é o id do
+  perfil, só para a lista sair sempre igual. Dois envios no mesmo tique do relógio (100 ns) só
+  acontecem em teste; nesse caso o `…/me` daria a mesma posição aos dois.
+- **Fase vermelha:** 38 testes novos, 37 falhando. O que já passava devia passar: os 2 índices
+  vieram da tarefa 9.
+- **Mutações (3 de 3 pegas):**
+  - data em ordem decrescente no modo `time` → 2 testes caíram;
+  - `AheadOf` do modo `moves` contando a mesma data como "na frente" → 3 testes caíram;
+  - `top` aceitando até 1000 → 1 teste caiu.
+- 475 testes verdes (106 + 125 + 244), 0 avisos.

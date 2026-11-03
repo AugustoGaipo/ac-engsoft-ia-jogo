@@ -25,6 +25,13 @@ public sealed record SubmitResult(SubmitOutcome? Outcome, SubmitError? Error)
 
 public sealed record BestView(int TimeMs, int Swaps);
 
+/// <summary>One public ranking line: nothing but these five fields (P6).</summary>
+public sealed record RankingEntry(int Rank, string Name, string Icon, int TimeMs, int Swaps);
+
+public sealed record RankingView(string LevelId, string Mode, IReadOnlyList<RankingEntry> Entries);
+
+public sealed record MyRankView(int Rank, int TimeMs, int Swaps, int TotalPlayers);
+
 public sealed record LevelProgressView(string LevelId, int Number, string Name, bool Unlocked, BestView? BestTime, BestView? BestMoves);
 
 /// <summary>The progress rules: unlocking in catalog order, best result per mode, my progress.</summary>
@@ -108,6 +115,43 @@ public sealed class ProgressService(GameDbContext db, LevelDirectory levels, Tim
             Unlocked: index == 0 || played.Contains(levels.Levels[index - 1].LevelId),
             BestTime: best.GetValueOrDefault((level.LevelId, RankingMode.Time)),
             BestMoves: best.GetValueOrDefault((level.LevelId, RankingMode.Moves)))).ToList();
+    }
+
+    /// <summary>
+    /// The top <paramref name="top"/> of one level in one mode. Ranks are plain positions (B5); the
+    /// entries carry only public fields (P6). The level id was already checked against the catalog (P4).
+    /// </summary>
+    public async Task<IReadOnlyList<RankingEntry>> GetRankingAsync(string levelId, RankingMode mode, int top, CancellationToken ct)
+    {
+        var rows = await db.BestResults.AsNoTracking()
+            .Where(b => b.LevelId == levelId && b.Mode == mode)
+            .InOrder(mode)
+            .Take(top)
+            .Select(b => new { b.ProfileId, b.TimeMs, b.Swaps })
+            .ToListAsync(ct);
+
+        var ids = rows.Select(r => r.ProfileId).ToList();
+        var profiles = await db.Profiles.AsNoTracking()
+            .Where(p => ids.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id, p => (p.Name, p.Icon), ct);
+
+        return rows.Select((r, index) =>
+        {
+            var (name, icon) = profiles[r.ProfileId];
+            return new RankingEntry(index + 1, name, icon, r.TimeMs, r.Swaps);
+        }).ToList();
+    }
+
+    /// <summary>My row in one level and mode with its rank, or null when I have no result there.</summary>
+    public async Task<MyRankView?> GetMyRankAsync(Guid profileId, string levelId, RankingMode mode, CancellationToken ct)
+    {
+        var level = db.BestResults.AsNoTracking().Where(b => b.LevelId == levelId && b.Mode == mode);
+        if (await level.FirstOrDefaultAsync(b => b.ProfileId == profileId, ct) is not { } mine)
+            return null;
+
+        var ahead = await level.CountAsync(RankingOrder.AheadOf(mode, mine.Score), ct);
+        var total = await level.CountAsync(ct);
+        return new MyRankView(ahead + 1, mine.TimeMs, mine.Swaps, total);
     }
 
     /// <summary>The first level is always open; any other once the previous one has a result (B2).</summary>

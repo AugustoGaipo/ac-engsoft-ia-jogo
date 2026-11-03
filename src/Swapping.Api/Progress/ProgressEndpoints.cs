@@ -27,8 +27,36 @@ public static class ProgressEndpoints
             Results.Ok(await service.GetProgressAsync(user.ProfileId(), ct)))
             .RequireAuthorization();
 
+        // Public (B6). The level id is checked against the catalog before any query (P4).
+        app.MapGet("/rankings/{levelId}", async (string levelId, HttpRequest request, LevelDirectory levels, ProgressService service, CancellationToken ct) =>
+        {
+            if (levels.Find(levelId) is not { } level)
+                return UnknownLevel();
+            if (!RankingQuery.TryMode(request.Query, out var mode) || !RankingQuery.TryTop(request.Query, out var top))
+                return InvalidQuery();
+
+            var entries = await service.GetRankingAsync(level.LevelId, mode, top, ct);
+            return Results.Ok(new RankingView(level.LevelId, RankingQuery.Name(mode), entries));
+        });
+
+        app.MapGet("/rankings/{levelId}/me", async (string levelId, HttpRequest request, ClaimsPrincipal user, LevelDirectory levels, ProgressService service, CancellationToken ct) =>
+        {
+            if (levels.Find(levelId) is not { } level)
+                return UnknownLevel();
+            if (!RankingQuery.TryMode(request.Query, out var mode))
+                return InvalidQuery();
+
+            return await service.GetMyRankAsync(user.ProfileId(), level.LevelId, mode, ct) is { } mine
+                ? Results.Ok(mine)
+                : ApiProblem.Result(StatusCodes.Status404NotFound, "NoResult");
+        }).RequireAuthorization();
+
         return app;
     }
+
+    private static IResult UnknownLevel() => ApiProblem.Result(StatusCodes.Status404NotFound, "UnknownLevel");
+
+    private static IResult InvalidQuery() => ApiProblem.Result(StatusCodes.Status400BadRequest, "InvalidQuery");
 
     private static IResult Problem(SubmitError error) => error switch
     {

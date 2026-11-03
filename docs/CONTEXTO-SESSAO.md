@@ -130,3 +130,15 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
   marcar no `todo.md` → commit e push.
 - **Fora do projeto:** o `/doctor` desligou 7 skills pessoais sem uso e o plugin `recruiter-panel`
   (`~/.claude/settings.json`, com cópia em `.bak-doctor`).
+
+## Onde paramos (terça, 2026-11-03)
+- **API: tarefas 9 e 10 feitas.** A 9 é o `POST /results` e o `GET /progress/me` (`dfa8f8c`). A 10
+  são os rankings: `GET /rankings/{levelId}?mode&top` e `GET /rankings/{levelId}/me`, com
+  `RankingQuery` e `RankingOrder.InOrder/AheadOf`.
+  475 testes verdes (106 `rules` + 125 `levels` + 244 API), 0 avisos.
+- **Próximo passo:** tarefa 11. São os testes de arquitetura, a cobertura ≥ 90 % em `Profiles/` e
+  `Progress/`, `dotnet list package --vulnerable`, o `--locked-mode`, o `RELATORIO-api.md`, o C4 e
+  o README. Depois, o `game` nível 1 no Godot. A spec do `game` ainda é rascunho: o usuário precisa
+  aprovar.
+- **Atraso no cronograma:** terça era o dia do `game` nível 1. Os níveis 2, 3 e 5 e o `sync` (quarta)
+  são os primeiros candidatos a corte.

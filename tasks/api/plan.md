@@ -60,7 +60,7 @@ Host + test factory + hardening                      (Task 1)
 ### Phase 3: `progress`
 - [x] Task 8: Catalog, ranking order and plausibility
 - [x] Task 9: Send a result and see my progress
-- [ ] Task 10: Rankings
+- [x] Task 10: Rankings
 
 ### Phase 4: Wrap-up
 - [ ] Task 11: Architecture, coverage, dependency audit and report

@@ -146,9 +146,9 @@ policy), `GET /progress/me`, security events for refused results.
 **Description:** `GET /rankings/{levelId}?mode&top` and `GET /rankings/{levelId}/me` (rank with a
 `COUNT` query), `400 InvalidQuery`.
 **Acceptance criteria:**
-- [ ] G-SC 7–11: the two orders over HTTP; first upload wins ties; entries have only
+- [x] G-SC 7–11: the two orders over HTTP; first upload wins ties; entries have only
       `rank, name, icon, timeMs, swaps`; `top` 0/101 → 400, default 20; `…/me` rank, `totalPlayers`, 404 `NoResult`.
-- [ ] G-SC 21, 23, 24: path traversal and SQL-looking ids → 404 `UnknownLevel`; bad `mode`/`top` →
+- [x] G-SC 21, 23, 24: path traversal and SQL-looking ids → 404 `UnknownLevel`; bad `mode`/`top` →
       400 `InvalidQuery`; the two indexes exist in the EF model; no CORS header.
 **Dependencies:** Task 9
 **Files:** `Progress/ProgressService.cs`, `ProgressEndpoints.cs`, `tests/.../Progress/RankingTests.cs`
