@@ -19,7 +19,12 @@ public partial class Player : CharacterBody3D, IHasWeight
     public const float EyeHeight = 1.6f;
     public const float HoldReach = 2.5f;
     public const float HoldDistance = 1.5f;
-    public const double ThrowEnergyJoules = 60;
+
+    /// <summary>Seconds the throw button has been held with a body in hand; null when not charging.</summary>
+    public double? ChargeSeconds { get; private set; }
+
+    /// <summary>0–1, the throw bar under the crosshair (null when not charging).</summary>
+    public double? ChargeFraction => ChargeSeconds is { } s ? ThrowCharge.Fraction(s) : null;
     public const float MouseSensitivity = 0.0025f;
 
     private Camera3D _camera = null!;
@@ -102,7 +107,12 @@ public partial class Player : CharacterBody3D, IHasWeight
         }
         else if (@event.IsActionPressed(Controls.Name(GameAction.Throw)))
         {
-            Throw();
+            if (Held is not null)
+                ChargeSeconds = 0;   // the bar starts filling
+        }
+        else if (@event.IsActionReleased(Controls.Name(GameAction.Throw)))
+        {
+            ReleaseCharge();
         }
         else if (@event.IsActionPressed(Controls.Name(GameAction.Jump)))
         {
@@ -141,6 +151,9 @@ public partial class Player : CharacterBody3D, IHasWeight
 
     public override void _PhysicsProcess(double delta)
     {
+        if (ChargeSeconds is { } charging)
+            ChargeSeconds = Held is null ? null : charging + delta;   // letting go of the body (E, a barrier) cancels the bar
+
         var input = ScriptedMove ?? Input.GetVector(
             Controls.Name(GameAction.MoveLeft), Controls.Name(GameAction.MoveRight),
             Controls.Name(GameAction.MoveBack), Controls.Name(GameAction.MoveForward));
@@ -195,13 +208,26 @@ public partial class Player : CharacterBody3D, IHasWeight
             body.Turn(yawDegrees, tiltDegrees, Eye.Basis.X);
     }
 
-    /// <summary>Left button: throw the held body forward with a fixed energy (G4).</summary>
-    public void Throw()
+    /// <summary>Left button released: a quick tap only drops; otherwise throws with the charged energy.</summary>
+    public void ReleaseCharge()
     {
+        if (ChargeSeconds is not { } held)
+            return;
+        ChargeSeconds = null;
+        if (ThrowCharge.IsTap(held))
+            Drop();
+        else
+            Throw(ThrowCharge.EnergyJoules(held));
+    }
+
+    /// <summary>Throws the held body forward with this energy; speed √(2E/m), soft-capped at 15 m/s like the jump.</summary>
+    public void Throw(double energyJoules = ThrowCharge.MaxEnergyJoules / 2)
+    {
+        ChargeSeconds = null;
         if (Held is not { } body)
             return;
         Drop();
-        var speed = (float)Formulas.SpeedFromEnergy(ThrowEnergyJoules, body.Mass);
+        var speed = (float)Formulas.ThrowSpeed(energyJoules, body.Mass);
         body.LinearVelocity = -Eye.Basis.Z * speed;
     }
 

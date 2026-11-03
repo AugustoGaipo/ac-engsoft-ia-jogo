@@ -331,6 +331,37 @@ public partial class SmokeTest : Node
         player.Throw();
         await PhysicsFrames(2);
         Check("swap: and thrown", player.Held is null && locked.LinearVelocity.Length() > 1, $"speed {locked.LinearVelocity.Length()}");
+
+        // The throw bar (user's request, 2026-11-03): a quick tap only drops; holding 1.5 s throws with half of 120 J.
+        var left = (bool down) => player._UnhandledInput(new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = down });
+        await PhysicsFrames(60);
+        locked.Teleport(player.Eye.Origin - player.Eye.Basis.Z * 1.5f, Vector3.Zero);
+        await PhysicsFrames(2);
+        await LookAt(player, locked.GlobalPosition);
+        player.ToggleHold();
+        await PhysicsFrames(10);
+        left(true);
+        await PhysicsFrames(2);
+        left(false);
+        await PhysicsFrames(2);
+        Check("throw bar: a quick tap only drops the box", player.Held is null && locked.LinearVelocity.Length() < 2,
+            $"held {player.Held?.Name}, speed {locked.LinearVelocity.Length()}");
+
+        await PhysicsFrames(60);
+        locked.Teleport(player.Eye.Origin - player.Eye.Basis.Z * 1.5f, Vector3.Zero);
+        await PhysicsFrames(2);
+        await LookAt(player, locked.GlobalPosition);
+        player.ToggleHold();
+        await PhysicsFrames(10);
+        left(true);
+        await PhysicsFrames(90);                                    // 1.5 s at 60 Hz
+        var bar = player.ChargeFraction;
+        left(false);
+        await PhysicsFrames(1);
+        var expected = (float)Swapping.Rules.Physics.Formulas.ThrowSpeed(60, locked.Mass);
+        Check("throw bar: half full after 1.5 s", bar is { } b && Mathf.Abs((float)b - 0.5f) < 0.03f, $"bar {bar}");
+        Check("throw bar: released, the box flies at √(2·60 J ÷ m)", player.Held is null && Mathf.Abs(locked.LinearVelocity.Length() - expected) < 0.6f,
+            $"speed {locked.LinearVelocity.Length()} expected {expected}");
     }
 
     private const Swapping.Rules.Operations.RejectReason RejectReasonLocked = Swapping.Rules.Operations.RejectReason.Locked;

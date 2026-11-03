@@ -183,4 +183,22 @@ public class FormulaTests
         Assert.Equal(new Vec3(1.0 / 3, 2.0 / 3, 2.0 / 3).X, a.Normalized().X, Tol);
         Assert.Equal(Vec3.Zero, Vec3.Zero.Normalized());
     }
+
+    // Throw (user's request, 2026-11-03): like the jump, 15 m/s is a soft cap: above it only half of the extra counts.
+    [Theory]
+    [InlineData(120, 10, 4.8990)]   // raw √24, below the cap
+    [InlineData(120, 2, 10.9545)]
+    [InlineData(120, 1, 15.2459)]   // raw 15.4919
+    [InlineData(120, 0.5, 18.4545)] // raw 21.9089
+    [InlineData(0, 2, 0)]
+    public void ThrowSpeed_SoftCapAt15(double energy, double mass, double expected) =>
+        Assert.Equal(expected, Formulas.ThrowSpeed(energy, mass), 0.001);
+
+    [Fact]
+    public void ThrowSpeed_IsContinuousAtTheSoftCap()
+    {
+        var atCap = 2 * 120.0 / (15.0 * 15.0);
+        Assert.Equal(15.0, Formulas.ThrowSpeed(120, atCap), 1e-9);
+        Assert.Equal(15.0, Formulas.ThrowSpeed(120, atCap * 0.999999), 1e-3);
+    }
 }

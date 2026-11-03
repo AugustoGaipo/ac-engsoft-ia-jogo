@@ -13,6 +13,15 @@ public static class Formulas
     /// <summary>Take-off speed (m/s) above which only half of the extra counts (the old 6 m/s hard cap became this soft one).</summary>
     public const double SoftJumpSpeedCap = 12.0;
 
+    /// <summary>Throw speed (m/s) above which only half of the extra counts, like the jump (user's request, 2026-11-03).</summary>
+    public const double SoftThrowSpeedCap = 15.0;
+
+    /// <summary>Speed the arms give a thrown body: √(2·E ÷ m), soft-capped at 15 m/s: 15 + (raw − 15) ÷ 2.</summary>
+    public static double ThrowSpeed(double energyJoules, double massKg) =>
+        SoftCap(SpeedFromEnergy(energyJoules, massKg), SoftThrowSpeedCap);
+
+    private static double SoftCap(double raw, double cap) => raw <= cap ? raw : cap + (raw - cap) / 2;
+
     public const double DefaultSwimSpeed = 3.0;
 
     private const double BandTolerance = 1e-9;
@@ -50,8 +59,7 @@ public static class Formulas
     /// </summary>
     public static double JumpTakeoffSpeed(double massKg)
     {
-        var raw = SpeedFromEnergy(JumpEnergyJoules, massKg);
-        return raw <= SoftJumpSpeedCap ? raw : SoftJumpSpeedCap + (raw - SoftJumpSpeedCap) / 2;
+        return SoftCap(SpeedFromEnergy(JumpEnergyJoules, massKg), SoftJumpSpeedCap);
     }
 
     /// <summary>Jump height h = v²/(2·g_eff). Returns +∞ when the body is not denser than the medium.</summary>

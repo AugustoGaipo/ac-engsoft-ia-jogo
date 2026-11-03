@@ -22,6 +22,10 @@ public partial class Hud : CanvasLayer
     private Label _target = null!;
     private Label _run = null!;
     private CooldownRingControl _ring = null!;
+    private ThrowBarControl _charge = null!;
+
+    /// <summary>The throw bar shown (0–1), or null when hidden.</summary>
+    public double? ChargeShown => _charge.Fraction;
 
     public double RingProgress => _ring.Progress;
     private RunFlow? _flow;
@@ -48,6 +52,9 @@ public partial class Hud : CanvasLayer
         _ring = new CooldownRingControl { MouseFilter = Control.MouseFilterEnum.Ignore };
         _ring.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         root.AddChild(_ring);
+        _charge = new ThrowBarControl { MouseFilter = Control.MouseFilterEnum.Ignore };
+        _charge.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        root.AddChild(_charge);
         _crosshair = Centered(root, "+", 40, 0);
         _reason = Centered(root, "", 20, 34);
         _target = Centered(root, "", 18, 62);
@@ -76,6 +83,7 @@ public partial class Hud : CanvasLayer
             _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}\nTroca por: {PropertyKeys.Label(_swaps.Choice)}";
 
         _ring.Progress = _swaps.CooldownProgress;
+        _charge.Fraction = _player.ChargeFraction;
         var crosshair = _swaps.Crosshair;
         // Always a crosshair (user's request): a small faint dot at rest, a bigger "+" on an object.
         var idle = crosshair.Look == CrosshairLook.Idle;
@@ -145,5 +153,34 @@ public partial class CooldownRingControl : Control
             return;
         var center = Size / 2;
         DrawArc(center, 22, -Mathf.Pi / 2, -Mathf.Pi / 2 + Mathf.Tau * (float)_progress, 48, new Color(1, 1, 1, 0.8f), 3, antialiased: true);
+    }
+}
+
+/// <summary>The throw bar just above the crosshair: fills left to right while the throw button is held.</summary>
+public partial class ThrowBarControl : Control
+{
+    private const float Width = 120, Height = 8, AboveCenter = 44;
+    private double? _fraction;
+
+    public double? Fraction
+    {
+        get => _fraction;
+        set
+        {
+            if (value == _fraction)
+                return;
+            _fraction = value;
+            QueueRedraw();
+        }
+    }
+
+    public override void _Draw()
+    {
+        if (_fraction is not { } f)
+            return;
+        var corner = Size / 2 + new Vector2(-Width / 2, -AboveCenter);
+        DrawRect(new Rect2(corner, new Vector2(Width, Height)), new Color(0, 0, 0, 0.5f));
+        DrawRect(new Rect2(corner, new Vector2(Width * (float)f, Height)), f >= 1 ? new Color(1, 0.55f, 0.2f) : new Color(1, 1, 1, 0.9f));
+        DrawRect(new Rect2(corner, new Vector2(Width, Height)), Colors.Black, filled: false, width: 1);
     }
 }

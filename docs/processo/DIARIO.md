@@ -1845,3 +1845,17 @@ câmera acompanha o olho. São 69 no total.
   ("player 10") e passa depois.
 - **Erro meu de processo:** a primeira rodada "passou" porque eu não recompilei o projeto do jogo antes do
   `dotnet test`, e o teste rodou a versão velha. Sempre `dotnet build game/Swapping.Game.csproj` antes.
+
+### Game — barra de arremesso (pedido do usuário)
+- **Pedido:** a barra de carregamento do banco de ideias; 3 s para encher e, na velocidade, um teto suave de
+  15 m/s como o do pulo.
+- **Feito:** `ThrowCharge` (GameLogic): segurar o botão esquerdo enche a barra em linha reta em 3 s; soltar
+  lança com fração × 120 J (meia barra = os 60 J de antes); toque com menos de 0,15 s só solta. Soltar o
+  objeto (E) durante a carga cancela a barra. `Formulas.ThrowSpeed` (rules): √(2E/m) com teto suave em
+  15 m/s, 15 + (bruto − 15) ÷ 2; o pulo passou a usar o mesmo `SoftCap`. HUD: barra branca logo acima da
+  mira, laranja quando cheia. Texto de ajuda do menu atualizado.
+- **Números:** com a barra cheia, caixa de 10 kg sai a 4,9 m/s, bola de 2 kg a 10,95 m/s, 1 kg a 15,25 m/s
+  (bruto 15,49) e 0,5 kg a 18,45 m/s (bruto 21,91).
+- **Testes:** regras (5 casos + continuidade no teto), barra (linear, cheia, toque); sem janela: toque só
+  solta, 1,5 s dá meia barra e a velocidade de 60 J. Mutações pegas: excedente sem dividir (4 falhas, pulo
+  junto) e encher em 1 s (2 falhas). Tudo verde.
