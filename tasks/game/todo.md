@@ -110,8 +110,8 @@ Architecture test: the library has no Godot reference.
 
 The pure `InputMap` in `GameLogic` turns keys and buttons into actions (G1).
 **Acceptance criteria:**
-- [ ] Unit tests: every binding of G1 maps to its action; the push impulse is smaller for a heavier body.
-- [ ] Smoke test: the player spawns standing at the room spawn with the file's yaw; after a scripted jump
+- [x] Unit tests: every binding of G1 maps to its action; the push impulse is smaller for a heavier body.
+- [x] Smoke test: the player spawns standing at the room spawn with the file's yaw; after a scripted jump
       the take-off speed matches `JumpTakeoffSpeed(70)` (±5 %); holding and dropping the box of 1.1 works.
 **Dependencies:** Task 4
 **Files:** `game/scenes/player.tscn`, `game/scripts/Player.cs`, `src/Swapping.GameLogic/InputMap.cs`,

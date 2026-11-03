@@ -63,7 +63,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 ### Phase 2: The room and the player
 - [x] Task 3: Scenery of level 1, objects and kill zones built from the file
 - [x] Task 4: Buttons, doors, barriers and the exit grid
-- [ ] Task 5: The player: walk, jump, look, hold, throw, push
+- [x] Task 5: The player: walk, jump, look, hold, throw, push
 
 ### Phase 3: The swap (the riskiest part)
 - [ ] Task 6: Aim, crosshair state, measured context, apply and sync

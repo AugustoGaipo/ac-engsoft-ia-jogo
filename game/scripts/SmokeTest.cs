@@ -14,7 +14,7 @@ public partial class SmokeTest : Node
     private const float Tolerance = 0.01f;
     private int _passed;
 
-    public async Task<int> Run(string levelId, LevelRunner runner)
+    public async Task<int> Run(string levelId, LevelRunner runner, Main main)
     {
         try
         {
@@ -33,6 +33,7 @@ public partial class SmokeTest : Node
 
             await CheckRebuild(runner);
             await CheckButtonDoorAndExitGrid(runner);
+            await CheckPlayer(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -146,6 +147,51 @@ public partial class SmokeTest : Node
         Teleport(box, new Vector3(10.8f, 0.5f, 5), new Vector3(4, 0, 0));
         await PhysicsFrames(60);
         Check("room 1.1: the exit grid stops the box", box.Position.X is > 10.95f and < 11.05f, $"box at {box.Position}");
+    }
+
+    // ---- Task 5: the player spawns standing, jumps at the rules' speed, holds a box, crosses the grid ----
+
+    private async Task CheckPlayer(Main main)
+    {
+        var player = main.Player;
+        main.ShowRoom("1.1");
+        await PhysicsFrames(30);
+        var spawn = main.GetNode<LevelRunner>("LevelRunner").Room.Spawn;
+        Check("player: spawns standing at the room spawn", player.IsOnFloor() && player.GlobalPosition.DistanceTo(spawn.Position.ToGodot()) < 0.05f,
+            $"at {player.GlobalPosition}, on floor {player.IsOnFloor()}");
+        Check("player: faces the spawn yaw", Mathf.IsEqualApprox(Mathf.RadToDeg(player.Rotation.Y), (float)spawn.YawDegrees, 0.5f),
+            $"yaw {Mathf.RadToDeg(player.Rotation.Y)}");
+
+        player.Jump();
+        var expected = (float)Swapping.Rules.Physics.Formulas.JumpTakeoffSpeed(player.MassKg);
+        Check("player: take-off speed = JumpTakeoffSpeed(70)", Mathf.Abs(player.Velocity.Y - expected) <= expected * 0.05f,
+            $"{player.Velocity.Y} vs {expected}");
+        await PhysicsFrames(90);
+        Check("player: lands again after the jump", player.IsOnFloor() && Mathf.Abs(player.GlobalPosition.Y) < 0.05f, $"y {player.GlobalPosition.Y}");
+
+        // Stand 1.8 m in front of the box of room 1.1 (box at x 4, z 3), looking at it.
+        var box = main.GetNode<LevelRunner>("LevelRunner").Bodies.Single();
+        player.GlobalPosition = new Vector3(4, 0, 4.8f);
+        player.Rotation = Vector3.Zero;              // looking along -Z, towards the box
+        player.Camera.Rotation = new Vector3(-0.6f, 0, 0);
+        await PhysicsFrames(5);
+        player.ToggleHold();
+        Check("player: E holds the aimed box", player.Held == box, $"held {player.Held?.Name ?? "nothing"}");
+        await PhysicsFrames(40);
+        var holdPoint = player.Camera.GlobalPosition - player.Camera.GlobalBasis.Z * Player.HoldDistance;
+        Check("player: the held box follows the hold point", box.GlobalPosition.DistanceTo(holdPoint) < 0.3f,
+            $"box {box.GlobalPosition}, point {holdPoint}");
+        player.ToggleHold();
+        await PhysicsFrames(60);
+        Check("player: E again drops it to the floor", player.Held is null && Mathf.Abs(box.GlobalPosition.Y - 0.5f) < 0.05f, $"box {box.GlobalPosition}");
+
+        // The exit grid of room 1.1 lets the player through (it blocks objects only).
+        player.GlobalPosition = new Vector3(11, 0, 5);
+        player.Rotation = new Vector3(0, Mathf.DegToRad(-90), 0); // facing +X
+        player.ScriptedMove = new Vector2(0, 1);
+        await PhysicsFrames(60);
+        player.ScriptedMove = null;
+        Check("player: walks through the exit grid", player.GlobalPosition.X > 12.3f, $"x {player.GlobalPosition.X}");
     }
 
     private static void Teleport(RigidBody3D body, Vector3 position, Vector3 velocity = default)

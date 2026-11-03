@@ -1382,3 +1382,28 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   1.1 da entrada.
 - **Tropeço:** `Barrier` dava conflito com `System.Threading.Barrier`; resolvido com um alias.
 - 511 testes verdes (106 + 125 + 248 + 32), 0 avisos.
+
+### Game — tarefa 5: o jogador ✅
+- **No `GameLogic`:**
+  - `Controls` (os controles da G1 e os nomes das ações no Godot);
+  - `PushImpulse` (empurrar leva o objeto à velocidade de um choque inelástico, 3 m/s × 70 / (70 + m),
+    então uma caixa de 10 kg quase acompanha e um caixote de 300 kg mal se mexe).
+  Fase vermelha: o esboço nem compilou (`throw` num inicializador), então fui direto ao código. 16 verdes.
+- **`Player`** (`CharacterBody3D` 0,6 × 1,8 × 0,6 m, origem nos pés, 70 kg simulados):
+  - mouse para olhar; anda a 3 m/s; pula com `Formulas.JumpTakeoffSpeed`;
+  - `E` segura a até 2,5 m, e o objeto segue um ponto à frente com uma mola;
+  - o botão esquerdo arremessa com 60 J;
+  - empurra os corpos com o `PushImpulse`.
+  Colide com o mundo, os objetos e a barreira de jogador, **não** com a de objetos.
+- **`Main`** registra os controles, cria o jogador no ponto de entrada; `R` reinicia a sala e `Esc`
+  solta o mouse.
+  - **Provisório até a tarefa 8:** cair abaixo de y = −2,5 reinicia a sala.
+- **Decisões do agente:**
+  - o jogador é montado em código, sem `player.tscn`, igual às peças (menos arquivos para manter);
+  - **`InputMap` virou `Controls`,** porque o nome batia com o `Godot.InputMap`.
+- **Teste sem janela** (67 verificações): o jogador nasce em pé na entrada e virado para o lado certo;
+  a velocidade do pulo é a do `rules` (±5 %) e ele volta ao chão; `E` segura a caixa, que segue o ponto,
+  e `E` de novo solta no chão; ele atravessa a grade de saída.
+- **Mutação:** o jogador colidindo com a grade de objetos → "atravessa a grade" caiu (parou em x = 11,2).
+- **O usuário pediu para rodar e está jogando a sala 1.1.**
+- 527 testes verdes (106 + 125 + 248 + 48), 0 avisos.

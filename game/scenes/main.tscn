@@ -8,7 +8,3 @@ script = ExtResource("1_main")
 
 [node name="LevelRunner" type="Node3D" parent="."]
 script = ExtResource("2_runner")
-
-[node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 5)
-fov = 75.0

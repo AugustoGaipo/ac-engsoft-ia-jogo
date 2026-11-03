@@ -1,4 +1,5 @@
 using Godot;
+using Swapping.GameLogic;
 
 namespace Swapping.Game;
 
@@ -12,11 +13,16 @@ public partial class Main : Node3D
 {
     private LevelRunner _runner = null!;
 
+    public Player Player { get; private set; } = null!;
+
     public override void _Ready()
     {
+        RegisterControls();
         _runner = GetNode<LevelRunner>("LevelRunner");
-        var args = OS.GetCmdlineUserArgs();
+        Player = Player.Create();
+        AddChild(Player);
 
+        var args = OS.GetCmdlineUserArgs();
         var smoke = Array.IndexOf(args, "--smoke-test");
         if (smoke >= 0)
         {
@@ -36,17 +42,48 @@ public partial class Main : Node3D
         ShowRoom(_runner.Level.Rooms[0].Id);
     }
 
-    private void ShowRoom(string roomId)
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed(Controls.Name(GameAction.RestartRoom)) && _runner.Room is not null)
+            ShowRoom(_runner.Room.Id);
+        else if (@event.IsActionPressed(Controls.Name(GameAction.Pause)))
+            Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        // Provisional until Task 8 (deaths): falling into a pit restarts the room.
+        if (_runner.Room is not null && Player.GlobalPosition.Y < -2.5f && !OS.GetCmdlineUserArgs().Contains("--smoke-test"))
+            ShowRoom(_runner.Room.Id);
+    }
+
+    /// <summary>Builds (or rebuilds) a room and puts the player at its spawn.</summary>
+    public void ShowRoom(string roomId)
     {
         _runner.BuildRoom(roomId);
-        GetNode<Camera3D>("Camera").GlobalTransform = _runner.SpawnEye();
+        Player.SpawnAt(_runner.Room.Spawn);
+    }
+
+    /// <summary>Registers the G1 controls of <see cref="GameLogic.Controls"/> in the engine.</summary>
+    private static void RegisterControls()
+    {
+        foreach (var binding in GameLogic.Controls.Bindings)
+        {
+            var name = GameLogic.Controls.Name(binding.Action);
+            if (!Godot.InputMap.HasAction(name))
+                Godot.InputMap.AddAction(name);
+            InputEvent input = binding.Kind == InputKind.Key
+                ? new InputEventKey { PhysicalKeycode = Enum.Parse<Key>(binding.Code) }
+                : new InputEventMouseButton { ButtonIndex = Enum.Parse<MouseButton>(binding.Code) };
+            Godot.InputMap.ActionAddEvent(name, input);
+        }
     }
 
     private async Task RunSmokeTest(string levelId)
     {
         var smoke = new SmokeTest();
         AddChild(smoke);
-        var code = await smoke.Run(levelId, _runner);
+        var code = await smoke.Run(levelId, _runner, this);
         GetTree().Quit(code);
     }
 
