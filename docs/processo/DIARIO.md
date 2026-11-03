@@ -1361,3 +1361,24 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Processo:** aqui a "fase vermelha" não foi rodada à parte. As verificações do `SmokeTest` foram
   escritas junto com o `LevelRunner`, e a mutação fez o papel de prova de que elas pegam erro.
 - 502 testes verdes, 0 avisos; teste sem janela: 39 de 39.
+
+### Game — tarefa 4: botões, portas, barreiras e grade de saída ✅
+- **`ButtonState`** (puro, no `GameLogic`): pressionado com massa ≥ a pedida; `objects` ignora o
+  jogador, `any` conta o jogador. A porta abre só com **todos** os botões dela, e uma porta sem botão
+  nunca abre. Fase vermelha: 9 de 9 falhando; depois, 9 verdes.
+- **No Godot** (`Pieces/Mechanisms.cs`):
+  - o `FloorButton` é chão sólido mais um sensor que soma as massas (vermelho solto, verde apertado);
+  - a `Door`, aberta, perde a colisão e some;
+  - a `Barrier` usa as camadas `barrier-objects`/`barrier-player`, e a grade de saída só bloqueia
+    objetos. Ela tem um texto provisório "sem caixas · sem trocas" no lugar dos ícones;
+  - o `Exit` é a área de saída de cada sala.
+  O `LevelRunner` atualiza os botões e as portas a cada passo de física.
+- **No teste sem janela** (59 verificações), na sala 1.1:
+  - a caixa no botão abre a porta, e tirar a caixa fecha;
+  - a caixa empurrada contra a grade para com o centro em x ≈ 11,0;
+  - todas as peças estão nas posições do arquivo.
+- **Mutação:** a grade sem a camada de objetos → o teste caiu.
+- **O usuário abriu o jogo para ver.** Ainda não dá para mexer (o jogador é a tarefa 5), só ver a sala
+  1.1 da entrada.
+- **Tropeço:** `Barrier` dava conflito com `System.Threading.Barrier`; resolvido com um alias.
+- 511 testes verdes (106 + 125 + 248 + 32), 0 avisos.

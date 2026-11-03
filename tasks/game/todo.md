@@ -89,10 +89,10 @@ Architecture test: the library has no Godot reference.
 - `Barrier` with the presets: the exit grid blocks objects only, and its look shows both icons;
 - the `Exit` area of each room.
 **Acceptance criteria:**
-- [ ] Unit tests: threshold boundaries; `objects` ignores the player; `any` counts the player.
-- [ ] Smoke test, room 1.1: the box dropped on the button opens the door; removing it closes the door;
+- [x] Unit tests: threshold boundaries; `objects` ignores the player; `any` counts the player.
+- [x] Smoke test, room 1.1: the box dropped on the button opens the door; removing it closes the door;
       the box cannot cross the exit grid, and the player can.
-- [ ] Barriers and doors at the file's positions in all rooms.
+- [x] Barriers and doors at the file's positions in all rooms.
 **Dependencies:** Task 3
 **Files:** `src/Swapping.GameLogic/ButtonState.cs`, `tests/.../ButtonStateTests.cs`,
 `game/scripts/Pieces/Button.cs`, `Door.cs`, `Barrier.cs`

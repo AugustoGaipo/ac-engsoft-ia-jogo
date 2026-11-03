@@ -29,9 +29,11 @@ public static class Space
 /// A movable object of a room (box or ball), built from its <see cref="ObjectDef"/>. Its id is the
 /// container id of the <c>rules</c> world. CCD is always on (fast light objects after an energy swap).
 /// </summary>
-public partial class Body : RigidBody3D
+public partial class Body : RigidBody3D, IHasWeight
 {
     public const float Friction = 0.6f;
+
+    public Swapping.GameLogic.WeightOnButton Weight => new(IsPlayer: false, MassKg: Mass);
 
     public string ContainerId { get; private set; } = "";
 

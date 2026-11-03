@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\src\Swapping.Rules\Swapping.Rules.csproj" />
     <ProjectReference Include="..\src\Swapping.Levels\Swapping.Levels.csproj" />
+    <ProjectReference Include="..\src\Swapping.GameLogic\Swapping.GameLogic.csproj" />
   </ItemGroup>
 
   <!-- G6: the game reads the same level files as the API. They are copied into res://levels before

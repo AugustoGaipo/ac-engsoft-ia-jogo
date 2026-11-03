@@ -32,6 +32,7 @@ public partial class SmokeTest : Node
                 await CheckRoomPieces(runner, room.Id);
 
             await CheckRebuild(runner);
+            await CheckButtonDoorAndExitGrid(runner);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -79,6 +80,25 @@ public partial class SmokeTest : Node
                 $"{zones[def.Id].Position} size {shape.Size}");
         }
 
+        foreach (var def in room.Buttons)
+        {
+            var button = runner.Buttons.Single(b => b.Def.Id == def.Id);
+            Check($"room {roomId}: {def.Id} at the file position", button.Position.DistanceTo(def.Position.ToGodot()) < Tolerance, $"{button.Position}");
+        }
+        foreach (var def in room.Doors)
+        {
+            var door = runner.Doors.Single(d => d.Def.Id == def.Id);
+            Check($"room {roomId}: {def.Id} at the file box and closed", door.Position.DistanceTo(def.Box.Center()) < Tolerance && !door.IsOpen, $"{door.Position}");
+        }
+        foreach (var def in room.Barriers)
+        {
+            var barrier = runner.Barriers.Single(b => b.Def.Id == def.Id);
+            Check($"room {roomId}: {def.Id} at the file box", barrier.Position.DistanceTo(def.Box.Center()) < Tolerance, $"{barrier.Position}");
+            if (def.IsExitGrid)
+                Check($"room {roomId}: {def.Id} blocks objects only", barrier.CollisionLayer == Layers.BarrierObjects, $"layer {barrier.CollisionLayer}");
+        }
+        Check($"room {roomId}: exit at the file box", runner.Exit.Position.DistanceTo(room.Exit.Center()) < Tolerance, $"{runner.Exit.Position}");
+
         // One second of physics: objects that start at rest stay where the file put them (they stand on
         // the floor or the ledge, so the scenery and the file agree).
         await PhysicsFrames(60);
@@ -96,9 +116,46 @@ public partial class SmokeTest : Node
         var firstWorld = runner.World;
         runner.BuildRoom("1.3");
         await PhysicsFrames(1);
-        Check("building a room twice leaves one set of pieces", runner.PieceCount == runner.Room.Objects.Count + runner.Room.KillZones.Count,
-            $"{runner.PieceCount} pieces");
+        Check("building a room twice leaves one set of pieces", runner.PieceCount == runner.ExpectedPieceCount,
+            $"{runner.PieceCount} pieces, expected {runner.ExpectedPieceCount}");
         Check("building a room again makes a new world", !ReferenceEquals(firstWorld, runner.World), "same world");
+    }
+
+    // ---- Task 4: room 1.1 — the box on the button opens the door; the exit grid stops the box ----
+
+    private async Task CheckButtonDoorAndExitGrid(LevelRunner runner)
+    {
+        runner.BuildRoom("1.1");
+        await PhysicsFrames(5);
+        var box = runner.Bodies.Single(b => b.ContainerId == "box-1-1");
+        var button = runner.Buttons.Single();
+        var door = runner.Doors.Single();
+        Check("room 1.1: the door starts closed", !door.IsOpen && !button.IsPressed, "open at start");
+
+        var onButton = button.Position + new Vector3(0, (float)button.Def.Size.Y + 0.5f, 0);
+        Teleport(box, onButton);
+        await PhysicsFrames(30);
+        Check("room 1.1: the box on the button presses it and opens the door", button.IsPressed && door.IsOpen,
+            $"pressed {button.IsPressed}, open {door.IsOpen}, box at {box.Position}");
+
+        Teleport(box, new Vector3(4, 0.5f, 3));
+        await PhysicsFrames(30);
+        Check("room 1.1: taking the box away closes the door", !button.IsPressed && !door.IsOpen, $"pressed {button.IsPressed}");
+
+        // Pushed towards the exit grid (x = 11.5): a 1 m box stops with its center at x ≈ 11.0.
+        Teleport(box, new Vector3(10.8f, 0.5f, 5), new Vector3(4, 0, 0));
+        await PhysicsFrames(60);
+        Check("room 1.1: the exit grid stops the box", box.Position.X is > 10.95f and < 11.05f, $"box at {box.Position}");
+    }
+
+    private static void Teleport(RigidBody3D body, Vector3 position, Vector3 velocity = default)
+    {
+        var transform = new Transform3D(Basis.Identity, position);
+        PhysicsServer3D.BodySetState(body.GetRid(), PhysicsServer3D.BodyState.Transform, transform);
+        body.GlobalTransform = transform;
+        body.LinearVelocity = velocity;
+        body.AngularVelocity = Vector3.Zero;
+        body.Sleeping = false;
     }
 
     private async Task PhysicsFrames(int count)

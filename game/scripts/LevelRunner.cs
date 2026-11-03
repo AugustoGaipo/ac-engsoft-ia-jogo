@@ -1,5 +1,6 @@
 using Godot;
 using Swapping.Game.Pieces;
+using Barrier = Swapping.Game.Pieces.Barrier;
 using Swapping.Levels;
 using Swapping.Levels.Model;
 using Swapping.Rules;
@@ -26,7 +27,20 @@ public partial class LevelRunner : Node3D
 
     public IReadOnlyList<KillZone> KillZones => _pieces.GetChildren().OfType<KillZone>().ToList();
 
+    public IReadOnlyList<FloorButton> Buttons => _pieces.GetChildren().OfType<FloorButton>().ToList();
+
+    public IReadOnlyList<Door> Doors => _pieces.GetChildren().OfType<Door>().ToList();
+
+    public IReadOnlyList<Barrier> Barriers => _pieces.GetChildren().OfType<Barrier>().ToList();
+
+    public Exit Exit => _pieces.GetChildren().OfType<Exit>().Single();
+
+    /// <summary>Every piece of the room: objects, kill zones, buttons, doors, barriers and the exit.</summary>
     public int PieceCount => _pieces.GetChildCount();
+
+    /// <summary>How many pieces the current room's file describes (plus its exit).</summary>
+    public int ExpectedPieceCount =>
+        Room.Objects.Count + Room.KillZones.Count + Room.Buttons.Count + Room.Doors.Count + Room.Barriers.Count + 1;
 
     public override void _Ready()
     {
@@ -63,6 +77,25 @@ public partial class LevelRunner : Node3D
             _pieces.AddChild(Body.Create(obj));
         foreach (var zone in Room.KillZones)
             _pieces.AddChild(KillZone.Create(zone));
+        foreach (var button in Room.Buttons)
+            _pieces.AddChild(FloorButton.Create(button));
+        foreach (var door in Room.Doors)
+            _pieces.AddChild(Door.Create(door));
+        foreach (var barrier in Room.Barriers)
+            _pieces.AddChild(Barrier.Create(barrier));
+        _pieces.AddChild(Exit.Create(Room.Id, Room.Exit));
+    }
+
+    /// <summary>Buttons read what rests on them; each door opens while all its buttons are pressed.</summary>
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_pieces is null)
+            return;
+        foreach (var button in Buttons)
+            button.Refresh();
+        var pressed = Buttons.Where(b => b.IsPressed).Select(b => b.Def.Id).ToHashSet();
+        foreach (var door in Doors)
+            door.SetOpen(Swapping.GameLogic.ButtonState.IsDoorOpen(door.Def.OpensWith, pressed));
     }
 
     /// <summary>The eye of a player standing at the room spawn, looking along the spawn yaw.</summary>
