@@ -1321,3 +1321,16 @@ o que segue para um possível lançamento são as regras de troca e as fases.
     e o modo travado poderia atrapalhar;
   - o cubo provisório (`Placeholder`) sai na tarefa 3.
 - 481 testes verdes (106 + 125 + 248 + 2), 0 avisos.
+
+### Game — tarefa 2: `Swapping.GameLogic` e o contador da partida ✅ (checkpoint da base)
+- `src/Swapping.GameLogic` (`net8.0`, só referencia o `rules` e o `levels`):
+  - `RunTracker`: tempo pelos passos da física (para na pausa), trocas somadas de todas as salas,
+    mortes e reinícios de sala, `Finish` → os campos do `POST /results`;
+  - `RunClock.Format`: `mm:ss.d`, sem arredondar os décimos para cima.
+- Testes de arquitetura: nenhum Godot no projeto nem no assembly.
+- **Fase vermelha:** 23 testes, 19 falhando. Os 4 que passaram são os 2 do Godot e os 2 de arquitetura.
+- **Decisão do agente:** uma margem de 1e-6 ms no tempo, porque somar 90 vezes 1/60 dá 1499,999… ms.
+  A mutação sem a margem fez 1 teste cair.
+- **Mutações (3 de 3 pegas):** sem a margem; reiniciar a sala perdendo as trocas; a pausa sem parar o tempo.
+- O usuário baixou o esforço para médio nas tarefas diretas (3 a 5).
+- 502 testes verdes (106 + 125 + 248 + 23), 0 avisos.

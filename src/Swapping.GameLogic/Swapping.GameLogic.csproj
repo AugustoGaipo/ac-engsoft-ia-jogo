@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Every game decision that can be tested without the engine (SPEC-game). No Godot here, ever. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Swapping.Rules\Swapping.Rules.csproj" />
+    <ProjectReference Include="..\Swapping.Levels\Swapping.Levels.csproj" />
+  </ItemGroup>
+
+</Project>

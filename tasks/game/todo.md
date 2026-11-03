@@ -46,17 +46,17 @@ headless, and is skipped with a message when Godot is not found.
 
 Architecture test: the library has no Godot reference.
 **Acceptance criteria:**
-- [ ] Restart room keeps time and swaps and adds 1 room restart; restart level zeroes everything; pause
+- [x] Restart room keeps time and swaps and adds 1 room restart; restart level zeroes everything; pause
       stops the time; swaps = the sum of `world.MoveCount` over every room build.
-- [ ] `Finish` gives `levelId, timeMs, swaps, deaths, roomRestarts, finishedAt` with the API names.
-- [ ] SC 11 (part): `GameLogic` and its `.csproj` reference no Godot assembly or package.
+- [x] `Finish` gives `levelId, timeMs, swaps, deaths, roomRestarts, finishedAt` with the API names.
+- [x] SC 11 (part): `GameLogic` and its `.csproj` reference no Godot assembly or package.
 **Dependencies:** Task 1
 **Files:** `src/Swapping.GameLogic/*.csproj`, `RunTracker.cs`, `RunClock.cs`,
 `tests/Swapping.GameLogic.Tests/RunTrackerTests.cs`, `ArchitectureTests.cs`
 **Scope:** S
 
 ### Checkpoint: Foundation
-- [ ] Build clean, all tests green (including the headless smoke test), commit + push.
+- [x] Build clean, all tests green (including the headless smoke test), commit + push.
 
 ## Task 3: Scenery of level 1, objects and kill zones built from the file
 **Description:** `levels/level_1.tscn` (`res://levels/level_1.tscn`, the `scene` field of the file):

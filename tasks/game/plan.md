@@ -55,10 +55,10 @@ Godot project + level copy + headless smoke entry (Task 1)
 ## Task List
 ### Phase 1: Foundation
 - [x] Task 1: Godot project, level files copy and headless smoke-test entry
-- [ ] Task 2: `Swapping.GameLogic` with the run tracker and the architecture test
+- [x] Task 2: `Swapping.GameLogic` with the run tracker and the architecture test
 
 ### Checkpoint: Foundation
-- [ ] Godot builds with zero warnings; `dotnet test` runs the headless smoke test (exit 0)
+- [x] Godot builds with zero warnings; `dotnet test` runs the headless smoke test (exit 0)
 
 ### Phase 2: The room and the player
 - [ ] Task 3: Scenery of level 1, objects and kill zones built from the file
