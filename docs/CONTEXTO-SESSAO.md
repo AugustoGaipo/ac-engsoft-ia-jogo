@@ -15,11 +15,14 @@ Quinta é para slides e ensaio, sem código novo.
 - 3 níveis: **1 Posição**, **2 Peso** (posição + peso, com 2 barreiras), **3 Energia** (as três), mais o
   **Mapa de teste** no menu (sandbox com as 3 trocas, fora do progresso).
 - **Feitas:** tarefa 12 (`LevelProgress`), 13 (novo catálogo), 14 (teclas 1/2/3, roda troca a propriedade, F + mouse gira o item) e 15 (menu, progresso salvo, botões).
-- **Próxima:** tarefa 14 — `PropertyKeys` (teclas 1/2/3; hoje `SwapChoice.Property` em
-  `src/Swapping.GameLogic/SwapLogic.cs` pega sempre a primeira liberada), HUD mostra a troca escolhida,
-  `SwapController` usa ela; roda do mouse gira o item segurado (15° por clique).
-- Depois: 15 menu (`Main.cs` hoje fixa `level-1` em `LoadChosenLevel`), 16 cena do nível 2, 17 cena do
-  nível 3, 18 fechamento.
+- **Feito em 11-03 (fora do todo, pedidos do usuário):** sala de testes refeita (corredor + 6 baias),
+  barreira que restaura (`restoresVariables`, rosa), encostar numa barreira de variáveis barra a troca,
+  peso volta a 70 kg ao morrer, barra de arremesso (3 s, 400 J, teto suave 15 m/s). Detalhes no diário.
+- **Próxima:** 16 cena do nível 2, 17 cena do nível 3 (o usuário descreve as fases; Claude monta pelo JSON e
+  pela tabela de `tools/scenery/`; `level_2.tscn` e `level_3.tscn` ainda não existem), 18 fechamento.
+- **Depois da entrega:** editor de fases no Godot (peças como nós + "Exportar fase" para JSON com o
+  validador). Adiado: resta menos de 50 % do plano Pro normal até sexta.
+- Sempre `dotnet build game/Swapping.Game.csproj` antes do `dotnet test` (senão o teste sem janela roda o jogo velho).
 
 ## Processo de cada tarefa
 Teste vermelho → código → 1–2 mutações → diário (`docs/processo/DIARIO.md`) → marcar no todo → commit e push.
