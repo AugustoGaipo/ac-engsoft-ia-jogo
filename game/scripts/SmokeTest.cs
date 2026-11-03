@@ -926,6 +926,22 @@ public partial class SmokeTest : Node
             main.Swaps.LastRestored == Swapping.Levels.LevelValidator.PlayerId
             && Mathf.IsEqualApprox((float)main.Player.MassKg, 70) && Mathf.IsEqualApprox(box.Mass, 10),
             $"restored {main.Swaps.LastRestored}, player {main.Player.MassKg} box {box.Mass}");
+
+        // User's bug (2026-11-03): after a mass swap, dying kept the swapped mass; the rebuilt room's rules said 70 kg.
+        main.ShowRoom("0.1");
+        await PhysicsFrames(3);
+        box = main.Runner.Bodies.Single(b => b.ContainerId == "bay6-box");
+        main.Player.GlobalPosition = new Vector3(34.5f, 0, 43);
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(3);
+        await LookAt(main.Player, box.GlobalPosition);
+        var again = main.Swaps.TrySwap();
+        main.Flow.RestartRoom(death: true);
+        await PhysicsFrames(3);
+        Check("death: the player comes back with its own 70 kg after a mass swap",
+            again is { IsApplied: true } && Mathf.IsEqualApprox((float)main.Player.MassKg, 70)
+            && Mathf.IsEqualApprox((float)main.Runner.World.BodyUpdateFor(Swapping.Levels.LevelValidator.PlayerId).MassKg, 70),
+            $"{again?.Reason} player {main.Player.MassKg}");
         PressKey(main.Swaps, Key.Key1);
     }
 

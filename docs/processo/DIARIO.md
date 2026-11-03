@@ -1834,3 +1834,14 @@ câmera acompanha o olho. São 69 no total.
   com 5 cores, `Touches`; sem janela: corredor, baia 6, caixa encostada e jogador encostado recusam a troca,
   bola longe aceita (controle), troca de massa e devolução ao entrar no rosa. Mutações pegas: folga 0 (1
   falha) e restaurar = barrar variáveis (2 falhas). Tudo verde.
+
+### Game — ao morrer, o jogador volta com o próprio peso (bug do usuário)
+- **Bug:** depois de trocar de peso, morrer (ou reiniciar a sala, ou passar de sala) mantinha o peso trocado.
+- **Causa:** a sala é reconstruída com um mundo de regras novo (jogador com 70 kg), mas `Player.SpawnAt` só
+  reposicionava e zerava a velocidade; o `MassKg` do corpo ficava o antigo (pulo, botão e HUD errados, e
+  corpo e regras discordando).
+- **Correção:** `SpawnAt` volta o peso para `LevelFile.PlayerMassKg`.
+- **Teste sem janela:** troca de massa na baia 6, morte, confere 70 kg no corpo e nas regras. Falhou antes
+  ("player 10") e passa depois.
+- **Erro meu de processo:** a primeira rodada "passou" porque eu não recompilei o projeto do jogo antes do
+  `dotnet test`, e o teste rodou a versão velha. Sempre `dotnet build game/Swapping.Game.csproj` antes.

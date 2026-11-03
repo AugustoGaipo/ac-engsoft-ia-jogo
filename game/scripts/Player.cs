@@ -61,12 +61,16 @@ public partial class Player : CharacterBody3D, IHasWeight
         return player;
     }
 
-    /// <summary>Puts the player standing at a spawn (feet), at rest, looking along the yaw.</summary>
+    /// <summary>
+    /// Puts the player standing at a spawn (feet), at rest, looking along the yaw, with its own mass: the room is
+    /// rebuilt with a new rules world where the player is 70 kg (user's bug: after a mass swap, dying kept the swapped mass).
+    /// </summary>
     public void SpawnAt(SpawnDef spawn)
     {
         Drop();
         GlobalPosition = spawn.Position.ToGodot();
         Velocity = Vector3.Zero;
+        MassKg = LevelFile.PlayerMassKg;
         Look((float)spawn.YawDegrees, 0);
         ResetPhysicsInterpolation();
     }
