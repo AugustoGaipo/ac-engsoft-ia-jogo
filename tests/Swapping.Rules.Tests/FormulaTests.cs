@@ -120,12 +120,38 @@ public class FormulaTests
         Assert.Equal(expected, h, 0.01);
     }
 
-    [Theory] // no cap: the take-off speed is just sqrt(2·343/m), so a light body leaves the ground faster
-    [InlineData(7, 9.8995)]
-    [InlineData(1, 26.1916)]
+    [Theory] // up to 12 m/s the take-off speed is the plain √(2E/m)
     [InlineData(70, 3.1305)]
-    public void JumpTakeoffSpeed_HasNoCap(double mass, double expected) =>
+    [InlineData(7, 9.8995)]
+    [InlineData(5, 11.7132)]   // raw 11.71, still below 12
+    public void JumpTakeoffSpeed_BelowTheSoftCap_IsUntouched(double mass, double expected) =>
         Assert.Equal(expected, Formulas.JumpTakeoffSpeed(mass), 0.001);
+
+    [Theory] // beyond 12 m/s only half of the extra speed counts: 12 + (raw − 12) / 2
+    [InlineData(3, 13.5612)]   // raw 15.1228
+    [InlineData(1, 19.0958)]   // raw 26.1916
+    public void JumpTakeoffSpeed_AboveTheSoftCap_HalvesTheExtraSpeed(double mass, double expected) =>
+        Assert.Equal(expected, Formulas.JumpTakeoffSpeed(mass), 0.001);
+
+    [Fact]
+    public void JumpTakeoffSpeed_IsContinuousAtTheSoftCap()
+    {
+        var atCap = 2 * Formulas.JumpEnergyJoules / (12.0 * 12.0);   // the mass whose raw speed is exactly 12 m/s
+        Assert.Equal(12.0, Formulas.JumpTakeoffSpeed(atCap), 1e-9);
+        Assert.Equal(12.0, Formulas.JumpTakeoffSpeed(atCap * 0.999999), 1e-3);
+    }
+
+    [Fact]
+    public void JumpTakeoffSpeed_NeverDecreasesWhenTheBodyGetsLighter()
+    {
+        var previous = 0.0;
+        for (var mass = 100.0; mass >= 0.5; mass -= 0.5)
+        {
+            var speed = Formulas.JumpTakeoffSpeed(mass);
+            Assert.True(speed >= previous, $"mass {mass}");
+            previous = speed;
+        }
+    }
 
     [Fact]
     public void JumpNearMediumDensity_IsMoonLike()

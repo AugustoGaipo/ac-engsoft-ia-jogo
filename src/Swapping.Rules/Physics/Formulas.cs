@@ -10,6 +10,9 @@ public static class Formulas
     public const double FloatFactor = 0.1;
     public const double JumpEnergyJoules = 343.0;
 
+    /// <summary>Take-off speed (m/s) above which only half of the extra counts (the old 6 m/s hard cap became this soft one).</summary>
+    public const double SoftJumpSpeedCap = 12.0;
+
     public const double DefaultSwimSpeed = 3.0;
 
     private const double BandTolerance = 1e-9;
@@ -41,8 +44,15 @@ public static class Formulas
     public static double RecoilSpeed(double objectMassKg, double addedSpeed, double throwerMassKg, bool onGround) =>
         onGround ? 0 : objectMassKg * addedSpeed / throwerMassKg;
 
-    public static double JumpTakeoffSpeed(double massKg) =>
-        SpeedFromEnergy(JumpEnergyJoules, massKg);
+    /// <summary>
+    /// Take-off speed of a jump: √(2·E_jump ÷ m) up to <see cref="SoftJumpSpeedCap"/> (12 m/s); above it only
+    /// half of the extra speed counts: 12 + (raw − 12) ÷ 2. Continuous and still rising as the body gets lighter.
+    /// </summary>
+    public static double JumpTakeoffSpeed(double massKg)
+    {
+        var raw = SpeedFromEnergy(JumpEnergyJoules, massKg);
+        return raw <= SoftJumpSpeedCap ? raw : SoftJumpSpeedCap + (raw - SoftJumpSpeedCap) / 2;
+    }
 
     /// <summary>Jump height h = v²/(2·g_eff). Returns +∞ when the body is not denser than the medium.</summary>
     public static double JumpHeight(double massKg, double density, double fluidDensity)

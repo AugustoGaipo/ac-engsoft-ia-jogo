@@ -1786,3 +1786,14 @@ câmera acompanha o olho. São 69 no total.
   7 kg de `JumpHeight` foram atualizados. Spec das regras atualizada. Tudo verde.
 - **Atenção no design:** corpos leves (troca de massa para algo pequeno) agora pulam muito alto; se uma sala
   2.4 ficar fácil demais, ajustar a sala ou a energia de pulo (`JumpEnergyJoules`).
+
+### Rules — teto suave de 12 m/s no pulo (pedido do usuário)
+- **Pedido:** depois de tirar o limite de 6 m/s, um teto suave: passando de 12 m/s de decolagem, o excedente
+  conta pela metade, ou seja, v = 12 + (v bruto − 12) ÷ 2.
+- **Feito:** `Formulas.SoftJumpSpeedCap = 12` e `JumpTakeoffSpeed` com essa regra. Corpos de 5 kg ou mais
+  pesados não mudam (7 kg segue com 5,06 m); 3 kg decola a 13,56 m/s (bruto 15,12) e 1 kg a 19,10 m/s
+  (bruto 26,19). Contínua em 12 m/s e sempre crescente quando o corpo fica mais leve.
+- **Erro meu de leitura (não commitado):** primeiro li "o dobro do limite" como altura (v² = 72, corte em
+  8,5 m/s). O usuário esclareceu que o corte é na velocidade, em 12 m/s; refiz testes e fórmula.
+- **Testes:** 3 grupos novos (abaixo do teto, acima do teto, continuidade); mutações pegas: não dividir o
+  excedente (2 falhas) e subir o ponto de corte (1 falha). Tudo verde.
