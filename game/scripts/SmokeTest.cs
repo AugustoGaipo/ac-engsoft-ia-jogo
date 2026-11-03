@@ -56,7 +56,7 @@ public partial class SmokeTest : Node
         }
         catch (Exception exception)
         {
-            GD.PrintErr($"[smoke] FAIL unexpected {exception.GetType().Name}: {exception.Message}");
+            GD.PrintErr($"[smoke] FAIL unexpected {exception}");
             return 1;
         }
     }
@@ -388,7 +388,10 @@ public partial class SmokeTest : Node
         var timeBefore = flow.Run.TimeMs;
         player.GlobalPosition = new Vector3(17.5f, -1.5f, 5);   // inside the kill zone of the pit
         player.ResetPhysicsInterpolation();
-        await PhysicsFrames(50);                                // fade 0.5 s
+        for (var i = 0; i < 60 && !flow.IsDying; i++)         // falls into the kill zone
+            await PhysicsFrames(1);
+        for (var i = 0; i < 300 && flow.IsDying; i++)          // the death sequence (RunFlow.Die)
+            await PhysicsFrames(1);
         var spawn = main.Runner.Room.Spawn.Position.ToGodot();
         box = main.Runner.Bodies.Single();
         Check("run (SC 6): the pit kills; the room is rebuilt and the player is at the spawn",
@@ -401,7 +404,10 @@ public partial class SmokeTest : Node
         // A 9 m fall (≈ 13 m/s on landing) kills; a jump does not.
         player.GlobalPosition = new Vector3(13.5f, 9, 5);
         player.ResetPhysicsInterpolation();
-        await PhysicsFrames(120);
+        for (var i = 0; i < 150 && !flow.IsDying; i++)        // the fall, then the death sequence
+            await PhysicsFrames(1);
+        for (var i = 0; i < 300 && flow.IsDying; i++)
+            await PhysicsFrames(1);
         Check("run (G3): landing after a 9 m fall kills", flow.Run.Deaths == 2, $"deaths {flow.Run.Deaths}");
 
         // The pause stops the time (the physics stops with the tree).
@@ -701,9 +707,17 @@ public partial class SmokeTest : Node
         }
         var deaths = flow.Run.Deaths;
         await LightenAndJump();
-        await PhysicsFrames(240);
+        for (var i = 0; i < 400 && !flow.DeathScreenVisible; i++)
+            await PhysicsFrames(1);
+        Check("death screen: the cause is written in the middle", flow.DeathScreenVisible && flow.DeathText.StartsWith("VOCÊ MORREU\nQueda a"),
+            $"visible {flow.DeathScreenVisible}, text {flow.DeathText}");
+        await PhysicsFrames(30);
+        Check("death screen: the view falls over while dying", player.DeathFall > 0.3f, $"fall {player.DeathFall}");
+        for (var i = 0; i < 300 && flow.IsDying; i++)
+            await PhysicsFrames(1);
         Check("level 2, 2.4: a 12 m jump with no swap in the air kills on landing", flow.Run.Deaths == deaths + 1, $"deaths {flow.Run.Deaths}");
-        await PhysicsFrames(90);                                // fade and room restart
+        Check("death screen: gone after the restart, the view stands up again", !flow.DeathScreenVisible && player.DeathFall == 0,
+            $"visible {flow.DeathScreenVisible}, fall {player.DeathFall}");
 
         await LightenAndJump();
         var block = main.Runner.Bodies.Single(b => b.ContainerId == "block-2-4");
@@ -948,7 +962,7 @@ public partial class SmokeTest : Node
         }
         catch (Exception exception)
         {
-            GD.PrintErr($"[smoke] FAIL unexpected {exception.GetType().Name}: {exception.Message}");
+            GD.PrintErr($"[smoke] FAIL unexpected {exception}");
             return 1;
         }
     }

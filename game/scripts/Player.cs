@@ -28,6 +28,15 @@ public partial class Player : CharacterBody3D, IHasWeight
     public const float MouseSensitivity = 0.0025f;
 
     private Camera3D _camera = null!;
+    private AudioStreamPlayer _jumpSound = null!;
+    private AudioStreamPlayer _landSound = null!;
+    private readonly RandomNumberGenerator _shakeRandom = new();
+
+    /// <summary>Camera shake 0–1 from the last heavy landing (Feedback.LandingShake); fades in 0.4 s.</summary>
+    public double Shake { get; set; }
+
+    /// <summary>0–1 while dying: the view rolls to the side and drops to the floor (RunFlow.Die).</summary>
+    [Export] public float DeathFall { get; set; }
     private float _yaw;
     private float _pitch;
 
@@ -63,6 +72,8 @@ public partial class Player : CharacterBody3D, IHasWeight
         // The camera is drawn every frame from the interpolated body (physics runs at 60 Hz, the screen may run faster).
         player._camera = new Camera3D { Name = "Eye", Fov = 75, Current = true, TopLevel = true, PhysicsInterpolationMode = PhysicsInterpolationModeEnum.Off };
         player.AddChild(player._camera);
+        player._jumpSound = Sfx.Player(player, Sfx.Jump, "JumpSound");
+        player._landSound = Sfx.Player(player, Sfx.Land, "LandSound");
         return player;
     }
 
@@ -76,6 +87,8 @@ public partial class Player : CharacterBody3D, IHasWeight
         GlobalPosition = spawn.Position.ToGodot();
         Velocity = Vector3.Zero;
         MassKg = LevelFile.PlayerMassKg;
+        Shake = 0;
+        DeathFall = 0;
         Look((float)spawn.YawDegrees, 0);
         ResetPhysicsInterpolation();
     }
@@ -146,7 +159,17 @@ public partial class Player : CharacterBody3D, IHasWeight
     public override void _Process(double delta)
     {
         var feet = GetGlobalTransformInterpolated().Origin;
-        _camera.GlobalTransform = new Transform3D(Basis.FromEuler(new Vector3(_pitch, _yaw, 0)), feet + new Vector3(0, EyeHeight, 0));
+        // Dying: roll 75° and drop the eye to 0.35 m. Shaking: a random offset of up to 0.15 m and 2°.
+        var roll = Mathf.DegToRad(75) * DeathFall;
+        var eye = new Vector3(0, Mathf.Lerp(EyeHeight, 0.35f, DeathFall), 0);
+        if (Shake > 0)
+        {
+            var s = (float)Shake;
+            eye += new Vector3(_shakeRandom.RandfRange(-1, 1), _shakeRandom.RandfRange(-1, 1), _shakeRandom.RandfRange(-1, 1)) * 0.15f * s;
+            roll += Mathf.DegToRad(2) * s * _shakeRandom.RandfRange(-1, 1);
+            Shake = Math.Max(0, Shake - delta / 0.4);
+        }
+        _camera.GlobalTransform = new Transform3D(Basis.FromEuler(new Vector3(_pitch, _yaw, roll)), feet + eye);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -173,6 +196,16 @@ public partial class Player : CharacterBody3D, IHasWeight
         var wasOnFloor = IsOnFloor();
         MoveAndSlide();
         LandingSpeed = !wasOnFloor && IsOnFloor() ? -velocity.Y : null;
+        if (LandingSpeed is > 2f and var landing)
+        {
+            // Heavy landings shake the view and thud louder (Feedback); a light body lands softly.
+            var mass = MassKg + HeldMassKg;
+            var shake = Feedback.LandingShake(mass, landing);
+            Shake = Math.Max(Shake, shake);
+            _landSound.VolumeDb = Mathf.Lerp(-20f, 2f, (float)shake);
+            _landSound.PitchScale = (float)Feedback.JumpPitch(mass);
+            _landSound.Play();
+        }
 
         PushBodies(direction);
         FollowHeld();
@@ -182,7 +215,11 @@ public partial class Player : CharacterBody3D, IHasWeight
     public void Jump()
     {
         if (IsOnFloor())
+        {
             Velocity = Velocity with { Y = (float)HoldLoad.JumpTakeoffSpeed(HeldMassKg, MassKg) };
+            _jumpSound.PitchScale = (float)Feedback.JumpPitch(MassKg + HeldMassKg);   // heavy: low, light: high
+            _jumpSound.Play();
+        }
     }
 
     /// <summary>The mass of the held body (0 when nothing is held): it slows the walk and the jump (HoldLoad).</summary>

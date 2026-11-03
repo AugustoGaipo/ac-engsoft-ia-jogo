@@ -14,6 +14,18 @@ public partial class RunFlow : Node
 {
     public const double FadeSeconds = 0.5;
 
+    /// <summary>The death: 0.6 s falling over into dark red, 0.4 s held with the cause, then the room comes back.</summary>
+    public const double DeathFallSeconds = 0.6;
+    public const double DeathHoldSeconds = 0.4;
+
+    private Label _deathLabel = null!;
+    private AudioStreamPlayer _deathSound = null!;
+
+    /// <summary>The text of the last death screen ("VOCÊ MORREU" + the cause).</summary>
+    public string DeathText { get; private set; } = "";
+
+    public bool DeathScreenVisible => _deathLabel.Visible;
+
     private LevelRunner _runner = null!;
     private Player _player = null!;
     private ColorRect _fade = null!;
@@ -66,7 +78,7 @@ public partial class RunFlow : Node
     {
         SetPaused(false);
         Result = null;
-        IsDying = false;
+        CancelDeath();
         _endScreen.Visible = false;
         _nextButton.Visible = false;
         _fade.Color = _fade.Color with { A = 0 };
@@ -77,6 +89,7 @@ public partial class RunFlow : Node
     /// <summary>A new run from the first room.</summary>
     public void StartLevel()
     {
+        CancelDeath();
         Result = null;
         _endScreen.Visible = false;
         Run = new RunTracker(_runner.Level.Id);
@@ -104,6 +117,7 @@ public partial class RunFlow : Node
     /// <summary>Back to the first room with everything at zero: a new run (SC 7).</summary>
     public void RestartLevel()
     {
+        CancelDeath();
         SetPaused(false);
         Result = null;
         _endScreen.Visible = false;
@@ -119,17 +133,48 @@ public partial class RunFlow : Node
         if (IsDying || Result is not null)
             return;
         IsDying = true;
+        var death = ++_death;
         GD.Print($"[game] death ({cause}) in room {_runner.Room.Id}");
-        var tween = CreateTween();
-        tween.TweenProperty(_fade, "color:a", 1f, FadeSeconds / 2);
-        await ToSignal(tween, Tween.SignalName.Finished);
-        if (!IsDying || _runner.Room is null) // went to the menu during the fade
+        // So nobody thinks the room just reset (user's request): the view falls over, the screen turns dark red,
+        // a falling tone plays and the cause is written in the middle, then the room comes back.
+        Run.RecordDeath();
+        DeathText = Feedback.DeathText(cause);
+        _deathLabel.Text = DeathText;
+        _deathLabel.Visible = true;
+        _deathSound.Play();
+        _fade.Color = new Color(0.35f, 0, 0, 0);
+        _deathTween = CreateTween().SetParallel();
+        _deathTween.TweenProperty(_fade, "color:a", 0.9f, DeathFallSeconds);
+        _deathTween.TweenProperty(_player, "DeathFall", 1f, DeathFallSeconds).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        await ToSignal(_deathTween, Tween.SignalName.Finished);
+        await ToSignal(GetTree().CreateTimer(DeathHoldSeconds, processAlways: false), SceneTreeTimer.SignalName.Timeout);
+        // Menu, new run or level restart during the death: that death is over (CancelDeath), do not touch the new room.
+        if (death != _death || _runner.Room is null)
             return;
-        RestartRoom(death: true);
-        tween = CreateTween();
-        tween.TweenProperty(_fade, "color:a", 0f, FadeSeconds / 2);
-        await ToSignal(tween, Tween.SignalName.Finished);
+        RestartRoom(death: false);                         // the death was counted when it happened
+        _deathLabel.Visible = false;
+        _deathTween = CreateTween();
+        _deathTween.TweenProperty(_fade, "color:a", 0f, FadeSeconds / 2);
+        await ToSignal(_deathTween, Tween.SignalName.Finished);
+        if (death != _death)
+            return;
+        _fade.Color = new Color(0, 0, 0, 0);
         IsDying = false;
+    }
+
+    private int _death;
+    private Tween? _deathTween;
+
+    /// <summary>Stops a death in progress and clears its looks (menu, new run, level restart).</summary>
+    private void CancelDeath()
+    {
+        _death++;
+        _deathTween?.Kill();
+        _deathTween = null;
+        IsDying = false;
+        _deathLabel.Visible = false;
+        _fade.Color = new Color(0, 0, 0, 0);
+        _player.DeathFall = 0;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -238,6 +283,19 @@ public partial class RunFlow : Node
         _fade = new ColorRect { Color = new Color(0, 0, 0, 0), MouseFilter = Control.MouseFilterEnum.Ignore };
         _fade.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         layer.AddChild(_fade);
+
+        _deathLabel = new Label
+        {
+            HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center,
+            Visible = false, MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        _deathLabel.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _deathLabel.AddThemeFontSizeOverride("font_size", 56);
+        _deathLabel.AddThemeColorOverride("font_color", new Color(1, 0.85f, 0.85f));
+        _deathLabel.AddThemeConstantOverride("outline_size", 10);
+        _deathLabel.AddThemeColorOverride("font_outline_color", new Color(0.2f, 0, 0));
+        layer.AddChild(_deathLabel);
+        _deathSound = Sfx.Player(this, Sfx.Death, "DeathSound");
 
         _pauseMenu = Panel("Pausa");
         var buttons = _pauseMenu.GetNode<VBoxContainer>("Box");

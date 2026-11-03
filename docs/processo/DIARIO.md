@@ -1890,3 +1890,19 @@ câmera acompanha o olho. São 69 no total.
 - **Testes:** desenho das salas 2.3/2.4 reescrito para o desenho novo; teste sem janela joga o nível 2
   inteiro (24 verificações), inclusive "a caixa de 300 kg não se segura" e "pular sem trocar mata". Na
   jogada, a troca saiu subindo, a 8,9 m e 7,9 m/s. 240 verificações verdes.
+
+### 11-03 — Sons e efeitos: pulo, queda com tremor e tela de morte (pedido do usuário)
+- **Pedido:** som de pulo que muda com o peso, tremor ao cair pesado e um efeito de morte "para não acharem
+  que a pessoa só reiniciou". Escolha (recomendada, usuário não objetou): pesado soa grave, leve soa agudo.
+- **Feito:** `Feedback` (GameLogic): tom do pulo (70 / m)^¼ entre 0,5 e 2,5; tremor pelo momento m·v na
+  aterrissagem (sem tremor abaixo de 250 kg·m/s, cheio em 1000), então o pulo normal não treme, o de 300 kg
+  treme um pouco e 2 kg nunca treme; texto "VOCÊ MORREU" + causa. `Sfx` gera os sons em código (varreduras
+  e ruído em WAV de 16 bits, sem arquivos). `Player`: som do pulo, baque e tremor (até 0,15 m e 2°, some em
+  0,4 s). `RunFlow.Die`: a câmera tomba 75° e desce ao chão, a tela fica vermelho-escura, som descendente e
+  a causa no meio (0,6 s + 0,4 s), depois a sala volta.
+- **Bugs achados no caminho:** a morte agora conta quando acontece (não quando a sala volta); reiniciar o
+  nível no meio da morte deixava a morte antiga reconstruir a sala depois (objeto descartado no teste):
+  cada morte tem um número e `CancelDeath` encerra a que estiver em andamento (menu, novo nível, reiniciar).
+- **Testes:** 9 casos em `FeedbackTests`; sem janela: tela de morte com a causa, câmera tombando, tudo
+  limpo depois. Esperas fixas de 0,5 s do teste antigo viraram "até a morte acabar". Mutações pegas: limite
+  do tremor 250 → 150 (3 falhas) e tom invertido (1 falha). Suíte toda verde (678).
