@@ -2,7 +2,7 @@
 
 > Module from [`CAPABILITY-MAP.md`](../../CAPABILITY-MAP.md) (first slice: "game (level 1 only)").
 > Produced with the skill `agent-skills:spec-driven-development` (phase 1, Specify) during the autonomous
-> loop, on the user's PC. Status: **draft, waiting for the user's review**. No code is written until it is approved.
+> loop, on the user's PC. Status: **approved by the user on 2026-11-03** (decisions G1–G6 as written). Plan: [`tasks/game/plan.md`](../../tasks/game/plan.md).
 > Uses: [`SPEC-rules.md`](SPEC-rules.md), [`SPEC-levels.md`](SPEC-levels.md), and later
 > [`SPEC-sync.md`](SPEC-sync.md). Sources: [level progression](../design/PROGRESSAO-NIVEIS.md),
 > [ideas bank](../ideas/BANCO-DE-IDEIAS.md), the `rules` and `levels` reports (pending items for `game`).
@@ -203,7 +203,7 @@ public partial class SwapController : Node3D
 11. `Swapping.GameLogic` has no Godot reference (architecture test) and ≥ 90 % line coverage.
 12. 60 fps on the user's PC with the 4 rooms loaded (checked by the user during the play test).
 
-## Decisions to confirm (assumptions in this draft)
+## Decisions (approved 2026-11-03)
 - **G1:** controls as in the table (right button swaps, `E` holds, left button throws).
 - **G2:** nearest free point radius **1.5 m** for normal swaps; the quantum one (later) has its own radius.
 - **G3:** fall death when landing faster than **12 m/s** (about 7 m), tuned by playing.

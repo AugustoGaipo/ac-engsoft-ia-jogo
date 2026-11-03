@@ -1265,3 +1265,30 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   `progress`, cada um ligado aos testes que o cobrem. C4 com o diagrama de Componentes da API e
   README com as rotas.
 - 479 testes verdes (106 + 125 + 248), 0 avisos.
+
+## Terça, 2026-11-03 — `game` (nível 1 no Godot)
+
+### Spec aprovada e plano em 11 tarefas
+- **O usuário aprovou a `SPEC-game.md` como estava**, com as decisões G1–G6:
+  - controles: botão direito troca, `E` segura, botão esquerdo arremessa, `R` reinicia a sala;
+  - raio de 1,5 m para achar um ponto livre;
+  - morte por queda acima de 12 m/s;
+  - arremesso com força fixa;
+  - segurar a até 2,5 m;
+  - os níveis são copiados para o jogo no build.
+
+  Ele também pediu para **não cortar nada por enquanto** ("vamos ver o que dá ainda").
+- Plano feito com `agent-skills:planning-and-task-breakdown`: `tasks/game/plan.md` e `tasks/game/todo.md`,
+  11 tarefas em 5 fases.
+- **Decisões do plano:**
+  - **primeiro o mais arriscado:** a tarefa 1 é só o projeto Godot rodando sem janela, a partir do
+    `dotnet test`. Se o Godot com C# e as nossas bibliotecas não funcionar, o resto não adianta;
+  - **o teste sem janela (`--smoke-test`) cresce a cada tarefa,** e cada tarefa do Godot tem uma
+    verificação automática, mesmo que eu não veja o jogo;
+  - **capturas de tela (`--screenshot`)** para eu conferir o cenário e a interface, que também servem
+    de evidência;
+  - **checkpoint "a troca funciona"** depois da tarefa 7: o usuário joga as salas 1.1 e 1.2 antes de
+    seguir;
+  - os níveis 2, 3 e 5 **não** estão neste plano (vão numa revisão da spec).
+- Achado na leitura: a instalação do Godot já traz os pacotes `Godot.NET.Sdk` 4.7.2
+  (`GodotSharp/Tools/nupkgs`), que podem servir como fonte local se o NuGet falhar.
