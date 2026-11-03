@@ -1,0 +1,119 @@
+using Godot;
+using Swapping.Game.Pieces;
+using Swapping.GameLogic;
+using Swapping.Levels;
+using Swapping.Rules.Operations;
+
+namespace Swapping.Game;
+
+/// <summary>
+/// The swap, end to end (SPEC-game, "How a swap is applied"). Every physics step it feeds the physics
+/// back to the <c>rules</c> world, aims, measures the <see cref="SwapContext"/> and asks the rules for a
+/// dry run (the crosshair). On the swap button it applies <see cref="SwapOperation"/> and writes each
+/// <see cref="BodyUpdate"/> back to its body. It never decides legality itself.
+/// </summary>
+public partial class SwapController : Node
+{
+    public const float AimReach = 60f;
+
+    private readonly SwapOperation _swap = new();
+    private LevelRunner _runner = null!;
+    private Player _player = null!;
+    private double _now;
+
+    public Body? Target { get; private set; }
+
+    public Crosshair Crosshair { get; private set; } = new(CrosshairLook.Hidden, "");
+
+    /// <summary>Seconds of play, the clock of the rules' cooldown.</summary>
+    public double Now => _now;
+
+    public void Setup(LevelRunner runner, Player player)
+    {
+        _runner = runner;
+        _player = player;
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed(Controls.Name(GameAction.Swap)))
+            TrySwap();
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_runner?.Room is null)
+            return;
+        _now += delta;
+        SyncWorld();
+        UpdateAim();
+    }
+
+    /// <summary>Applies the swap with the aimed body, if the rules allow it. Returns null when nothing is aimed.</summary>
+    public SwapResult? TrySwap()
+    {
+        if (Target is not { } target || !IsInstanceValid(target))
+            return null;
+        SyncWorld();
+        var result = _swap.Apply(_runner.World, Request(target), _now);
+        if (result.IsApplied)
+            ApplyUpdates(result.Updates);
+        UpdateAim();
+        return result;
+    }
+
+    /// <summary>The physics changes the value of the variable in use (rules model): position and velocity of every body.</summary>
+    private void SyncWorld()
+    {
+        var world = _runner.World;
+        world.SyncFromPhysics(LevelValidator.PlayerId, _player.Center.ToLevel(), _player.Velocity.ToLevel());
+        foreach (var body in _runner.Bodies)
+            world.SyncFromPhysics(body.ContainerId, body.GlobalPosition.ToLevel(), body.LinearVelocity.ToLevel());
+    }
+
+    private void UpdateAim()
+    {
+        Target = _player.Aim(AimReach) as Body;
+        var reason = Target is null ? null : _runner.World.Rules.Check(_runner.World, Request(Target), _now);
+        Crosshair = CrosshairState.For(Target is not null, reason);
+    }
+
+    private SwapRequest Request(Body target) =>
+        new(LevelValidator.PlayerId, target.ContainerId, SwapChoice.Property(_runner.World.Rules.UnlockedProperties))
+        {
+            Context = Measure(target),
+        };
+
+    /// <summary>Distance between centers, line of sight (ignoring both bodies) and the variable barriers.</summary>
+    public SwapContext Measure(Body target)
+    {
+        var mine = _player.Center;
+        var theirs = target.GlobalPosition;
+        var eye = _player.Eye.Origin;
+        var sight = PhysicsRayQueryParameters3D.Create(eye, theirs, Layers.World | Layers.Objects, [_player.GetRid(), target.GetRid()]);
+        var blocked = _player.GetWorld3D().DirectSpaceState.IntersectRay(sight).Count > 0;
+
+        var barriers = _runner.Barriers.Where(b => b.Def.Filter.BlocksVariables).Select(b => b.Def.Box).ToList();
+        return new SwapContext(
+            DistanceMeters: mine.DistanceTo(theirs),
+            HasLineOfSight: !blocked,
+            VariableBarrierBetween: barriers.Any(box => BarrierGeometry.Crosses(mine.ToLevel(), theirs.ToLevel(), box)),
+            FirstInsideVariableBarrier: barriers.Any(box => BarrierGeometry.Inside(mine.ToLevel(), box)),
+            SecondInsideVariableBarrier: barriers.Any(box => BarrierGeometry.Inside(theirs.ToLevel(), box)));
+    }
+
+    private void ApplyUpdates(IReadOnlyList<BodyUpdate> updates)
+    {
+        foreach (var update in updates)
+        {
+            if (update.ContainerId == LevelValidator.PlayerId)
+            {
+                _player.PlaceAtCenter(update.Position.ToGodot(), update.Velocity.ToGodot(), update.MassKg);
+                continue;
+            }
+            var body = _runner.Bodies.Single(b => b.ContainerId == update.ContainerId);
+            body.Mass = (float)update.MassKg;
+            body.Teleport(update.Position.ToGodot(), update.Velocity.ToGodot());
+        }
+    }
+}

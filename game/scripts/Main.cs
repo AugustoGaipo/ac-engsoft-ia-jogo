@@ -15,12 +15,24 @@ public partial class Main : Node3D
 
     public Player Player { get; private set; } = null!;
 
+    public SwapController Swaps { get; private set; } = null!;
+
+    public Hud Hud { get; private set; } = null!;
+
+    public LevelRunner Runner => _runner;
+
     public override void _Ready()
     {
         RegisterControls();
         _runner = GetNode<LevelRunner>("LevelRunner");
         Player = Player.Create();
         AddChild(Player);
+        Swaps = new SwapController { Name = "Swaps" };
+        AddChild(Swaps);
+        Swaps.Setup(_runner, Player);
+        Hud = new Hud { Name = "Hud" };
+        AddChild(Hud);
+        Hud.Setup(Player, Swaps);
 
         var args = OS.GetCmdlineUserArgs();
         var smoke = Array.IndexOf(args, "--smoke-test");

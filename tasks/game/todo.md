@@ -130,10 +130,10 @@ white, red with a short Portuguese reason, or hidden. It covers every `RejectRea
 
 Every physics step calls `world.SyncFromPhysics` for every body.
 **Acceptance criteria:**
-- [ ] Unit tests: one crosshair case per `RejectReason`; `OutOfRange` → "fora de alcance".
-- [ ] SC 3: in room 1.2, the box within 8 m → white; the player moved back to 8.5 m → red "fora de alcance".
-- [ ] SC 5: the locked box of 1.4 → red `Locked`; it can still be held and thrown (smoke test).
-- [ ] After an applied swap, `world.CheckInvariant()` holds and the swap count is 1.
+- [x] Unit tests: one crosshair case per `RejectReason`; `OutOfRange` → "fora de alcance".
+- [x] SC 3: in room 1.2, the box within 8 m → white; the player moved back to 8.5 m → red "fora de alcance".
+- [x] SC 5: the locked box of 1.4 → red `Locked`; it can still be held and thrown (smoke test).
+- [x] After an applied swap, `world.CheckInvariant()` holds and the swap count is 1.
 **Dependencies:** Task 5
 **Files:** `src/Swapping.GameLogic/CrosshairState.cs`, `tests/.../CrosshairStateTests.cs`,
 `game/scripts/SwapController.cs`, `game/scripts/ContextMeter.cs`, `game/scripts/SmokeTest.cs`

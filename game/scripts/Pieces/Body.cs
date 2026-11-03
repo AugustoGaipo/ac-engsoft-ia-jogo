@@ -39,6 +39,18 @@ public partial class Body : RigidBody3D, IHasWeight
 
     public ObjectDef Def { get; private set; } = null!;
 
+    /// <summary>Moves the body at once (a swap or a respawn), with a new velocity, and wakes it.</summary>
+    public void Teleport(Vector3 center, Vector3 velocity)
+    {
+        var transform = new Transform3D(GlobalBasis, center);
+        PhysicsServer3D.BodySetState(GetRid(), PhysicsServer3D.BodyState.Transform, transform);
+        GlobalTransform = transform;
+        LinearVelocity = velocity;
+        AngularVelocity = Vector3.Zero;
+        Sleeping = false;
+        ResetPhysicsInterpolation();
+    }
+
     public static Body Create(ObjectDef def)
     {
         var body = new Body

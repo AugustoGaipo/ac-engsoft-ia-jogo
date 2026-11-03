@@ -1,6 +1,7 @@
 using Godot;
 using Swapping.Game.Pieces;
 using Swapping.GameLogic;
+using Swapping.Levels;
 using Swapping.Levels.Model;
 using Swapping.Rules.Physics;
 
@@ -92,6 +93,19 @@ public partial class Player : CharacterBody3D, IHasWeight
         {
             Jump();
         }
+    }
+
+    /// <summary>The center of the body (feet + 0.9 m): the player's position in the rules world.</summary>
+    public Vector3 Center => GlobalPosition + RulesMapping.PlayerCenterAboveFeet.ToGodot();
+
+    /// <summary>Writes a swap's update back: the center becomes the new position, plus velocity and mass.</summary>
+    public void PlaceAtCenter(Vector3 center, Vector3 velocity, double massKg)
+    {
+        Drop();
+        GlobalPosition = center - RulesMapping.PlayerCenterAboveFeet.ToGodot();
+        Velocity = velocity;
+        MassKg = massKg;
+        ResetPhysicsInterpolation();
     }
 
     /// <summary>Turns the view: yaw in degrees (0 = looking along -Z), pitch in radians (negative = down).</summary>

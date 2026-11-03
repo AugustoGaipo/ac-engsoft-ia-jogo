@@ -66,7 +66,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 - [x] Task 5: The player: walk, jump, look, hold, throw, push
 
 ### Phase 3: The swap (the riskiest part)
-- [ ] Task 6: Aim, crosshair state, measured context, apply and sync
+- [x] Task 6: Aim, crosshair state, measured context, apply and sync
 - [ ] Task 7: Make room after a position swap
 
 ### Checkpoint: The swap is playable

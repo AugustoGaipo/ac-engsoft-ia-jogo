@@ -1433,3 +1433,32 @@ O usuário jogou a sala 1.1 e trouxe 3 pontos:
 
 No teste sem janela entraram duas verificações novas: o jogador em cima do botão abre a porta, e a
 câmera acompanha o olho. São 69 no total.
+
+### Game — tarefa 6: mira, contexto medido, aplicar a troca e sincronizar ✅
+- O usuário chegou à sala 1.2 e não tinha como passar o buraco de 5 m. É de propósito: ali se aprende
+  a troca de posição, que era esta tarefa.
+- **No `GameLogic`** (21 testes, vermelhos antes):
+  - `CrosshairState`: um texto curto em português para cada `RejectReason`, todos diferentes;
+  - `SwapChoice`: a 1ª propriedade liberada numa ordem fixa. Sem nenhuma liberada, pede posição, e o
+    `rules` responde "trocas bloqueadas aqui";
+  - `Readout`: massa, velocidade e energia com vírgula;
+  - `BarrierGeometry`: segmento × caixa, para a barreira de variáveis e a grade de saída.
+- **`SwapController`** (Godot), a cada passo de física:
+  - sincroniza o `World` (`SyncFromPhysics` do jogador pelo centro, pés + 0,9 m, e de cada corpo);
+  - mira com um raio de 60 m;
+  - mede o contexto: distância entre centros, linha de visão ignorando os dois corpos, barreiras de
+    variáveis;
+  - faz o teste sem efeito com `LevelRules.Check`.
+  O botão direito aplica o `SwapOperation` e escreve cada `BodyUpdate` de volta.
+- **HUD mínima adiantada da tarefa 9** (pedido do usuário): a mira com cor e motivo, os números do
+  jogador no canto e os do objeto mirado embaixo da mira.
+- **Teste sem janela** (80 verificações):
+  - SC 3: mira branca a 7,5 m e vermelha "fora de alcance" a 8,4 m;
+  - SC 5: a caixa travada mostra "travado", recusa a troca e mesmo assim é segurada e arremessada;
+  - a troca aplicada conta 1, o invariante vale e a caixa fica onde o jogador estava;
+  - a HUD mostra os números.
+- **Achado para a tarefa 7:** depois da troca, os pés do jogador ficam 0,4 m dentro do chão, e o próprio
+  Godot o empurra para cima (terminou em y = 0,0008, em pé). Na sala 1.2 isso basta; contra uma parede
+  não bastaria.
+- **Mutação:** distância medida sempre 0 → "fora de alcance" caiu.
+- 548 testes verdes (106 + 125 + 248 + 69), 0 avisos.
