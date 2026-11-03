@@ -339,6 +339,30 @@ public partial class SmokeTest : Node
         Check("make room: no free point within 1.5 m (deep in the floor) → death", deepInFloor.Outcome == Swapping.GameLogic.MakeRoomOutcome.Death,
             $"{deepInFloor}");
 
+        // Diagnosis (user: "I just die, it does not even look for space"): swap with every object from a few spots.
+        foreach (var from in new[] { new Vector3(2, 0, 10), new Vector3(8, 0, 2), new Vector3(8, 0, 17), new Vector3(20, 0, 9) })
+        {
+            foreach (var id in main.Runner.Room.Objects.Select(o => o.Id))
+            {
+                main.ShowRoom("0.1");
+                await PhysicsFrames(3);
+                main.Player.GlobalPosition = from;
+                main.Player.ResetPhysicsInterpolation();
+                await PhysicsFrames(3);
+                var target = main.Runner.Bodies.Single(b => b.ContainerId == id);
+                await LookAt(main.Player, target.GlobalPosition);
+                var died = false;
+                void OnDied() => died = true;
+                main.Swaps.PlayerDied += OnDied;
+                var r = main.Swaps.TrySwap();
+                main.Swaps.PlayerDied -= OnDied;
+                if (r is { IsApplied: true })
+                {
+                    Check($"make room: from {from} the swap with {id} finds room ({main.Swaps.LastMakeRoom})", !died && main.Swaps.LastMakeRoom != Swapping.GameLogic.MakeRoomOutcome.Death, $"feet {main.Player.GlobalPosition}");
+                }
+            }
+        }
+
         main.ShowRoom("0.1");
         await PhysicsFrames(5);
         main.Player.GlobalPosition = new Vector3(17, 0, 17);
