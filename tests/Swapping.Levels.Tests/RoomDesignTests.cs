@@ -87,23 +87,38 @@ public class RoomDesignTests
     }
 
     [Fact]
-    public void Room2_3_HeavyButton_OnlyAMassSwapReachesIt()
+    public void Room2_3_BorrowedMass_TheCrateIsCarriedLightAndPaidBackOnTheCagedButton()
     {
+        // Design reviewed with the user (2026-11-03): no shortcut by holding the heavy crate (HoldLoad: > 2.5 × 70 kg),
+        // by teleporting it onto the button (it accepts only mass, and a cage keeps the player off the button),
+        // or by making the ball heavy (it accepts only position).
         var room = Shipped.Room("2.3");
 
         Assert.Contains(PropertyNames.Mass, Unlocked("2.3"));
-        var button = Assert.Single(room.Buttons, b => b.RequiredMassKg > LevelFile.PlayerMassKg);
-        Assert.Contains(room.Objects, o => o.MassKg >= button.RequiredMassKg && CanSwap(o, PropertyNames.Mass) && !CanSwap(o, PropertyNames.Position));
-        Assert.All(room.Objects, o => Assert.False(CanSwap(o, PropertyNames.Position), $"{o.Id} would skip the lesson"));
+        var button = Assert.Single(room.Buttons);
+        Assert.True(button.RequiredMassKg > LevelFile.PlayerMassKg && button.Detects == ButtonDetects.Objects);
+        var crate = Assert.Single(room.Objects, o => o.MassKg >= button.RequiredMassKg);
+        Assert.True(crate.MassKg > 2.5 * LevelFile.PlayerMassKg, "too heavy to hold before the mass swap");
+        Assert.True(CanSwap(crate, PropertyNames.Mass) && !CanSwap(crate, PropertyNames.Position));
+        Assert.Contains(room.Barriers, b => b.BlocksPlayer && !b.BlocksObjects && !b.BlocksVariables && b.Box.Contains(button.Position));
+        var grid = Assert.Single(room.Barriers, b => b.BlocksPlayer && b.Box.Min.Z <= room.Bounds.Min.Z && b.Box.Max.Z >= room.Bounds.Max.Z);
+        Assert.True(crate.Position.X < grid.Box.Min.X && button.Position.X > grid.Box.Max.X);
+        Assert.Contains(room.Objects, o => o.Position.X > grid.Box.Max.X && CanSwap(o, PropertyNames.Position) && !CanSwap(o, PropertyNames.Mass));
     }
 
     [Fact]
-    public void Room2_4_JumpDependsOnMass()
+    public void Room2_4_HighJump_ThenSwapPlacesBeforeTheFallKills()
     {
+        // User's design (2026-11-03): a 2 kg box lends its mass for a ~12 m jump over a wall; a block beyond
+        // it takes the player down by a position swap. Closed ceiling at 15 m, so the rest of the map stays hidden.
         var room = Shipped.Room("2.4");
 
-        Assert.Contains(room.Objects, o => o.MassKg <= 10 && CanSwap(o, PropertyNames.Mass));
-        Assert.True(room.Exit.Min.Y >= room.Spawn.Position.Y + 1.2, "the exit is at least 1.2 m above the spawn floor");
+        var light = Assert.Single(room.Objects, o => CanSwap(o, PropertyNames.Mass));
+        Assert.True(light.MassKg <= 2 && !CanSwap(light, PropertyNames.Position));
+        var block = Assert.Single(room.Objects, o => CanSwap(o, PropertyNames.Position));
+        Assert.True(!CanSwap(block, PropertyNames.Mass) && block.Position.X > light.Position.X);
+        Assert.True(room.Bounds.Max.Y >= 15, "room tall enough for the jump under the ceiling");
+        Assert.True(room.RulesOverride?.RangeMeters?[PropertyNames.Position] >= 13, "the block is reachable from the top of the jump");
     }
 
     [Fact]

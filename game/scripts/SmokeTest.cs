@@ -44,6 +44,7 @@ public partial class SmokeTest : Node
             await CheckFullRun(main);
             await CheckSandbox(main);
             await CheckBarrierBays(main);
+            await CheckFullRunLevel2(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -615,6 +616,118 @@ public partial class SmokeTest : Node
             $"{main.NextPlayable("level-1")}");
         main.HasScene = realHasScene;
         flow.RestartLevel();
+    }
+
+    // ---- Task 16 (SC 17): level 2 played through the planned way (rooms designed with the user, 2026-11-03) ----
+
+    private async Task CheckFullRunLevel2(Main main)
+    {
+        var flow = main.Flow;
+        var player = main.Player;
+        var swaps = main.Swaps;
+        main.StartLevel("level-2");
+        await PhysicsFrames(10);
+        Check("level 2: the scene loads and the run starts in room 2.1", main.Runner.Room!.Id == "2.1", $"room {main.Runner.Room.Id}");
+
+        // 2.1 — walk through the object barrier, stand on the button, swap places with the box left behind.
+        await WalkTo(player, 8.5f, 5);
+        var box = main.Runner.Bodies.Single();
+        await LookAt(player, box.GlobalPosition);
+        Check("level 2, 2.1: swap places with the box across the object barrier", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(60);
+        Check("level 2, 2.1: the box lands on the button and the door opens", main.Runner.Doors.Single().IsOpen, $"box {box.GlobalPosition}");
+        await WalkTo(player, 7, 7.5f);
+        await WalkTo(player, 9.5f, 7.5f);
+        await WalkTo(player, 9.6f, 5);
+        await WalkTo(player, 12.6f, 5);
+        Check("level 2, 2.1: into room 2.2", main.Runner.Room.Id == "2.2", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 2.2 — the player barrier: swap places with the box beyond it.
+        await WalkTo(player, 13.5f, 5);
+        box = main.Runner.Bodies.Single();
+        await LookAt(player, box.GlobalPosition);
+        Check("level 2, 2.2: swap places through the player barrier", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(70);
+        await WalkTo(player, 24.6f, 5);
+        Check("level 2, 2.2: into room 2.3", main.Runner.Room.Id == "2.3", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 2.3 — borrow the crate's mass, carry it into the cage, give the mass back, pass with the ball.
+        await WalkTo(player, 25.4f, 5);
+        var crate = main.Runner.Bodies.Single(b => b.ContainerId == "crate-2-3");
+        var ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-2-3");
+        await LookAt(player, crate.GlobalPosition);
+        player.ToggleHold();
+        Check("level 2, 2.3 (HoldLoad): the 300 kg crate is too heavy to hold", player.Held is null, $"held {player.Held?.Name}");
+        PressKey(swaps, Key.Key2);
+        Check("level 2, 2.3: take the crate's mass", swaps.TrySwap() is { IsApplied: true } && Mathf.IsEqualApprox((float)player.MassKg, 300f),
+            $"{swaps.Crosshair}, mass {player.MassKg}");
+        await PhysicsFrames(70);
+        await LookAt(player, crate.GlobalPosition);
+        player.ToggleHold();
+        Check("level 2, 2.3: now 300 kg, the player holds the 70 kg crate", player.Held == crate, $"held {player.Held?.Name}");
+        await WalkTo(player, 29.65f, 5);
+        player.Look(-90, -0.35f);
+        await PhysicsFrames(30);
+        player.Drop();
+        await PhysicsFrames(60);
+        var cage = main.Runner.Room.Barriers.Single(b => b.Id == "cage-2-3").Box;
+        Check("level 2, 2.3: the crate passes the grid and rests in the cage, too light for the button",
+            cage.Contains(crate.GlobalPosition.ToLevel()) && !main.Runner.Doors.Single().IsOpen, $"crate {crate.GlobalPosition}");
+        await LookAt(player, crate.GlobalPosition);
+        Check("level 2, 2.3: give the mass back through the grid", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(60);
+        Check("level 2, 2.3: the 300 kg crate presses the button and the door opens", main.Runner.Doors.Single().IsOpen, $"crate {crate.GlobalPosition}");
+        PressKey(swaps, Key.Key1);
+        await LookAt(player, ball.GlobalPosition);
+        Check("level 2, 2.3: swap places with the ball past the grid", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
+        await PhysicsFrames(70);
+        await WalkTo(player, 33.3f, 5);
+        await WalkTo(player, 36.8f, 5);
+        Check("level 2, 2.3: through the door into room 2.4", main.Runner.Room.Id == "2.4", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 2.4 — take the 2 kg box's mass and jump high by the wall. Without a swap in the air, the fall kills.
+        async Task LightenAndJump()
+        {
+            await WalkTo(player, 37.6f, 3.6f);
+            var light = main.Runner.Bodies.Single(b => b.ContainerId == "light-box-2-4");
+            PressKey(swaps, Key.Key2);
+            await LookAt(player, light.GlobalPosition);
+            Check("level 2, 2.4: take the 2 kg box's mass", swaps.TrySwap() is { IsApplied: true } && player.MassKg <= 2.01,
+                $"{swaps.Crosshair}, mass {player.MassKg}");
+            await PhysicsFrames(70);
+            await WalkTo(player, 41.65f, 5);
+            PressKey(swaps, Key.Key1);
+            player.Jump();
+        }
+        var deaths = flow.Run.Deaths;
+        await LightenAndJump();
+        await PhysicsFrames(240);
+        Check("level 2, 2.4: a 12 m jump with no swap in the air kills on landing", flow.Run.Deaths == deaths + 1, $"deaths {flow.Run.Deaths}");
+        await PhysicsFrames(90);                                // fade and room restart
+
+        await LightenAndJump();
+        var block = main.Runner.Bodies.Single(b => b.ContainerId == "block-2-4");
+        float? swappedAt = null, topY = 0;
+        for (var i = 0; i < 240 && swappedAt is null; i++)
+        {
+            var to = block.GlobalPosition - player.Eye.Origin;
+            player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
+            await PhysicsFrames(1);
+            topY = Mathf.Max(topY.Value, player.GlobalPosition.Y);
+            if (player.GlobalPosition.Y > 4 && swaps.TrySwap() is { IsApplied: true })
+                swappedAt = player.Velocity.Length();
+        }
+        Check("level 2, 2.4: near the top the block shows over the wall and the swap works", swappedAt is not null,
+            $"top {topY:0.0} m, crosshair {swaps.Crosshair}");
+        GD.Print($"[smoke] info level 2, 2.4: jump top {topY:0.0} m, speed at the swap {swappedAt:0.0} m/s");
+        await PhysicsFrames(90);
+        Check("level 2, 2.4: landing beyond the wall, alive", flow.Run.Deaths == deaths + 1 && player.GlobalPosition.X > 42.5f,
+            $"deaths {flow.Run.Deaths}, at {player.GlobalPosition}");
+        await WalkTo(player, 47.9f, 5);
+        await PhysicsFrames(5);
+        Check("level 2: the exit of 2.4 ends the level", flow.Result is { LevelId: "level-2" } && flow.EndScreenVisible,
+            $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+        GD.Print($"[smoke] info full run of level 2: {flow.Result}");
     }
 
     private static void PressKey(SwapController swaps, Key key) =>

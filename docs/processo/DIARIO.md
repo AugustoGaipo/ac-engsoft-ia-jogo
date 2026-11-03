@@ -1872,3 +1872,21 @@ câmera acompanha o olho. São 69 no total.
 - **Feito:** `HoldLoad` (GameLogic) e o uso em `Player` (andar, pulo, `ToggleHold`, `FollowHeld`).
 - **Testes:** 10 casos em `HoldLoadTests`; suíte toda verde (669, com o teste sem janela do nível 1).
   Mutações pegas: limite 2,5 → 3 (3 falhas) e pulo sem a massa segurada (1 falha).
+
+### 11-03 — Tarefa 16: cena do nível 2 (salas desenhadas com o usuário)
+- **2.1 e 2.2** (introdução às barreiras) como no rascunho: a caixa não passa a barreira de objetos, mas vai
+  ao botão por troca de posição; o jogador passa a barreira dele trocando com a caixa do outro lado.
+- **2.3 "Empréstimo"** (proposta do Claude, revisada com o usuário): grade que barra só o jogador; caixa de
+  300 kg (só peso) do lado do jogador; botão só de objetos (≥ 200 kg) dentro de uma gaiola que barra o
+  jogador; bola (só posição) do outro lado. Pegar os 300 kg, carregar a caixa (agora 70 kg) até a gaiola,
+  devolver o peso pela grade, trocar de lugar com a bola. Atalhos achados na revisão e fechados: segurar a
+  caixa pesada (→ `HoldLoad`), teleportar a caixa ao botão (gaiola + caixa só peso; o usuário sugeriu a
+  área; uma área que barra trocas quebraria o passo de devolver o peso), deixar a bola pesada (só posição).
+- **2.4 "Pulo alto"** (ideia do usuário): caixa de 2 kg (só peso), muro de 8 m, bloco (só posição) do outro
+  lado, teto fechado a 15 m. Com 2 kg o pulo vai a ~12 m; a troca de posição salva se a velocidade estiver
+  abaixo de 12 m/s (o usuário corrigiu: não precisa ser no topo). Alcance de posição 14 m só nesta sala
+  (`rulesOverride`), porque do alto o bloco fica a ~13 m.
+- **Cenário:** `tools/scenery/level_2.boxes` e `.signs` → `game/levels/level_2.tscn` (com prévia).
+- **Testes:** desenho das salas 2.3/2.4 reescrito para o desenho novo; teste sem janela joga o nível 2
+  inteiro (24 verificações), inclusive "a caixa de 300 kg não se segura" e "pular sem trocar mata". Na
+  jogada, a troca saiu subindo, a 8,9 m e 7,9 m/s. 240 verificações verdes.

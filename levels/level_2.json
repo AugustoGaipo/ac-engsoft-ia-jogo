@@ -50,36 +50,45 @@
     },
     {
       "id": "2.3",
-      "teaches": "Botão que exige mais peso que o jogador: trocar o peso com uma caixa pesada.",
+      "teaches": "Empréstimo de peso: pegar os 300 kg da caixa para carregá-la, devolver no botão e passar pela grade trocando com a bola.",
       "bounds": { "min": [24, -3, 0], "max": [36, 6, 10] },
       "spawn": { "position": [25, 0, 5], "yawDegrees": -90 },
       "exit": { "min": [35.5, 0, 4], "max": [36, 3, 6] },
-      // The player (70 kg) is too light for the 150 kg button; take the crate's 300 kg and stand on it.
+      // The crate (300 kg) is too heavy to hold (> 2.5 × 70 kg). Take its mass, carry it (70 kg) to the grid,
+      // drop it in the cage on the button, give the mass back through the grid, swap places with the ball.
+      // The cage keeps the player off the button (no "teleport the crate onto the button" shortcut).
       "objects": [
-        { "id": "crate-2-3", "kind": "box", "position": [30, 0.5, 2], "size": [1, 1, 1], "massKg": 300, "accepts": ["mass"], "bounce": 0.05 }
+        { "id": "crate-2-3", "kind": "box", "position": [26.5, 0.5, 5], "size": [1, 1, 1], "massKg": 300, "accepts": ["mass"], "bounce": 0.05 },
+        { "id": "ball-2-3", "kind": "ball", "position": [33, 0.25, 8.5], "size": [0.5, 0.5, 0.5], "massKg": 2, "accepts": ["position"], "bounce": 0.3 }
       ],
       "buttons": [
-        { "id": "heavy-button-2-3", "position": [30, 0, 7], "size": [1.5, 0.1, 1.5], "requiredMassKg": 150, "detects": "any" }
+        { "id": "heavy-button-2-3", "position": [31.45, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 200, "detects": "objects" }
       ],
       "doors": [
         { "id": "door-2-3", "box": { "min": [34, 0, 4], "max": [34.3, 3, 6] }, "opensWith": ["heavy-button-2-3"] }
       ],
       "barriers": [
+        { "id": "no-player-2-3", "blocksPlayer": true, "box": { "min": [30, 0, 0], "max": [30.2, 6, 10] } },
+        { "id": "cage-2-3", "blocksPlayer": true, "box": { "min": [30.2, 0, 3.5], "max": [32.7, 3, 6.5] } },
         { "id": "exit-grid-2-3", "preset": "exitGrid", "box": { "min": [35.5, 0, 4], "max": [35.6, 3, 6] } }
       ]
     },
     {
       "id": "2.4",
-      "teaches": "O pulo depende da massa: com 7 kg o jogador pula ~1,8 m; com 70 kg, só 0,5 m.",
-      "bounds": { "min": [36, -3, 0], "max": [48, 6, 10] },
+      "teaches": "Pulo e queda: com 2 kg o jogador pula ~12 m sobre o muro; trocar de posição com o bloco antes de passar de 12 m/s.",
+      "bounds": { "min": [36, -3, 0], "max": [48, 16, 10] },
       "spawn": { "position": [37, 0, 5], "yawDegrees": -90 },
-      // Scenery: a 1.5 m ledge from x = 44 to x = 48; the exit is on top of it.
-      "exit": { "min": [47.5, 1.5, 4], "max": [48, 4.5, 6] },
+      // From the top of the jump the block is ~13 m away: a longer reach for position in this room only.
+      "rulesOverride": { "rangeMeters": { "position": 14.0, "mass": 8.0 } },
+      // Scenery: an 8 m wall at x = 42–42.5 and a closed ceiling at 15 m. Take the 2 kg box's mass, jump by
+      // the wall; near the top the block shows over it: swap places with it (below 12 m/s) and land safe.
+      "exit": { "min": [47.5, 0, 4], "max": [48, 3, 6] },
       "objects": [
-        { "id": "light-box-2-4", "kind": "box", "position": [40, 0.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 7, "accepts": ["mass"], "bounce": 0.1 }
+        { "id": "light-box-2-4", "kind": "box", "position": [38.5, 0.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 2, "accepts": ["mass"], "bounce": 0.1 },
+        { "id": "block-2-4", "kind": "box", "position": [45.5, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "accepts": ["position"], "bounce": 0.05 }
       ],
       "barriers": [
-        { "id": "exit-grid-2-4", "preset": "exitGrid", "box": { "min": [47.5, 1.5, 4], "max": [47.6, 4.5, 6] } }
+        { "id": "exit-grid-2-4", "preset": "exitGrid", "box": { "min": [47.5, 0, 4], "max": [47.6, 3, 6] } }
       ]
     }
   ]
