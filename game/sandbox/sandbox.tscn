@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/LevelPreview.cs" id="preview"]
+
 [sub_resource type="StandardMaterial3D" id="floor"]
 albedo_color = Color(0.78, 0.8, 0.82, 1)
 
@@ -268,3 +270,7 @@ pixel_size = 0.006
 font_size = 48
 outline_size = 12
 text = "Botão: 5 kg ou mais (conta você)"
+
+[node name="Preview" type="Node3D" parent="."]
+script = ExtResource("preview")
+LevelFile = "res://sandbox/sandbox.json"

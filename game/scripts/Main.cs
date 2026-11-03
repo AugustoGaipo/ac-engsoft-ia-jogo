@@ -44,6 +44,24 @@ public partial class Main : Node3D
             return;
         }
 
+        // --preview-shot <file.png>: the scenery with the editor preview, seen from above, without the game pieces.
+        var preview = Array.IndexOf(args, "--preview-shot");
+        if (preview >= 0 && preview + 1 < args.Length)
+        {
+            LevelPreview.ShowInGame = true;
+            if (args.Contains("--sandbox"))
+                _runner.LoadSandbox();
+            else
+                _runner.LoadLevel("level-1");
+            Hud.Visible = false;
+            var top = new Camera3D { Current = true, Fov = 70 };
+            AddChild(top);
+            var wide = args.Contains("--sandbox") ? new Vector3(15, 26, 22) : new Vector3(24, 34, 18);
+            top.LookAtFromPosition(wide, wide with { Y = 0, Z = args.Contains("--sandbox") ? 10 : 5 }, Vector3.Up);
+            _ = SaveScreenshot(args[preview + 1]);
+            return;
+        }
+
         // --sandbox: the test room instead of level 1.
         if (args.Contains("--sandbox"))
             _runner.LoadSandbox();

@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/LevelPreview.cs" id="preview"]
+
 [sub_resource type="StandardMaterial3D" id="floor"]
 albedo_color = Color(0.78, 0.8, 0.82, 1)
 
@@ -476,3 +478,7 @@ mesh = SubResource("mesh_DoorWall35Top")
 
 [node name="Shape" type="CollisionShape3D" parent="DoorWall35Top"]
 shape = SubResource("shape_DoorWall35Top")
+
+[node name="Preview" type="Node3D" parent="."]
+script = ExtResource("preview")
+LevelFile = "res://levels/level_1.json"

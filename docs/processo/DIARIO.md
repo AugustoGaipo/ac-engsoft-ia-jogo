@@ -1567,3 +1567,17 @@ câmera acompanha o olho. São 69 no total.
   - O caso do usuário virou uma verificação permanente. São 112 sem janela.
   - **Lição:** o diagnóstico com 11 trocas comuns passou; o caso real só apareceu porque o log de cada
     troca existia. O log das trocas fica.
+- **Pedido do usuário:** abrir a sala no editor do Godot para ver a área toda. Abri o editor e expliquei
+  que o editor mostrava só o cenário, porque as peças nascem do JSON. Ele pediu prévias.
+  - **`LevelPreview`** (`[Tool]`, só no editor): lê o mesmo JSON do jogo e da API e desenha cada peça
+    com as cores do jogo e um rótulo:
+    - objetos com a massa, travada em cinza;
+    - botões com a massa e se contam o jogador;
+    - portas com os botões delas;
+    - barreiras, zonas de morte e a saída;
+    - a entrada com uma seta na direção do olhar.
+
+    Nada disso é salvo na cena. No jogo, a prévia se apaga sozinha (verificação nova: 113).
+  - O gerador de cenário põe o nó de prévia nas duas cenas (`PREVIEW=…`).
+  - **`--preview-shot`:** como eu não vejo o editor, uma captura de cima com a prévia mostrou que ela
+    desenha certo (`docs/evidencias/game/previa-*.png`).

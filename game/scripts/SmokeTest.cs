@@ -28,6 +28,10 @@ public partial class SmokeTest : Node
             Check("the scenery scene is loaded", runner.GetChildren().Any(c => c.Name == "Level1" || c.SceneFilePath == runner.Level.Scene),
                 runner.Level.Scene);
 
+            await PhysicsFrames(2);
+            Check("the editor-only preview removes itself in the game (no doubled pieces)",
+                runner.FindChildren("Preview", owned: false).Count == 0, "a Preview node is still in the scene");
+
             foreach (var room in runner.Level.Rooms)
                 await CheckRoomPieces(runner, room.Id);
 

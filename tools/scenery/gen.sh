@@ -2,11 +2,17 @@
 # Generates a scenery scene (.tscn) from a box table: solid StaticBody3D boxes (convex shapes, so a body
 # deep inside one is detected), one mesh + one box shape each, on the "world" layer; optional Label3D signs.
 # Usage: tools/scenery/gen.sh <root-name> <boxes-file> <out.tscn> [signs-file] [sun-x sun-z]
+# With PREVIEW=res://path/to/level.json, adds the editor-only LevelPreview node (pieces drawn from the JSON).
 set -euo pipefail
 root=$1 boxes=$2 out=$3 signs=${4:-} sunx=${5:-24} sunz=${6:-5}
 {
 cat <<HDR
 [gd_scene format=3]
+HDR
+if [ -n "${PREVIEW:-}" ]; then printf '
+[ext_resource type="Script" path="res://scripts/LevelPreview.cs" id="preview"]
+'; fi
+cat <<HDR
 
 [sub_resource type="StandardMaterial3D" id="floor"]
 albedo_color = Color(0.78, 0.8, 0.82, 1)
@@ -44,5 +50,10 @@ grep -v '^#' "$boxes" | awk '{ printf "\n[node name=\"%s\" type=\"StaticBody3D\"
 if [ -n "$signs" ]; then
 grep -v '^#' "$signs" | awk -F'|' '{ split($2, p, " "); printf "\n[node name=\"%s\" type=\"Label3D\" parent=\".\"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, %s, %s, %s)\nbillboard = 1\npixel_size = 0.006\nfont_size = 48\noutline_size = 12\ntext = \"%s\"\n", $1, p[1], p[2], p[3], $3 }'
 fi
+if [ -n "${PREVIEW:-}" ]; then printf '
+[node name="Preview" type="Node3D" parent="."]
+script = ExtResource("preview")
+LevelFile = "%s"
+' "$PREVIEW"; fi
 } > "$out"
 echo "wrote $out"
