@@ -107,8 +107,8 @@ public partial class SmokeTest : Node
             var look = (ShaderMaterial)((MeshInstance3D)barrier.GetChild(0)).Mesh.SurfaceGetMaterial(0);
             var baseColor = (Vector3)look.GetShaderParameter("base_color");
             var stripeColor = (Vector3)look.GetShaderParameter("stripe_color");
-            Check($"room {roomId}: {def.Id} has moving stripes darker than its color (not black)",
-                stripeColor.X < baseColor.X && stripeColor.Y < baseColor.Y && stripeColor.Z < baseColor.Z && stripeColor.Length() > 0.05f,
+            Check($"room {roomId}: {def.Id} has moving stripes darker than its color (not black), one side only",
+                stripeColor.X < baseColor.X && stripeColor.Y < baseColor.Y && stripeColor.Z < baseColor.Z && stripeColor.Length() > 0.05f && look.Shader.Code.Contains("cull_back"),
                 $"base {baseColor}, stripes {stripeColor}");
             if (def.IsExitGrid)
                 Check($"room {roomId}: {def.Id} blocks objects only", barrier.CollisionLayer == Layers.BarrierObjects, $"layer {barrier.CollisionLayer}");

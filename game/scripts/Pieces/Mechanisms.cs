@@ -98,21 +98,21 @@ public partial class Barrier : StaticBody3D
 {
     public BarrierDef Def { get; private set; } = null!;
     /// <summary>
-    /// The "forbidden" look: diagonal stripes in a darker shade of the barrier's color, sliding from right to
-    /// left forever. The stripe size is in meters on every face, and the direction is "to the viewer's left"
+    /// The "forbidden" look: thin diagonal stripes in a darker shade of the barrier's color, sliding from right to
+    /// left forever. Back faces are culled, so only the side facing the viewer is drawn. The stripe size is in meters on every face, and the direction is "to the viewer's left"
     /// whichever side of the wall is seen.
     /// </summary>
     private static readonly Shader StripeShader = new()
     {
         Code = @"
 shader_type spatial;
-render_mode unshaded, cull_disabled, blend_mix, depth_draw_never;
+render_mode unshaded, cull_back, blend_mix, depth_draw_never;
 
 uniform vec3 base_color = vec3(1.0, 0.4, 0.8);
 uniform vec3 stripe_color = vec3(0.4, 0.16, 0.32);
-uniform float base_alpha = 0.35;
-uniform float stripe_alpha = 0.7;
-uniform float period = 0.6;
+uniform float base_alpha = 0.16;
+uniform float stripe_alpha = 0.6;
+uniform float period = 0.5;
 uniform float speed = 0.5;
 
 varying vec3 local_pos;
@@ -136,7 +136,7 @@ void fragment() {
         u = (n.z > 0.0 ? 1.0 : -1.0) * local_pos.x; v = local_pos.y;
     }
     float band = fract((u - v) / period + speed * TIME);
-    float stripe = step(0.5, band);
+    float stripe = step(0.65, band); // thin stripes: 35% of the period
     ALBEDO = mix(base_color, stripe_color, stripe);
     ALPHA = mix(base_alpha, stripe_alpha, stripe);
 }
@@ -155,7 +155,8 @@ void fragment() {
             CollisionLayer = (filter.BlocksObjects ? Layers.BarrierObjects : 0) | (filter.BlocksPlayer ? Layers.BarrierPlayer : 0),
             CollisionMask = 0,
         };
-        var color = def.IsExitGrid ? new Color(0.3f, 0.85f, 1f, 0.35f) : new Color(1f, 0.4f, 0.8f, 0.35f);
+        var (r, g, b) = BarrierPalette.For(def.Filter);
+        var color = new Color((float)r, (float)g, (float)b, BaseAlpha);
         barrier.AddChild(new MeshInstance3D
         {
             Mesh = new BoxMesh
@@ -187,12 +188,17 @@ void fragment() {
         material.SetShaderParameter("base_color", new Vector3(color.R, color.G, color.B));
         material.SetShaderParameter("stripe_color", new Vector3(color.R, color.G, color.B) * StripeDarkness);
         material.SetShaderParameter("base_alpha", color.A);
-        material.SetShaderParameter("stripe_alpha", Mathf.Min(0.85f, color.A * 2.4f));
+        material.SetShaderParameter("stripe_alpha", StripeAlpha);
         return material;
     }
 
     /// <summary>Stripe color = base color × this (0 would be black).</summary>
-    public const float StripeDarkness = 0.4f;
+    public const float StripeDarkness = 0.35f;
+
+    /// <summary>Opacity of the see-through wall and of its stripes.</summary>
+    public const float BaseAlpha = 0.16f;
+
+    public const float StripeAlpha = 0.6f;
 }
 
 /// <summary>The exit of a room: the player crossing it starts the next room (Task 8).</summary>

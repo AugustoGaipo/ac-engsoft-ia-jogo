@@ -1766,3 +1766,14 @@ câmera acompanha o olho. São 69 no total.
   base de cada barreira não mudou (azul da grade de saída, rosa das outras).
 - **Verificação:** `SmokeTest` confere que toda barreira tem o material com listras mais escuras que a base
   e não pretas; captura de tela do mapa de teste mostra as listras. O movimento só se vê jogando.
+
+### Game — barreiras: camada mais fina e transparente, cores melhores, um lado só (pedido do usuário)
+- **Um lado só:** o shader agora descarta as faces de trás (`cull_back`): vê-se só a face voltada para
+  quem olha, sem listras dobradas atravessando a parede.
+- **Mais fino e transparente:** listras de 35 % do período (0,5 m), parede com 16 % de opacidade e listras
+  com 60 %, em 35 % da cor base (escuro, mas não preto).
+- **Cores (`BarrierPalette`, GameLogic, 3 testes):** pela função da barreira — azul = bloqueia objetos (a
+  grade de saída também), laranja = bloqueia o jogador, violeta = os dois, verde = só variáveis. Mutação
+  pega: trocar a cor dos objetos pela do jogador.
+- Captura de tela do mapa de teste conferida (ampliada): listras finas, parede transparente, caixa
+  atrás visível. O movimento da direita para a esquerda só se vê jogando.
