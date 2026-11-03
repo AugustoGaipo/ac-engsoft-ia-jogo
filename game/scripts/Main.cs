@@ -43,7 +43,11 @@ public partial class Main : Node3D
             return;
         }
 
-        _runner.LoadLevel("level-1");
+        // --sandbox: the test room instead of level 1.
+        if (args.Contains("--sandbox"))
+            _runner.LoadSandbox();
+        else
+            _runner.LoadLevel("level-1");
         var shot = Array.IndexOf(args, "--screenshot");
         if (shot >= 0 && shot + 2 < args.Length)
         {

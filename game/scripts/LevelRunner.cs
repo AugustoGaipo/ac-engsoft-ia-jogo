@@ -57,6 +57,30 @@ public partial class LevelRunner : Node3D
         Level = catalog.Levels.FirstOrDefault(l => l.Id == levelId)
                 ?? throw new KeyNotFoundException($"Level '{levelId}' is not in the catalog.");
 
+        ShowScenery();
+    }
+
+    /// <summary>The test room (game/sandbox): not in the catalog, never seen by the API.</summary>
+    public const string SandboxFile = "res://sandbox/sandbox.json";
+
+    /// <summary>
+    /// Loads the sandbox with the same parser and validator as the levels. Only the level number and id
+    /// rules are ignored: a test room must not take a real level number.
+    /// </summary>
+    public void LoadSandbox()
+    {
+        var (level, parseErrors) = LevelParser.Parse(System.IO.File.ReadAllText(ProjectSettings.GlobalizePath(SandboxFile)));
+        var errors = parseErrors.Concat(level is null ? [] : LevelValidator.Validate(level))
+            .Where(e => !(e.Path is "id" or "number" && e.Code is LevelErrorCode.BadId or LevelErrorCode.NumberOutOfRange))
+            .ToList();
+        if (level is null || errors.Count > 0)
+            throw new InvalidOperationException("sandbox.json: " + string.Join("; ", errors.Select(e => $"{e.Path}: {e.Code} {e.Message}")));
+        Level = level;
+        ShowScenery();
+    }
+
+    private void ShowScenery()
+    {
         _scenery?.Free();
         _scenery = GD.Load<PackedScene>(Level.Scene).Instantiate();
         AddChild(_scenery);

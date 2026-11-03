@@ -1,0 +1,49 @@
+// Sandbox (test room) — not a level: not in the catalog, not seen by the API. One station per mechanic,
+// to try a feature before it goes into a real room (user's request, 2026-11-03). Same format and
+// validator as the levels, except the level number/id rules (a test room must not take a level number).
+// Room space: x 0–30, z 0–20, floor at y = 0, the pit x 12–16 goes down to y = -3.
+{
+  "schemaVersion": 1,
+  "id": "sandbox",
+  "number": 0,
+  "name": "Sala de testes",
+  "scene": "res://sandbox/sandbox.tscn",
+  "rules": {
+    "unlockedProperties": ["position"],
+    "rangeMeters": { "position": 8.0 },
+    "cooldownSeconds": 1.0
+  },
+  "rooms": [
+    {
+      "id": "0.1",
+      "teaches": "Sala de testes: empurrar por peso, caixa travada, alcance, buraco, barreira de variáveis, plataforma, botão, porta e grade.",
+      "bounds": { "min": [0, -3, 0], "max": [30, 6, 20] },
+      "spawn": { "position": [2, 0, 10], "yawDegrees": -90 },
+      "exit": { "min": [29.5, 0, 9], "max": [30, 3, 11] },
+      "objects": [
+        { "id": "push-10kg", "kind": "box", "position": [5, 0.5, 2], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "push-30kg", "kind": "box", "position": [5, 0.5, 4.5], "size": [1, 1, 1], "massKg": 30, "bounce": 0.1 },
+        { "id": "push-300kg", "kind": "box", "position": [5, 0.6, 7], "size": [1.2, 1.2, 1.2], "massKg": 300, "bounce": 0.05 },
+        { "id": "ball-2kg", "kind": "ball", "position": [5, 0.25, 13], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "locked-box", "kind": "box", "position": [5, 0.5, 16], "size": [1, 1, 1], "massKg": 10, "locked": true, "bounce": 0.1 },
+        { "id": "range-7-5m", "kind": "box", "position": [9.5, 0.5, 10], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "across-pit", "kind": "box", "position": [18, 0.5, 10], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "behind-barrier", "kind": "box", "position": [21, 0.5, 15], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "ball-on-ledge", "kind": "ball", "position": [24, 2.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 }
+      ],
+      "buttons": [
+        { "id": "button-any", "position": [25, 0, 14], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "any" }
+      ],
+      "doors": [
+        { "id": "door", "box": { "min": [28, 0, 9], "max": [28.3, 3, 11] }, "opensWith": ["button-any"] }
+      ],
+      "barriers": [
+        { "id": "variable-barrier", "blocksVariables": true, "box": { "min": [19.5, 0, 13], "max": [19.6, 3, 20] } },
+        { "id": "exit-grid", "preset": "exitGrid", "box": { "min": [29.5, 0, 9], "max": [29.6, 3, 11] } }
+      ],
+      "killZones": [
+        { "id": "pit", "box": { "min": [12, -3, 0], "max": [16, -1, 20] } }
+      ]
+    }
+  ]
+}

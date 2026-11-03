@@ -35,6 +35,7 @@ public partial class SmokeTest : Node
             await CheckButtonDoorAndExitGrid(runner);
             await CheckPlayer(main);
             await CheckSwap(main);
+            await CheckSandbox(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -301,6 +302,31 @@ public partial class SmokeTest : Node
     }
 
     private const Swapping.Rules.Operations.RejectReason RejectReasonLocked = Swapping.Rules.Operations.RejectReason.Locked;
+
+    // ---- The test room (sandbox) loads with the levels' validator and builds every station ----
+
+    private async Task CheckSandbox(Main main)
+    {
+        main.Runner.LoadSandbox();
+        main.ShowRoom("0.1");
+        await PhysicsFrames(60);
+        var room = main.Runner.Room;
+        Check("sandbox: valid and built (objects, button, door, barriers, kill zone)",
+            main.Runner.PieceCount == main.Runner.ExpectedPieceCount && main.Runner.Bodies.Count == room.Objects.Count,
+            $"{main.Runner.PieceCount} pieces of {main.Runner.ExpectedPieceCount}");
+        foreach (var obj in room.Objects)
+        {
+            var body = main.Runner.Bodies.Single(b => b.ContainerId == obj.Id);
+            Check($"sandbox: {obj.Id} rests where the file put it", body.Position.DistanceTo(obj.Position.ToGodot()) < 0.05f, $"{body.Position}");
+        }
+        main.Player.GlobalPosition = new Vector3(17, 0, 17);
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(5);
+        var behind = main.Runner.Bodies.Single(b => b.ContainerId == "behind-barrier");
+        await LookAt(main.Player, behind.GlobalPosition);
+        Check("sandbox: a swap through the variable barrier is refused with \"barreira no caminho\"",
+            main.Swaps.Target == behind && main.Swaps.Crosshair.Reason == "barreira no caminho", $"{main.Swaps.Crosshair}");
+    }
 
     /// <summary>Turns the player's view to a point and lets the aim update.</summary>
     private async Task LookAt(Player player, Vector3 point)

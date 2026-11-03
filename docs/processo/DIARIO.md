@@ -1498,3 +1498,22 @@ câmera acompanha o olho. São 69 no total.
     empurrar, o que combina com o "mal se mexe" da spec.
   - Testes: 7 da fórmula nova. Sem janela: 10 kg anda 1–2,4 m em 1 s; 300 kg não sai do lugar. São 84
     verificações.
+
+### Game — sala de testes (pedido do usuário)
+- **Pedido:** "antes de criar cada sala, vamos criar uma sala de teste para testar as funcionalidades".
+- **`game/sandbox/sandbox.json` + `sandbox.tscn`:** uma sala com um posto por mecânica, cada um com placa:
+  - empurrar 10, 30 e 300 kg, e uma bola de 2 kg;
+  - caixa travada;
+  - caixa a 7,5 m (alcance);
+  - buraco com zona de morte e uma caixa do outro lado;
+  - barreira de variáveis com uma caixa atrás;
+  - plataforma de 2 m com uma bola em cima;
+  - botão (≥ 5 kg, conta o jogador), porta e grade de saída.
+- **Decisão do agente:** a sala de testes **não entra no catálogo**, então a API nunca a vê. Ela usa o
+  mesmo leitor e o mesmo validador do `levels` e ignora só as regras de número e id do nível, porque um
+  arquivo de teste não pode ocupar o número de um nível de verdade. Abre com `--sandbox`.
+- **Teste sem janela** (95 verificações): a sala é válida, todas as peças ficam paradas onde o arquivo
+  pôs, e a troca através da barreira é recusada com "barreira no caminho".
+- **Tropeço:** um script de edição do PowerShell falhou inteiro, porque o arquivo sem BOM tinha um "→",
+  e o PowerShell 5 leu um dos bytes dele como aspas. Daqui em diante, edições com caractere especial vão
+  pelo Edit.
