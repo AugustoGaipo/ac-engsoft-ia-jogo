@@ -24,7 +24,7 @@ public partial class SwapController : Node
 
     public Body? Target { get; private set; }
 
-    public Crosshair Crosshair { get; private set; } = new(CrosshairLook.Hidden, "");
+    public Crosshair Crosshair { get; private set; } = new(CrosshairLook.Idle, "");
 
     /// <summary>Seconds of play, the clock of the rules' cooldown.</summary>
     public double Now => _now;

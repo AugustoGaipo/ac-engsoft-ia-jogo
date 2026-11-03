@@ -7,9 +7,9 @@ namespace Swapping.GameLogic.Tests;
 public sealed class CrosshairStateTests
 {
     [Fact]
-    public void Nothing_aimed_hides_the_crosshair()
+    public void Nothing_aimed_shows_the_idle_dot()
     {
-        Assert.Equal(new Crosshair(CrosshairLook.Hidden, ""), CrosshairState.For(aimingAtContainer: false, reason: null));
+        Assert.Equal(new Crosshair(CrosshairLook.Idle, ""), CrosshairState.For(aimingAtContainer: false, reason: null));
     }
 
     [Fact]

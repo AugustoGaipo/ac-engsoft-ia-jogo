@@ -1639,3 +1639,10 @@ câmera acompanha o olho. São 69 no total.
     fora do mapa.
   - A correção anterior ("saiu do mapa": objeto fora da sala volta ao início; jogador fora do nível
     morre) continua valendo como rede de segurança.
+- **Pedido do usuário:** "deixa uma mira para sempre, um pouco diferente da mira de quando está mirando
+  um item".
+  - O estado `Hidden` da mira virou `Idle`: um **pontinho** semitransparente, sempre na tela; mirando um
+    objeto, o `+` maior, branco ou vermelho com o motivo.
+  - O teste do estado foi trocado antes do código (vermelho → verde). No teste sem janela, entraram duas
+    verificações ("+" num objeto, "•" olhando para o céu). São 129. A captura confirmou o ponto no
+    centro.

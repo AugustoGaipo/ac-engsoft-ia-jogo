@@ -249,6 +249,12 @@ public partial class SmokeTest : Node
             $"target {swaps.Target?.Name ?? "none"}, {swaps.Crosshair}, distance {swaps.Measure(box).DistanceMeters:0.00}");
         Check("swap: the HUD shows the aimed box's numbers", main.Hud.TargetText.StartsWith("10 kg"), main.Hud.TargetText);
         Check("swap: the HUD shows the player's numbers", main.Hud.PlayerText.Contains("70 kg"), main.Hud.PlayerText);
+        await PhysicsFrames(1);
+        Check("crosshair: on an object it is the \"+\"", main.Hud.CrosshairText == "+", main.Hud.CrosshairText);
+        player.Look(-90, 1.2f);                                 // up at the sky
+        await PhysicsFrames(3);
+        Check("crosshair (user's request): with nothing aimed there is always a small dot",
+            swaps.Crosshair.Look == Swapping.GameLogic.CrosshairLook.Idle && main.Hud.CrosshairText == "•", main.Hud.CrosshairText);
 
         player.GlobalPosition = new Vector3(12.6f, 0, 5);
         player.ResetPhysicsInterpolation();

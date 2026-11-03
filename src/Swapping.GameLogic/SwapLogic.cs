@@ -6,16 +6,17 @@ using Swapping.Rules.Physics;
 
 namespace Swapping.GameLogic;
 
-public enum CrosshairLook { Hidden, Ready, Refused }
+/// <summary>Idle: a small dot always on screen (user's request); Ready: white +; Refused: red + with the reason.</summary>
+public enum CrosshairLook { Idle, Ready, Refused }
 
-/// <summary>What the crosshair shows: white (ready), red with a short reason, or hidden.</summary>
+/// <summary>What the crosshair shows: white (ready), red with a short reason, or the idle dot.</summary>
 public sealed record Crosshair(CrosshairLook Look, string Reason);
 
 /// <summary>The crosshair from the dry run of the rules (<c>LevelRules.Check</c>) on the aimed body.</summary>
 public static class CrosshairState
 {
     public static Crosshair For(bool aimingAtContainer, RejectReason? reason) =>
-        !aimingAtContainer ? new Crosshair(CrosshairLook.Hidden, "")
+        !aimingAtContainer ? new Crosshair(CrosshairLook.Idle, "")
         : reason is not { } why ? new Crosshair(CrosshairLook.Ready, "")
         : new Crosshair(CrosshairLook.Refused, Text(why));
 

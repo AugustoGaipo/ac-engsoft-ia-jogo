@@ -23,7 +23,7 @@ public partial class Hud : CanvasLayer
     private Label _run = null!;
     private RunFlow? _flow;
 
-    public string CrosshairText => _crosshair.Visible ? _crosshair.Text : "";
+    public string CrosshairText => _crosshair.Text;
 
     public string ReasonText => _reason.Text;
 
@@ -70,9 +70,12 @@ public partial class Hud : CanvasLayer
             _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}";
 
         var crosshair = _swaps.Crosshair;
-        _crosshair.Visible = crosshair.Look != CrosshairLook.Hidden;
+        // Always a crosshair (user's request): a small faint dot at rest, a bigger "+" on an object.
+        var idle = crosshair.Look == CrosshairLook.Idle;
+        _crosshair.Text = idle ? "•" : "+";
+        _crosshair.AddThemeFontSizeOverride("font_size", idle ? 18 : 40);
         var color = crosshair.Look == CrosshairLook.Refused ? RefusedColor : ReadyColor;
-        _crosshair.AddThemeColorOverride("font_color", color);
+        _crosshair.AddThemeColorOverride("font_color", idle ? new Color(1, 1, 1, 0.6f) : color);
         _reason.AddThemeColorOverride("font_color", color);
         _reason.Text = crosshair.Reason;
 
