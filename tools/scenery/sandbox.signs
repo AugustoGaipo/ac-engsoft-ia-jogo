@@ -1,0 +1,9 @@
+# name|x y z|text
+SignPush|5 2.6 4.5|Empurrar: 10 kg · 30 kg · 300 kg
+SignBall|5 1.4 13|Bola 2 kg
+SignLocked|5 1.8 16|Caixa travada
+SignRange|9.5 1.8 10|7,5 m: mira branca
+SignPit|18 1.8 10|Do outro lado do buraco
+SignBarrier|19.55 3.6 16.5|Barreira de variáveis
+SignLedge|24 3.4 3|Suba trocando com a bola
+SignButton|25 1.4 14|Botão: 5 kg ou mais (conta você)

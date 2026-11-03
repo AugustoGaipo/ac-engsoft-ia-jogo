@@ -31,6 +31,7 @@ public partial class Main : Node3D
         Swaps = new SwapController { Name = "Swaps" };
         AddChild(Swaps);
         Swaps.Setup(_runner, Player);
+        Swaps.PlayerDied += () => ShowRoom(_runner.Room.Id); // until Task 8 adds the fade and the run totals
         Hud = new Hud { Name = "Hud" };
         AddChild(Hud);
         Hud.Setup(Player, Swaps);

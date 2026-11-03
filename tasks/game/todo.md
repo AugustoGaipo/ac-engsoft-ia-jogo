@@ -149,10 +149,10 @@ Every physics step calls `world.SyncFromPhysics` for every body.
 In Godot, a shape query checks the body after a position update and asks the search for a free point.
 A popped object respawns at its start values.
 **Acceptance criteria:**
-- [ ] Unit tests: the order, the radius limit, a wall between, the first free candidate wins, none → death/pop.
-- [ ] SC 4: the position swap of room 1.2 → the player stands on the floor across the pit (feet at y = 0
+- [x] Unit tests: the order, the radius limit, a wall between, the first free candidate wins, none → death/pop.
+- [x] SC 4: the position swap of room 1.2 → the player stands on the floor across the pit (feet at y = 0
       ±0.05, not inside it), the box where the player was; the swap counts 1.
-- [ ] A swap that leaves no free space kills the player (smoke test with a small closed box built for the
+- [x] A swap that leaves no free space kills the player (smoke test with a small closed box built for the
       test, not a level room).
 **Dependencies:** Task 6
 **Files:** `src/Swapping.GameLogic/FreeSpotSearch.cs`, `tests/.../FreeSpotSearchTests.cs`,

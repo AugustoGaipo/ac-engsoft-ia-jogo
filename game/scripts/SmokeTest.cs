@@ -260,6 +260,9 @@ public partial class SmokeTest : Node
         await LookAt(player, box.GlobalPosition);
         var result = swaps.TrySwap();
         Check("swap: the position swap is applied", result is { IsApplied: true }, $"{result?.Reason}");
+        Check("make room (SC 4): after the swap of room 1.2 the feet are on the floor, not inside it",
+            swaps.LastMakeRoom == Swapping.GameLogic.MakeRoomOutcome.Moved && player.GlobalPosition.Y is >= -0.01f and < 0.26f && player.GlobalPosition.X > 20,
+            $"{swaps.LastMakeRoom}, feet {player.GlobalPosition}");
         Check("swap: one swap counted and the invariant holds", main.Runner.World.MoveCount == 1 && main.Runner.World.CheckInvariant(),
             $"moves {main.Runner.World.MoveCount}");
         Check("swap: the box is where the player was", box.GlobalPosition.DistanceTo(playerCenter) < 0.05f, $"box {box.GlobalPosition}, was {playerCenter}");
@@ -277,7 +280,7 @@ public partial class SmokeTest : Node
             await PhysicsFrames(10);
             GD.Print($"[smoke] info +{(i + 1) * 10} frames: box {box.GlobalPosition} v {box.LinearVelocity}, player {player.GlobalPosition}");
         }
-        GD.Print($"[smoke] info after the swap the player stands at {player.GlobalPosition}, on floor {player.IsOnFloor()}");
+        Check("make room (SC 4): the player then stands on the floor across the pit", player.IsOnFloor() && Mathf.Abs(player.GlobalPosition.Y) < 0.02f && player.GlobalPosition.X > 20, $"feet {player.GlobalPosition}");
         Check("swap: the box is not shot away (it settles under where the player was)",
             new Vector2(box.GlobalPosition.X - playerCenter.X, box.GlobalPosition.Z - playerCenter.Z).Length() < 0.05f && box.LinearVelocity.Length() < 0.1f,
             $"box {box.GlobalPosition} v {box.LinearVelocity}, player was {playerCenter}");
@@ -319,6 +322,25 @@ public partial class SmokeTest : Node
             var body = main.Runner.Bodies.Single(b => b.ContainerId == obj.Id);
             Check($"sandbox: {obj.Id} rests where the file put it", body.Position.DistanceTo(obj.Position.ToGodot()) < 0.05f, $"{body.Position}");
         }
+        // Task 7: swapping with the ball on the 2 m ledge puts the feet inside the ledge → the player is lifted onto it.
+        main.Player.GlobalPosition = new Vector3(17, 0, 3);    // far enough to see the ball over the ledge edge
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(5);
+        var ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-on-ledge");
+        await LookAt(main.Player, ball.GlobalPosition);
+        var swap = main.Swaps.TrySwap();
+        Check("make room: the swap with the ball on the ledge moves the player up out of the ledge",
+            swap is { IsApplied: true } && main.Swaps.LastMakeRoom == Swapping.GameLogic.MakeRoomOutcome.Moved,
+            $"{swap?.Reason} {main.Swaps.LastMakeRoom}");
+        await PhysicsFrames(40);
+        Check("make room: the player stands on the ledge", main.Player.IsOnFloor() && Mathf.Abs(main.Player.GlobalPosition.Y - 2f) < 0.06f,
+            $"feet {main.Player.GlobalPosition}, on floor {main.Player.IsOnFloor()}");
+        var deepInFloor = MakeRoom.ForPlayer(main.Player, new Vector3(6, -2, 10));
+        Check("make room: no free point within 1.5 m (deep in the floor) → death", deepInFloor.Outcome == Swapping.GameLogic.MakeRoomOutcome.Death,
+            $"{deepInFloor}");
+
+        main.ShowRoom("0.1");
+        await PhysicsFrames(5);
         main.Player.GlobalPosition = new Vector3(17, 0, 17);
         main.Player.ResetPhysicsInterpolation();
         await PhysicsFrames(5);

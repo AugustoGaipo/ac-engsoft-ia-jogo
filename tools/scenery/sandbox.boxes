@@ -1,0 +1,12 @@
+# name material minX minY minZ maxX maxY maxZ
+FloorA floor 0 -3.5 0 12 0 20
+FloorB floor 16 -3.5 0 30 0 20
+PitBottom pit 12 -3.5 0 16 -3 20
+Ledge ledge 22 0 0 26 2 6
+WallSouth wall -0.3 -3.5 -0.3 30.3 6 0
+WallNorth wall -0.3 -3.5 20 30.3 6 20.3
+WallStart wall -0.3 -3.5 0 0 6 20
+WallEnd wall 30 -3.5 0 30.3 6 20
+DoorWallLeft wall 28 0 0 28.3 6 9
+DoorWallRight wall 28 0 11 28.3 6 20
+DoorWallTop wall 28 3 9 28.3 6 11

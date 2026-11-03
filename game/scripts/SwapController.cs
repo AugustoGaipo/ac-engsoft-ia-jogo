@@ -117,17 +117,35 @@ public partial class SwapController : Node
     /// </summary>
     private void ApplyUpdates(IReadOnlyList<BodyUpdate> updates)
     {
+        var swapped = updates.Where(u => u.ContainerId != LevelValidator.PlayerId)
+            .Select(u => _runner.Bodies.Single(b => b.ContainerId == u.ContainerId)).ToList();
         foreach (var update in updates)
         {
+            var center = update.Position.ToGodot();
             if (update.ContainerId == LevelValidator.PlayerId)
             {
-                _player.PlaceAtCenter(update.Position.ToGodot(), update.Velocity.ToGodot(), update.MassKg);
+                // Task 7: a swap exchanges centers, so the feet may end up inside the floor or a ledge.
+                var spot = MakeRoom.ForPlayer(_player, center, swapped);
+                LastMakeRoom = spot.Outcome;
+                _player.PlaceAtCenter(spot.Point?.ToGodot() ?? center, update.Velocity.ToGodot(), update.MassKg);
+                if (spot.Outcome == MakeRoomOutcome.Death)
+                    PlayerDied?.Invoke();
                 continue;
             }
-            var body = _runner.Bodies.Single(b => b.ContainerId == update.ContainerId);
+            var body = swapped.Single(b => b.ContainerId == update.ContainerId);
             body.Mass = (float)update.MassKg;
             body.IgnoreForAMoment(_player);
-            body.Teleport(update.Position.ToGodot(), update.Velocity.ToGodot());
+            var room = MakeRoom.ForBody(body, _player, center);
+            if (room.Outcome == MakeRoomOutcome.Pop)
+                body.Teleport(body.Def.Position.ToGodot(), body.Def.Velocity.ToGodot()); // back to its start, keeping its mass variable
+            else
+                body.Teleport(room.Point!.Value.ToGodot(), update.Velocity.ToGodot());
         }
     }
+
+    /// <summary>What "make room" decided for the player in the last applied swap.</summary>
+    public MakeRoomOutcome? LastMakeRoom { get; private set; }
+
+    /// <summary>No free point after a swap: the player dies (the room restarts).</summary>
+    public event Action? PlayerDied;
 }

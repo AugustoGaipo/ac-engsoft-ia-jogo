@@ -67,7 +67,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 
 ### Phase 3: The swap (the riskiest part)
 - [x] Task 6: Aim, crosshair state, measured context, apply and sync
-- [ ] Task 7: Make room after a position swap
+- [x] Task 7: Make room after a position swap
 
 ### Checkpoint: The swap is playable
 - [ ] Room 1.2 works by script (SC 3, 4) and **the user plays rooms 1.1–1.2** before Phase 4

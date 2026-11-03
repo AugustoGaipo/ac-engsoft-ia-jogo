@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3]
 
 [sub_resource type="StandardMaterial3D" id="floor"]
 albedo_color = Color(0.78, 0.8, 0.82, 1)
@@ -19,9 +19,203 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.45
 
-; Level 1 scenery only (SPEC-game): solid floor blocks down to the pit bottom (y = -3.5), walls (0.3 m), pits, the ledge of 1.3 and the partitions that
-; hold the doors. Generated from a table; pieces (objects, buttons, doors, barriers, kill zones) come from
-; levels/level_1.json at run time. Static geometry is on the "world" layer (1).
+[sub_resource type="BoxMesh" id="mesh_Floor11"]
+material = SubResource("floor")
+size = Vector3(12, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Floor11"]
+size = Vector3(12, 3.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Floor12a"]
+material = SubResource("floor")
+size = Vector3(3, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Floor12a"]
+size = Vector3(3, 3.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Floor12b"]
+material = SubResource("floor")
+size = Vector3(4, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Floor12b"]
+size = Vector3(4, 3.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Floor13"]
+material = SubResource("floor")
+size = Vector3(12, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Floor13"]
+size = Vector3(12, 3.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Floor14a"]
+material = SubResource("floor")
+size = Vector3(4, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Floor14a"]
+size = Vector3(4, 3.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Floor14b"]
+material = SubResource("floor")
+size = Vector3(3, 3.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Floor14b"]
+size = Vector3(3, 3.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_PitBottom12"]
+material = SubResource("pit")
+size = Vector3(5, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_PitBottom12"]
+size = Vector3(5, 0.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_PitBottom14"]
+material = SubResource("pit")
+size = Vector3(5, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_PitBottom14"]
+size = Vector3(5, 0.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Ledge13"]
+material = SubResource("ledge")
+size = Vector3(4, 2, 10)
+
+[sub_resource type="BoxShape3D" id="shape_Ledge13"]
+size = Vector3(4, 2, 10)
+
+[sub_resource type="BoxMesh" id="mesh_WallSouth"]
+material = SubResource("wall")
+size = Vector3(48.6, 9.5, 0.3)
+
+[sub_resource type="BoxShape3D" id="shape_WallSouth"]
+size = Vector3(48.6, 9.5, 0.3)
+
+[sub_resource type="BoxMesh" id="mesh_WallNorth"]
+material = SubResource("wall")
+size = Vector3(48.6, 9.5, 0.3)
+
+[sub_resource type="BoxShape3D" id="shape_WallNorth"]
+size = Vector3(48.6, 9.5, 0.3)
+
+[sub_resource type="BoxMesh" id="mesh_WallStart"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_WallStart"]
+size = Vector3(0.3, 9.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_WallEnd"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_WallEnd"]
+size = Vector3(0.3, 9.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_Wall12Left"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_Wall12Left"]
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_Wall12Right"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_Wall12Right"]
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_Wall12Top"]
+material = SubResource("wall")
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxShape3D" id="shape_Wall12Top"]
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxMesh" id="mesh_Wall24Left"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_Wall24Left"]
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_Wall24Right"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_Wall24Right"]
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_Wall24Top"]
+material = SubResource("wall")
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxShape3D" id="shape_Wall24Top"]
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxMesh" id="mesh_Wall36Left"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_Wall36Left"]
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_Wall36Right"]
+material = SubResource("wall")
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_Wall36Right"]
+size = Vector3(0.3, 9.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_Wall36Top"]
+material = SubResource("wall")
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxShape3D" id="shape_Wall36Top"]
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxMesh" id="mesh_DoorWall10Left"]
+material = SubResource("wall")
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxShape3D" id="shape_DoorWall10Left"]
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxMesh" id="mesh_DoorWall10Right"]
+material = SubResource("wall")
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxShape3D" id="shape_DoorWall10Right"]
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxMesh" id="mesh_DoorWall10Top"]
+material = SubResource("wall")
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxShape3D" id="shape_DoorWall10Top"]
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxMesh" id="mesh_DoorWall35Left"]
+material = SubResource("wall")
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxShape3D" id="shape_DoorWall35Left"]
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxMesh" id="mesh_DoorWall35Right"]
+material = SubResource("wall")
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxShape3D" id="shape_DoorWall35Right"]
+size = Vector3(0.3, 6, 4)
+
+[sub_resource type="BoxMesh" id="mesh_DoorWall35Top"]
+material = SubResource("wall")
+size = Vector3(0.3, 3, 2)
+
+[sub_resource type="BoxShape3D" id="shape_DoorWall35Top"]
+size = Vector3(0.3, 3, 2)
+
+; Generated by tools/scenery/gen.sh from level_1.boxes — edit the table, not this file.
 [node name="Level1" type="Node3D"]
 
 [node name="Environment" type="WorldEnvironment" parent="."]
@@ -31,170 +225,254 @@ environment = SubResource("env")
 transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 24, 12, 5)
 shadow_enabled = true
 
-[node name="Floor11" type="CSGBox3D" parent="."]
+[node name="Floor11" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -1.75, 5)
-use_collision = true
-size = Vector3(12, 3.5, 10)
-material = SubResource("floor")
 
-[node name="Floor12a" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Floor11"]
+mesh = SubResource("mesh_Floor11")
+
+[node name="Shape" type="CollisionShape3D" parent="Floor11"]
+shape = SubResource("shape_Floor11")
+
+[node name="Floor12a" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, -1.75, 5)
-use_collision = true
-size = Vector3(3, 3.5, 10)
-material = SubResource("floor")
 
-[node name="Floor12b" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Floor12a"]
+mesh = SubResource("mesh_Floor12a")
+
+[node name="Shape" type="CollisionShape3D" parent="Floor12a"]
+shape = SubResource("shape_Floor12a")
+
+[node name="Floor12b" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, -1.75, 5)
-use_collision = true
-size = Vector3(4, 3.5, 10)
-material = SubResource("floor")
 
-[node name="Floor13" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Floor12b"]
+mesh = SubResource("mesh_Floor12b")
+
+[node name="Shape" type="CollisionShape3D" parent="Floor12b"]
+shape = SubResource("shape_Floor12b")
+
+[node name="Floor13" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, -1.75, 5)
-use_collision = true
-size = Vector3(12, 3.5, 10)
-material = SubResource("floor")
 
-[node name="Floor14a" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Floor13"]
+mesh = SubResource("mesh_Floor13")
+
+[node name="Shape" type="CollisionShape3D" parent="Floor13"]
+shape = SubResource("shape_Floor13")
+
+[node name="Floor14a" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, -1.75, 5)
-use_collision = true
-size = Vector3(4, 3.5, 10)
-material = SubResource("floor")
 
-[node name="Floor14b" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Floor14a"]
+mesh = SubResource("mesh_Floor14a")
+
+[node name="Shape" type="CollisionShape3D" parent="Floor14a"]
+shape = SubResource("shape_Floor14a")
+
+[node name="Floor14b" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.5, -1.75, 5)
-use_collision = true
-size = Vector3(3, 3.5, 10)
-material = SubResource("floor")
 
-[node name="PitBottom12" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Floor14b"]
+mesh = SubResource("mesh_Floor14b")
+
+[node name="Shape" type="CollisionShape3D" parent="Floor14b"]
+shape = SubResource("shape_Floor14b")
+
+[node name="PitBottom12" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -3.25, 5)
-use_collision = true
-size = Vector3(5, 0.5, 10)
-material = SubResource("pit")
 
-[node name="PitBottom14" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="PitBottom12"]
+mesh = SubResource("mesh_PitBottom12")
+
+[node name="Shape" type="CollisionShape3D" parent="PitBottom12"]
+shape = SubResource("shape_PitBottom12")
+
+[node name="PitBottom14" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.5, -3.25, 5)
-use_collision = true
-size = Vector3(5, 0.5, 10)
-material = SubResource("pit")
 
-[node name="Ledge13" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="PitBottom14"]
+mesh = SubResource("mesh_PitBottom14")
+
+[node name="Shape" type="CollisionShape3D" parent="PitBottom14"]
+shape = SubResource("shape_PitBottom14")
+
+[node name="Ledge13" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 1, 5)
-use_collision = true
-size = Vector3(4, 2, 10)
-material = SubResource("ledge")
 
-[node name="WallSouth" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Ledge13"]
+mesh = SubResource("mesh_Ledge13")
+
+[node name="Shape" type="CollisionShape3D" parent="Ledge13"]
+shape = SubResource("shape_Ledge13")
+
+[node name="WallSouth" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1.25, -0.15)
-use_collision = true
-size = Vector3(48.6, 9.5, 0.3)
-material = SubResource("wall")
 
-[node name="WallNorth" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="WallSouth"]
+mesh = SubResource("mesh_WallSouth")
+
+[node name="Shape" type="CollisionShape3D" parent="WallSouth"]
+shape = SubResource("shape_WallSouth")
+
+[node name="WallNorth" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1.25, 10.15)
-use_collision = true
-size = Vector3(48.6, 9.5, 0.3)
-material = SubResource("wall")
 
-[node name="WallStart" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="WallNorth"]
+mesh = SubResource("mesh_WallNorth")
+
+[node name="Shape" type="CollisionShape3D" parent="WallNorth"]
+shape = SubResource("shape_WallNorth")
+
+[node name="WallStart" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 1.25, 5)
-use_collision = true
-size = Vector3(0.3, 9.5, 10)
-material = SubResource("wall")
 
-[node name="WallEnd" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="WallStart"]
+mesh = SubResource("mesh_WallStart")
+
+[node name="Shape" type="CollisionShape3D" parent="WallStart"]
+shape = SubResource("shape_WallStart")
+
+[node name="WallEnd" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.15, 1.25, 5)
-use_collision = true
-size = Vector3(0.3, 9.5, 10)
-material = SubResource("wall")
 
-[node name="Wall12Left" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="WallEnd"]
+mesh = SubResource("mesh_WallEnd")
+
+[node name="Shape" type="CollisionShape3D" parent="WallEnd"]
+shape = SubResource("shape_WallEnd")
+
+[node name="Wall12Left" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.15, 1.25, 2)
-use_collision = true
-size = Vector3(0.3, 9.5, 4)
-material = SubResource("wall")
 
-[node name="Wall12Right" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall12Left"]
+mesh = SubResource("mesh_Wall12Left")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall12Left"]
+shape = SubResource("shape_Wall12Left")
+
+[node name="Wall12Right" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.15, 1.25, 8)
-use_collision = true
-size = Vector3(0.3, 9.5, 4)
-material = SubResource("wall")
 
-[node name="Wall12Top" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall12Right"]
+mesh = SubResource("mesh_Wall12Right")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall12Right"]
+shape = SubResource("shape_Wall12Right")
+
+[node name="Wall12Top" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.15, 4.5, 5)
-use_collision = true
-size = Vector3(0.3, 3, 2)
-material = SubResource("wall")
 
-[node name="Wall24Left" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall12Top"]
+mesh = SubResource("mesh_Wall12Top")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall12Top"]
+shape = SubResource("shape_Wall12Top")
+
+[node name="Wall24Left" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.15, 1.25, 2)
-use_collision = true
-size = Vector3(0.3, 9.5, 4)
-material = SubResource("wall")
 
-[node name="Wall24Right" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall24Left"]
+mesh = SubResource("mesh_Wall24Left")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall24Left"]
+shape = SubResource("shape_Wall24Left")
+
+[node name="Wall24Right" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.15, 1.25, 8)
-use_collision = true
-size = Vector3(0.3, 9.5, 4)
-material = SubResource("wall")
 
-[node name="Wall24Top" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall24Right"]
+mesh = SubResource("mesh_Wall24Right")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall24Right"]
+shape = SubResource("shape_Wall24Right")
+
+[node name="Wall24Top" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.15, 4.5, 5)
-use_collision = true
-size = Vector3(0.3, 3, 2)
-material = SubResource("wall")
 
-[node name="Wall36Left" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall24Top"]
+mesh = SubResource("mesh_Wall24Top")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall24Top"]
+shape = SubResource("shape_Wall24Top")
+
+[node name="Wall36Left" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.15, 1.25, 2)
-use_collision = true
-size = Vector3(0.3, 9.5, 4)
-material = SubResource("wall")
 
-[node name="Wall36Right" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall36Left"]
+mesh = SubResource("mesh_Wall36Left")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall36Left"]
+shape = SubResource("shape_Wall36Left")
+
+[node name="Wall36Right" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.15, 1.25, 8)
-use_collision = true
-size = Vector3(0.3, 9.5, 4)
-material = SubResource("wall")
 
-[node name="Wall36Top" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall36Right"]
+mesh = SubResource("mesh_Wall36Right")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall36Right"]
+shape = SubResource("shape_Wall36Right")
+
+[node name="Wall36Top" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.15, 4.5, 5)
-use_collision = true
-size = Vector3(0.3, 3, 2)
-material = SubResource("wall")
 
-[node name="DoorWall10Left" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="Wall36Top"]
+mesh = SubResource("mesh_Wall36Top")
+
+[node name="Shape" type="CollisionShape3D" parent="Wall36Top"]
+shape = SubResource("shape_Wall36Top")
+
+[node name="DoorWall10Left" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.15, 3, 2)
-use_collision = true
-size = Vector3(0.3, 6, 4)
-material = SubResource("wall")
 
-[node name="DoorWall10Right" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="DoorWall10Left"]
+mesh = SubResource("mesh_DoorWall10Left")
+
+[node name="Shape" type="CollisionShape3D" parent="DoorWall10Left"]
+shape = SubResource("shape_DoorWall10Left")
+
+[node name="DoorWall10Right" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.15, 3, 8)
-use_collision = true
-size = Vector3(0.3, 6, 4)
-material = SubResource("wall")
 
-[node name="DoorWall10Top" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="DoorWall10Right"]
+mesh = SubResource("mesh_DoorWall10Right")
+
+[node name="Shape" type="CollisionShape3D" parent="DoorWall10Right"]
+shape = SubResource("shape_DoorWall10Right")
+
+[node name="DoorWall10Top" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.15, 4.5, 5)
-use_collision = true
-size = Vector3(0.3, 3, 2)
-material = SubResource("wall")
 
-[node name="DoorWall35Left" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="DoorWall10Top"]
+mesh = SubResource("mesh_DoorWall10Top")
+
+[node name="Shape" type="CollisionShape3D" parent="DoorWall10Top"]
+shape = SubResource("shape_DoorWall10Top")
+
+[node name="DoorWall35Left" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.15, 3, 2)
-use_collision = true
-size = Vector3(0.3, 6, 4)
-material = SubResource("wall")
 
-[node name="DoorWall35Right" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="DoorWall35Left"]
+mesh = SubResource("mesh_DoorWall35Left")
+
+[node name="Shape" type="CollisionShape3D" parent="DoorWall35Left"]
+shape = SubResource("shape_DoorWall35Left")
+
+[node name="DoorWall35Right" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.15, 3, 8)
-use_collision = true
-size = Vector3(0.3, 6, 4)
-material = SubResource("wall")
 
-[node name="DoorWall35Top" type="CSGBox3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="DoorWall35Right"]
+mesh = SubResource("mesh_DoorWall35Right")
+
+[node name="Shape" type="CollisionShape3D" parent="DoorWall35Right"]
+shape = SubResource("shape_DoorWall35Right")
+
+[node name="DoorWall35Top" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.15, 4.5, 5)
-use_collision = true
-size = Vector3(0.3, 3, 2)
-material = SubResource("wall")
+
+[node name="Mesh" type="MeshInstance3D" parent="DoorWall35Top"]
+mesh = SubResource("mesh_DoorWall35Top")
+
+[node name="Shape" type="CollisionShape3D" parent="DoorWall35Top"]
+shape = SubResource("shape_DoorWall35Top")

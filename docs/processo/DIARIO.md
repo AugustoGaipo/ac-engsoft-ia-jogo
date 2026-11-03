@@ -1517,3 +1517,27 @@ câmera acompanha o olho. São 69 no total.
 - **Tropeço:** um script de edição do PowerShell falhou inteiro, porque o arquivo sem BOM tinha um "→",
   e o PowerShell 5 leu um dos bytes dele como aspas. Daqui em diante, edições com caractere especial vão
   pelo Edit.
+
+### Game — tarefa 7: abrir espaço depois da troca ✅ (checkpoint: a troca é jogável)
+- O usuário testou a sala de testes ("tudo ok") e eu segui.
+- **`FreeSpotSearch`** (puro, 8 testes, vermelhos antes):
+  - a ordem fixa é o próprio ponto, depois para cima de 0,25 em 0,25 m e depois anéis na mesma altura,
+    do mais perto para o mais longe, até 1,5 m (G2);
+  - nunca atrás de parede;
+  - sem ponto livre: morte (jogador) ou volta ao início (objeto).
+- **`MakeRoom`** (Godot): "cabe aqui?" é uma consulta de forma, um pouco encolhida para que estar
+  apoiado no chão não conte como "dentro"; "sem parede no meio" é um raio contra o cenário. A
+  verificação do jogador ignora os corpos da própria troca, que podem ainda estar no lugar antigo.
+- **Problema achado pelo teste "fundo do chão → morte":** o cenário era feito de caixas CSG, cuja
+  colisão é uma malha de triângulos **oca**. Um corpo inteiro lá dentro aparecia como "livre".
+  - **Correção:** o cenário virou caixas sólidas (`StaticBody3D` + `BoxShape3D`).
+  - As tabelas das caixas e o gerador ficaram no repositório (`tools/scenery/`), para refazer os
+    `.tscn` a qualquer hora.
+- **Teste sem janela** (100 verificações):
+  - SC 4: depois da troca da 1.2, os pés ficam fora do chão e o jogador assenta em pé do outro lado;
+  - trocar com a bola em cima da plataforma da sala de testes sobe o jogador para cima dela;
+  - fundo do chão → morte.
+- **Tropeço do teste:** de (20, 0, 3), a linha de visão até a bola batia na quina da plataforma. O
+  teste passou a usar x = 17.
+- **Mutação:** ignorar o ponto livre → os pés ficaram 0,4 m dentro do chão e o teste caiu.
+- 559 testes verdes (106 + 125 + 248 + 80), 0 avisos.
