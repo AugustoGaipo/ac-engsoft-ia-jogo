@@ -39,6 +39,34 @@ public partial class Body : RigidBody3D, IHasWeight
 
     public ObjectDef Def { get; private set; } = null!;
 
+    /// <summary>How long a swapped body ignores the player (the player's ghost at its old place).</summary>
+    public const double GhostSeconds = 0.25;
+
+    private PhysicsBody3D? _ignored;
+    private double _ignoreLeft;
+
+    /// <summary>Ignores collisions with <paramref name="other"/> for <see cref="GhostSeconds"/>.</summary>
+    public void IgnoreForAMoment(PhysicsBody3D other)
+    {
+        AddCollisionExceptionWith(other);
+        _ignored = other;
+        _ignoreLeft = GhostSeconds;
+    }
+
+    public bool IsIgnoring(PhysicsBody3D other) => _ignored == other && _ignoreLeft > 0;
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_ignored is null)
+            return;
+        _ignoreLeft -= delta;
+        if (_ignoreLeft > 0)
+            return;
+        if (IsInstanceValid(_ignored))
+            RemoveCollisionExceptionWith(_ignored);
+        _ignored = null;
+    }
+
     /// <summary>Moves the body at once (a swap or a respawn), with a new velocity, and wakes it.</summary>
     public void Teleport(Vector3 center, Vector3 velocity)
     {

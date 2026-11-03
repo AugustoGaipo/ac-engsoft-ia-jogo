@@ -1469,3 +1469,17 @@ câmera acompanha o olho. São 69 no total.
   - Verificação nova no teste sem janela: atravessar a saída da 1.1 monta a 1.2 com a caixa. São 81.
   - **Lição de processo:** os testes montavam cada sala com `ShowRoom` e nunca passavam de uma sala
     para a outra andando, por isso o buraco só apareceu jogando.
+- **Teste de jogo do usuário:** "a troca funciona, mas a caixa é lançada para longe".
+  - **Reproduzi sem janela:** a caixa saía 0,63 m de lado logo depois da troca.
+  - **Diagnóstico** (perguntando ao motor com o que a caixa se sobrepunha): com o "Player".
+  - Imprimindo as duas posições: o nó do jogador já estava em x = 21, mas o **motor de física ainda o
+    tinha em x = 13,5**. O motor 3D do Godot 4.7 (Jolt) move corpos cinemáticos, como o do jogador, ao
+    longo do passo seguinte, em vez de teletransportá-los. Fica um "fantasma" do jogador no lugar antigo
+    por um instante, e a caixa nascia dentro dele.
+  - **Duas tentativas que não resolveram:**
+    - avisar o motor com `BodySetState`: ele ignora para corpos cinemáticos;
+    - mover a caixa um passo depois: o fantasma ainda estava lá.
+  - **Correção:** a caixa vai na hora e ignora a colisão com o jogador por 0,25 s
+    (`Body.IgnoreForAMoment`). O clique só agenda a troca, que roda dentro do passo de física.
+  - Verificação nova: depois de 1 s, a caixa está assentada embaixo de onde o jogador estava e parada.
+    São 82 verificações.

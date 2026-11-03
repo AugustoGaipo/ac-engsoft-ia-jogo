@@ -243,8 +243,24 @@ public partial class SmokeTest : Node
         Check("swap: one swap counted and the invariant holds", main.Runner.World.MoveCount == 1 && main.Runner.World.CheckInvariant(),
             $"moves {main.Runner.World.MoveCount}");
         Check("swap: the box is where the player was", box.GlobalPosition.DistanceTo(playerCenter) < 0.05f, $"box {box.GlobalPosition}, was {playerCenter}");
-        await PhysicsFrames(60);
+        var probe = new PhysicsShapeQueryParameters3D
+        {
+            Shape = new BoxShape3D { Size = new Vector3(1, 1, 1) },
+            Transform = box.GlobalTransform,
+            CollisionMask = uint.MaxValue,
+            Exclude = [box.GetRid()],
+        };
+        var overlaps = player.GetWorld3D().DirectSpaceState.IntersectShape(probe);
+        GD.Print($"[smoke] info overlaps right after the swap: {string.Join(", ", overlaps.Select(o => o["collider"].As<Node>()?.Name.ToString() ?? "?"))}; box basis {box.GlobalBasis}");
+        for (var i = 0; i < 6; i++)
+        {
+            await PhysicsFrames(10);
+            GD.Print($"[smoke] info +{(i + 1) * 10} frames: box {box.GlobalPosition} v {box.LinearVelocity}, player {player.GlobalPosition}");
+        }
         GD.Print($"[smoke] info after the swap the player stands at {player.GlobalPosition}, on floor {player.IsOnFloor()}");
+        Check("swap: the box is not shot away (it settles under where the player was)",
+            new Vector2(box.GlobalPosition.X - playerCenter.X, box.GlobalPosition.Z - playerCenter.Z).Length() < 0.05f && box.LinearVelocity.Length() < 0.1f,
+            $"box {box.GlobalPosition} v {box.LinearVelocity}, player was {playerCenter}");
 
         // SC 5: the locked box of 1.4 refuses the swap but can be held and thrown.
         main.ShowRoom("1.4");

@@ -20,6 +20,7 @@ public partial class SwapController : Node
     private LevelRunner _runner = null!;
     private Player _player = null!;
     private double _now;
+    private bool _swapRequested;
 
     public Body? Target { get; private set; }
 
@@ -36,8 +37,9 @@ public partial class SwapController : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        // The click only asks; the swap runs inside the next physics step, so every body moves together.
         if (@event.IsActionPressed(Controls.Name(GameAction.Swap)))
-            TrySwap();
+            _swapRequested = true;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -47,6 +49,11 @@ public partial class SwapController : Node
         _now += delta;
         SyncWorld();
         UpdateAim();
+        if (_swapRequested)
+        {
+            _swapRequested = false;
+            TrySwap();
+        }
     }
 
     /// <summary>Applies the swap with the aimed body, if the rules allow it. Returns null when nothing is aimed.</summary>
@@ -102,6 +109,12 @@ public partial class SwapController : Node
             SecondInsideVariableBarrier: barriers.Any(box => BarrierGeometry.Inside(theirs.ToLevel(), box)));
     }
 
+    /// <summary>
+    /// Writes the updates back. The physics server moves the player (a kinematic body) over the next step
+    /// instead of at once, so for a moment a "ghost" of the player stays where it was. A box put there
+    /// would start inside the ghost and be shot away (found in the user's play test), so the swapped
+    /// bodies ignore the player for <see cref="Body.GhostSeconds"/>.
+    /// </summary>
     private void ApplyUpdates(IReadOnlyList<BodyUpdate> updates)
     {
         foreach (var update in updates)
@@ -113,6 +126,7 @@ public partial class SwapController : Node
             }
             var body = _runner.Bodies.Single(b => b.ContainerId == update.ContainerId);
             body.Mass = (float)update.MassKg;
+            body.IgnoreForAMoment(_player);
             body.Teleport(update.Position.ToGodot(), update.Velocity.ToGodot());
         }
     }
