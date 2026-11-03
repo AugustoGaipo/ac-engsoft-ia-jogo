@@ -339,6 +339,20 @@ public partial class SmokeTest : Node
         Check("make room: no free point within 1.5 m (deep in the floor) → death", deepInFloor.Outcome == Swapping.GameLogic.MakeRoomOutcome.Death,
             $"{deepInFloor}");
 
+        // The user's case (game log 2026-11-03): the 2 kg ball rolled next to the 300 kg crate; swapping with it killed.
+        main.ShowRoom("0.1");
+        await PhysicsFrames(3);
+        var rolledBall = main.Runner.Bodies.Single(b => b.ContainerId == "ball-2kg");
+        rolledBall.Teleport(new Vector3(5.30f, 0.25f, 6.08f), Vector3.Zero);
+        main.Player.GlobalPosition = new Vector3(7.67f, 0, 6.44f);
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(10);
+        await LookAt(main.Player, rolledBall.GlobalPosition);
+        var userCase = main.Swaps.TrySwap();
+        Check("make room: the user's case — swapping with the ball next to the 300 kg crate finds room",
+            userCase is { IsApplied: true } && main.Swaps.LastMakeRoom != Swapping.GameLogic.MakeRoomOutcome.Death,
+            $"{userCase?.Reason} {main.Swaps.LastMakeRoom}, feet {main.Player.GlobalPosition}");
+
         // Diagnosis (user: "I just die, it does not even look for space"): swap with every object from a few spots.
         foreach (var from in new[] { new Vector3(2, 0, 10), new Vector3(8, 0, 2), new Vector3(8, 0, 17), new Vector3(20, 0, 9) })
         {

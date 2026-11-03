@@ -50,7 +50,8 @@ public partial class Player : CharacterBody3D, IHasWeight
             FloorMaxAngle = Mathf.DegToRad(46),
         };
         var size = SpawnDef.PlayerSize.ToGodot();
-        player.AddChild(new CollisionShape3D { Shape = new BoxShape3D { Size = size }, Position = new Vector3(0, size.Y / 2, 0) });
+        // A capsule, not a box: it does not change with the yaw (a turned box reached 0.4 m into a crate, user's play test).
+        player.AddChild(new CollisionShape3D { Shape = new CapsuleShape3D { Radius = size.X / 2, Height = size.Y }, Position = new Vector3(0, size.Y / 2, 0) });
         // The camera is drawn every frame from the interpolated body (physics runs at 60 Hz, the screen may run faster).
         player._camera = new Camera3D { Name = "Eye", Fov = 75, Current = true, TopLevel = true, PhysicsInterpolationMode = PhysicsInterpolationModeEnum.Off };
         player.AddChild(player._camera);

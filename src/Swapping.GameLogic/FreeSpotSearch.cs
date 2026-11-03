@@ -21,30 +21,42 @@ public sealed record FreeSpot(MakeRoomOutcome Outcome, Vec3? Point);
 
 /// <summary>
 /// "Make room" after a position swap (SPEC-game, decision G2): a swap exchanges centers, so a body can end
-/// up inside the floor, a ledge or a wall. The search tries the target, then straight up, then rings
-/// around at the same height, nearest first, step 0.25 m, inside <see cref="Radius"/>; never behind a wall.
+/// up inside the floor, a ledge or a wall. The search tries the nearest free point of a 0.25 m grid
+/// inside <see cref="Radius"/> (never below, straight up first on ties); never behind a wall.
 /// </summary>
 public static class FreeSpotSearch
 {
     public const double Radius = 1.5;
     public const double Step = 0.25;
 
-    public static IEnumerable<Vec3> Candidates(Vec3 target)
+    /// <summary>
+    /// Every point of a 0.25 m grid inside the radius, never below the target, nearest first. Ties go
+    /// straight up first, then higher. Up and sideways together are included: near the floor, points at
+    /// the same height are all inside it (the user's play test, a ball next to a crate).
+    /// </summary>
+    public static IEnumerable<Vec3> Candidates(Vec3 target) => Offsets.Select(o => target + o);
+
+    private static readonly Vec3[] Offsets = BuildOffsets();
+
+    private static Vec3[] BuildOffsets()
     {
-        yield return target;
         var steps = (int)Math.Round(Radius / Step);
-        for (var i = 1; i <= steps; i++)
-            yield return target with { Y = target.Y + i * Step };
-        for (var i = 1; i <= steps; i++)
+        var offsets = new List<(Vec3 Offset, int Distance2, bool StraightUp, int Up)>();
+        for (var x = -steps; x <= steps; x++)
+        for (var y = 0; y <= steps; y++)
+        for (var z = -steps; z <= steps; z++)
         {
-            var radius = i * Step;
-            var points = 8 * i; // about one point every 0.2 m around the ring
-            for (var k = 0; k < points; k++)
-            {
-                var angle = 2 * Math.PI * k / points;
-                yield return new Vec3(target.X + radius * Math.Cos(angle), target.Y, target.Z + radius * Math.Sin(angle));
-            }
+            var distance2 = x * x + y * y + z * z;
+            if (distance2 <= steps * steps)
+                offsets.Add((new Vec3(x * Step, y * Step, z * Step), distance2, x == 0 && z == 0, y));
         }
+        return offsets
+            .OrderBy(o => o.Distance2)
+            .ThenByDescending(o => o.StraightUp)
+            .ThenByDescending(o => o.Up)
+            .ThenBy(o => o.Offset.X).ThenBy(o => o.Offset.Z)
+            .Select(o => o.Offset)
+            .ToArray();
     }
 
     /// <param name="isFree">Whether the body fits with its center at that point.</param>

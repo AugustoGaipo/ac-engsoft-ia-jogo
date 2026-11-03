@@ -1548,3 +1548,22 @@ câmera acompanha o olho. São 69 no total.
     troca inteira.
   - **Sem teste novo:** não consegui montar, sem gambiarra, uma troca legal que deixe o jogador sem
     nenhum ponto livre; a linha de visão recusa os casos óbvios. Fica registrado.
+- **Teste de jogo do usuário:** "eu só morro se não caibo; ele nem procura espaço". O usuário mandou uma
+  gravação de tela (não consigo ver vídeo: não há `ffmpeg` aqui), mas o **log de cada troca**, posto
+  para isso, mostrou o caso: as duas mortes foram trocando com a **bola de 2 kg, que tinha rolado para
+  perto do caixote de 300 kg**.
+  - **Reproduzi sem janela** com as posições do log, e a sonda achou duas causas:
+    1. o corpo do jogador era uma **caixa que gira com a mira**. Na diagonal, os cantos chegavam a 0,4 m
+       do centro e entravam no caixote em todas as alturas;
+    2. a busca só tentava **para cima** ou **em anéis na mesma altura**. Perto do chão, os anéis ficavam
+       todos dentro do chão, e faltava "um pouco acima **e** ao lado".
+  - **Correções:**
+    - o jogador virou uma **cápsula**, que não muda ao girar;
+    - a busca virou uma **grade de 0,25 m em 3D** dentro de 1,5 m, nunca abaixo, do mais perto para o
+      mais longe, preferindo subir nos empates.
+
+    3 testes da busca ficaram vermelhos com o código antigo (o caso do usuário, a diagonal e a ordem) e
+    verdes com o novo.
+  - O caso do usuário virou uma verificação permanente. São 112 sem janela.
+  - **Lição:** o diagnóstico com 11 trocas comuns passou; o caso real só apareceu porque o log de cada
+    troca existia. O log das trocas fica.

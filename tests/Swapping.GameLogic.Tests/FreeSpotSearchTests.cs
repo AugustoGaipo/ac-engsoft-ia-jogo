@@ -9,25 +9,31 @@ public sealed class FreeSpotSearchTests
     private static readonly Func<Vec3, Vec3, bool> NoWalls = (_, _) => true;
 
     [Fact]
-    public void The_target_itself_comes_first_then_straight_up_in_quarter_meters()
+    public void The_target_comes_first_then_straight_up_wins_every_tie()
     {
-        var candidates = FreeSpotSearch.Candidates(Target).Take(7).ToList();
+        var candidates = FreeSpotSearch.Candidates(Target).Take(2).ToList();
 
         Assert.Equal(Target, candidates[0]);
-        Assert.Equal(new[] { 0.25, 0.5, 0.75, 1.0, 1.25, 1.5 }, candidates.Skip(1).Select(c => Math.Round(c.Y - Target.Y, 6)));
-        Assert.All(candidates.Skip(1), c => Assert.Equal((Target.X, Target.Z), (c.X, c.Z)));
+        Assert.Equal(Target with { Y = Target.Y + 0.25 }, candidates[1]);
     }
 
     [Fact]
-    public void After_up_come_rings_around_at_the_same_height_nearest_first()
+    public void Candidates_go_from_the_nearest_to_the_farthest()
     {
-        var rings = FreeSpotSearch.Candidates(Target).Skip(7).ToList();
+        var distances = FreeSpotSearch.Candidates(Target).Select(c => Math.Round(Distance(c, Target), 6)).ToList();
 
-        Assert.NotEmpty(rings);
-        Assert.All(rings, c => Assert.Equal(Target.Y, c.Y, precision: 9));
-        var distances = rings.Select(c => Math.Round(Distance(c, Target), 6)).ToList();
         Assert.Equal(distances.Order(), distances);
-        Assert.Equal(0.25, distances[0], precision: 6);
+    }
+
+    [Fact]
+    public void The_search_covers_up_and_sideways_together_never_down()
+    {
+        var candidates = FreeSpotSearch.Candidates(Target).ToList();
+
+        Assert.All(candidates, c => Assert.True(c.Y >= Target.Y - 1e-9, "never below the target"));
+        Assert.Contains(new Vec3(Target.X + 0.5, Target.Y + 0.75, Target.Z), candidates);   // diagonal (the user's case)
+        Assert.Contains(new Vec3(Target.X, Target.Y + 1.5, Target.Z), candidates);          // straight up to the radius
+        Assert.Contains(new Vec3(Target.X, Target.Y, Target.Z - 1.5), candidates);          // sideways to the radius
     }
 
     [Fact]
@@ -36,7 +42,7 @@ public sealed class FreeSpotSearchTests
         var candidates = FreeSpotSearch.Candidates(Target).ToList();
 
         Assert.All(candidates, c => Assert.True(Distance(c, Target) <= FreeSpotSearch.Radius + 1e-9));
-        Assert.Equal(candidates.Count, candidates.Select(c => (Math.Round(c.X, 6), Math.Round(c.Y, 6), Math.Round(c.Z, 6))).Distinct().Count());
+        Assert.Equal(candidates.Count, candidates.Distinct().Count());
     }
 
     [Fact]
@@ -48,19 +54,28 @@ public sealed class FreeSpotSearchTests
     }
 
     [Fact]
-    public void Feet_in_the_floor_go_up_to_the_first_free_height()
+    public void Feet_in_the_floor_go_straight_up_to_the_first_free_height()
     {
-        // Free only from 0.5 m up (the body was half inside a ledge).
         var spot = FreeSpotSearch.Find(Target, isPlayer: true, isFree: p => p.Y >= Target.Y + 0.5 - 1e-9, NoWalls);
 
+        Assert.Equal(new FreeSpot(MakeRoomOutcome.Moved, Target with { Y = Target.Y + 0.5 }), spot);
+    }
+
+    [Fact]
+    public void The_users_case_floor_below_and_a_crate_on_one_side_moves_up_and_away_from_the_crate()
+    {
+        // Free only 0.75 m up or more (floor) and not within 0.3 m of the crate side at z + 0.3.
+        var spot = FreeSpotSearch.Find(Target, isPlayer: true,
+            isFree: p => p.Y >= Target.Y + 0.75 - 1e-9 && p.Z <= Target.Z - 0.25 + 1e-9, NoWalls);
+
         Assert.Equal(MakeRoomOutcome.Moved, spot.Outcome);
-        Assert.Equal(Target with { Y = Target.Y + 0.5 }, spot.Point);
+        Assert.Equal(Target.Y + 0.75, spot.Point!.Value.Y, precision: 9);
+        Assert.Equal(Target.Z - 0.25, spot.Point.Value.Z, precision: 9);
     }
 
     [Fact]
     public void When_up_is_blocked_the_nearest_free_point_around_wins()
     {
-        // A low ceiling: nothing above is free; only points at least 0.5 m to the side are.
         var spot = FreeSpotSearch.Find(Target, isPlayer: false,
             isFree: p => p.Y == Target.Y && Distance(p, Target) >= 0.5 - 1e-9, NoWalls);
 
@@ -71,7 +86,6 @@ public sealed class FreeSpotSearchTests
     [Fact]
     public void A_point_behind_a_wall_is_never_used()
     {
-        // Free only on the far side of a wall at x = 10.3.
         var spot = FreeSpotSearch.Find(Target, isPlayer: true,
             isFree: p => p.X > 10.3, reachable: (from, to) => to.X <= 10.3);
 

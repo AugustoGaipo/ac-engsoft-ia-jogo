@@ -18,11 +18,12 @@ public static class MakeRoom
     /// <param name="ignore">The other bodies of the same swap: for a moment they may still be at their old place.</param>
     public static FreeSpot ForPlayer(Player player, Vector3 center, IEnumerable<Body>? ignore = null)
     {
-        var size = SpawnDef.PlayerSize.ToGodot() - new Vector3(Margin, Margin, Margin);
+        var size = SpawnDef.PlayerSize.ToGodot();
         var exclude = new Godot.Collections.Array<Rid> { player.GetRid() };
         foreach (var body in ignore ?? [])
             exclude.Add(body.GetRid());
-        return Search(player, new BoxShape3D { Size = size }, center, isPlayer: true,
+        var capsule = new CapsuleShape3D { Radius = size.X / 2 - Margin / 2, Height = size.Y - Margin };
+        return Search(player, capsule, center, isPlayer: true,
             Layers.World | Layers.Objects | Layers.BarrierPlayer, exclude);
     }
 
