@@ -377,6 +377,39 @@ public partial class SmokeTest : Node
             $"result {flow.Result}, end screen {flow.EndScreenVisible}");
         Check("run: the HUD shows time and swaps", main.Hud.RunText.Contains("Trocas") && main.Hud.RunText.Contains(':'), main.Hud.RunText);
         flow.RestartLevel();
+
+        // The user's log (2026-11-03): in room 1.3, a swap with the ball in the air at the ledge edge, then
+        // the player fell through the floor (below y = -10).
+        main.ShowRoom("1.3");
+        await PhysicsFrames(5);
+        var ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-1-3");
+        player.GlobalPosition = new Vector3(29.70f, 0, 3.96f);
+        player.ResetPhysicsInterpolation();
+        await PhysicsFrames(5);
+        ball.Teleport(new Vector3(30.43f, 2.89f, 3.88f), Vector3.Zero);
+        await LookAt(player, ball.GlobalPosition);
+        var deathsBefore = flow.Run.Deaths;
+        var swap = main.Swaps.TrySwap();
+        for (var i = 0; i < 6; i++)
+        {
+            await PhysicsFrames(10);
+        }
+        Check("run: the user's case — a swap with the ball at the ledge edge does not drop the player through the floor",
+            swap is { IsApplied: true } && flow.Run.Deaths == deathsBefore && player.GlobalPosition.Y > -0.5f,
+            $"{swap?.Reason}, deaths {flow.Run.Deaths - deathsBefore}, player {player.GlobalPosition}");
+
+        // The user left the map: rooms have no ceiling. A ball over the wall pops back; a player outside dies.
+        ball.Teleport(new Vector3(30, 7, -2), Vector3.Zero);   // above and beyond the south wall
+        await PhysicsFrames(3);
+        Check("run: a ball out of its room (over a wall) pops back to its start",
+            ball.GlobalPosition.DistanceTo(ball.Def.Position.ToGodot()) < 0.3f, $"ball {ball.GlobalPosition}");
+        deathsBefore = flow.Run.Deaths;
+        player.GlobalPosition = new Vector3(30, 0, -3);
+        player.ResetPhysicsInterpolation();
+        await PhysicsFrames(40);
+        Check("run: the player outside the map dies at once (\"saiu do mapa\")", flow.Run.Deaths == deathsBefore + 1,
+            $"deaths {flow.Run.Deaths - deathsBefore}, player {player.GlobalPosition}");
+        flow.RestartLevel();
     }
 
     // ---- The test room (sandbox) loads with the levels' validator and builds every station ----

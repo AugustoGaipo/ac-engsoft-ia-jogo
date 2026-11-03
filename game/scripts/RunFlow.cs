@@ -112,9 +112,16 @@ public partial class RunFlow : Node
             return;
 
         var center = _player.Center.ToLevel();
-        if (_runner.Room.KillZones.Any(z => z.Box.Contains(center)) || _player.GlobalPosition.Y < -10)
+        if (_runner.Room.KillZones.Any(z => z.Box.Contains(center)))
         {
             Die("zona de morte");
+            return;
+        }
+        // Rooms have no ceiling: a ball thrown over a wall and swapped with took the player out of the map
+        // (user's play test). Outside every room of the level = death.
+        if (!_runner.Level.Rooms.Any(r => InsideMap(r.Bounds, center)))
+        {
+            Die("saiu do mapa");
             return;
         }
         if (_player.LandingSpeed is { } landing && FallDeath.Kills(landing))
@@ -124,13 +131,18 @@ public partial class RunFlow : Node
         }
         foreach (var body in _runner.Bodies)
         {
-            // An object in a pit pops back to its start (keeping its swapped mass variable).
-            if (_runner.Room.KillZones.Any(z => z.Box.Contains(body.GlobalPosition.ToLevel())))
+            // An object in a pit or out of its room (over a wall) pops back to its start (keeping its swapped mass variable).
+            var at = body.GlobalPosition.ToLevel();
+            if (_runner.Room.KillZones.Any(z => z.Box.Contains(at)) || !InsideMap(_runner.Room.Bounds, at))
                 body.Teleport(body.Def.Position.ToGodot(), body.Def.Velocity.ToGodot());
         }
         if (_runner.Room.Exit.Contains(center))
             NextRoom();
     }
+
+    /// <summary>Inside the room's bounds by the sides and from below; above is fine (no ceiling, gravity brings it back).</summary>
+    private static bool InsideMap(Swapping.Levels.Model.Box bounds, Swapping.Rules.Model.Vec3 p) =>
+        p.X >= bounds.Min.X && p.X <= bounds.Max.X && p.Z >= bounds.Min.Z && p.Z <= bounds.Max.Z && p.Y >= bounds.Min.Y;
 
     private void NextRoom()
     {

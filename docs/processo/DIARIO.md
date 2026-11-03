@@ -1609,3 +1609,16 @@ câmera acompanha o olho. São 69 no total.
   - a HUD mostra o tempo e as trocas.
 - **Mutação:** sem a zona de morte → o teste do buraco caiu (o jogador ficou no fundo, em y = −3).
 - 567 testes verdes (106 + 125 + 248 + 88), 0 avisos.
+- **Teste de jogo do usuário (nível 1 inteiro):**
+  - **1ª partida: 33 s, 3 trocas, 0 mortes, tela de fim certa.**
+  - **Na sala 1.3, uma troca só** (a da bola): talvez um atalho no desenho da sala. Perguntei ao usuário
+    como ele passou pela porta.
+  - **"Saí do mapa":** uma morte "zona de morte" na sala 1.3, que não tem buraco. Era a rede de segurança
+    "abaixo de y = −10".
+    - A troca com a bola na quina da plataforma, reproduzida com as posições do log, não derruba ninguém
+      (virou verificação).
+    - **Causa provável:** as salas não têm teto, então uma bola arremessada por cima da parede cai fora
+      do mapa, e a troca com ela leva o jogador junto.
+    - **Correção:** objeto que sai da sala pelos lados ou por baixo volta ao início; jogador fora do
+      nível morre na hora ("saiu do mapa"). Por cima não conta, porque a gravidade traz de volta; e o
+      jogador usa os limites do nível inteiro, para poder voltar à sala anterior. São 124 verificações.
