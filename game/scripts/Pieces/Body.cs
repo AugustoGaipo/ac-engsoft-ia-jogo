@@ -50,21 +50,52 @@ public partial class Body : RigidBody3D, IHasWeight
     {
         AddCollisionExceptionWith(other);
         _ignored = other;
+        _held = false;
         _ignoreLeft = GhostSeconds;
     }
 
-    public bool IsIgnoring(PhysicsBody3D other) => _ignored == other && _ignoreLeft > 0;
+    public bool IsIgnoring(PhysicsBody3D other) => _ignored == other && (_held || _ignoreLeft > 0);
+
+    private bool _held;
+
+    /// <summary>While carried: no collision with the carrier at all.</summary>
+    public void IgnoreWhileHeld(PhysicsBody3D carrier)
+    {
+        AddCollisionExceptionWith(carrier);
+        _ignored = carrier;
+        _held = true;
+    }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_ignored is null)
+        if (_ignored is null || _held)
             return;
         _ignoreLeft -= delta;
         if (_ignoreLeft > 0)
             return;
-        if (IsInstanceValid(_ignored))
-            RemoveCollisionExceptionWith(_ignored);
+        if (!IsInstanceValid(_ignored))
+        {
+            _ignored = null;
+            return;
+        }
+        // Collide again only once the two no longer overlap; otherwise the solver would shove one of them away.
+        if (Overlaps(_ignored))
+            return;
+        RemoveCollisionExceptionWith(_ignored);
         _ignored = null;
+    }
+
+    private bool Overlaps(PhysicsBody3D other)
+    {
+        var shape = GetChildren().OfType<CollisionShape3D>().First().Shape;
+        var hits = GetWorld3D().DirectSpaceState.IntersectShape(new PhysicsShapeQueryParameters3D
+        {
+            Shape = shape,
+            Transform = GlobalTransform,
+            CollisionMask = other.CollisionLayer,
+            Exclude = [GetRid()],
+        });
+        return hits.Any(h => h["rid"].AsRid() == other.GetRid());
     }
 
     /// <summary>Moves the body at once (a swap or a respawn), with a new velocity, and wakes it.</summary>

@@ -169,7 +169,12 @@ public partial class Player : CharacterBody3D, IHasWeight
             return;
         }
         if (Aim(HoldReach) is Body body)
+        {
             Held = body;
+            // A carried box never collides with its carrier: looking down, the hold point is inside the
+            // player, and the box squeezed the player through a wall (user's play test).
+            body.IgnoreWhileHeld(this);
+        }
     }
 
     /// <summary>Left button: throw the held body forward with a fixed energy (G4).</summary>
@@ -182,7 +187,13 @@ public partial class Player : CharacterBody3D, IHasWeight
         body.LinearVelocity = -Eye.Basis.Z * speed;
     }
 
-    public void Drop() => Held = null;
+    /// <summary>Lets go of the held body. It keeps ignoring the player until they no longer overlap.</summary>
+    public void Drop()
+    {
+        if (Held is { } body && IsInstanceValid(body))
+            body.IgnoreForAMoment(this);
+        Held = null;
+    }
 
     /// <summary>The first object or wall hit by a ray from the eye, up to <paramref name="reach"/> meters.</summary>
     public Node3D? Aim(float reach)
@@ -203,7 +214,16 @@ public partial class Player : CharacterBody3D, IHasWeight
             Drop();
             return;
         }
+        // In front of the body, never inside it: at least the player's radius + the object's half size + 0.1 m
+        // away horizontally, and not below the feet.
         var target = Eye.Origin - Eye.Basis.Z * HoldDistance;
+        var forward = (-Eye.Basis.Z with { Y = 0 }).Normalized();
+        var half = body.Def.Size.ToGodot() / 2;
+        var clearance = 0.3f + Mathf.Sqrt(half.X * half.X + half.Z * half.Z) + 0.1f;
+        var flat = (target - GlobalPosition) with { Y = 0 };
+        if (flat.Dot(forward) < clearance)
+            target += forward * (clearance - flat.Dot(forward));
+        target.Y = Mathf.Max(target.Y, GlobalPosition.Y + half.Y);
         var pull = (target - body.GlobalPosition) * 12f;
         body.LinearVelocity = pull.LimitLength(10f);
         body.AngularVelocity *= 0.5f;

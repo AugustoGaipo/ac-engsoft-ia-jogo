@@ -398,7 +398,37 @@ public partial class SmokeTest : Node
             swap is { IsApplied: true } && flow.Run.Deaths == deathsBefore && player.GlobalPosition.Y > -0.5f,
             $"{swap?.Reason}, deaths {flow.Run.Deaths - deathsBefore}, player {player.GlobalPosition}");
 
+        // The user's real case: "I was squeezed by the box I was carrying and went through the wall".
+        // Player against the start wall of room 1.1, holding the box, looking down: the hold point is inside the player.
+        main.ShowRoom("1.1");
+        await PhysicsFrames(5);
+        var carried = main.Runner.Bodies.Single();
+        player.GlobalPosition = new Vector3(0.35f, 0, 5);
+        player.ResetPhysicsInterpolation();
+        carried.Teleport(new Vector3(1.6f, 0.5f, 5), Vector3.Zero);
+        await PhysicsFrames(5);
+        await LookAt(player, carried.GlobalPosition);
+        player.ToggleHold();
+        Check("hold: the box next to the wall is held", player.Held == carried, $"held {player.Held?.Name ?? "nothing"}");
+        player.Look(90, -1.45f);                               // facing the wall (-X), looking almost straight down
+        for (var i = 0; i < 90; i++)
+        {
+            if (i % 30 == 0)
+                player.Look(90 + i, -1.45f);                   // turning while looking down
+            await PhysicsFrames(1);
+        }
+        Check("hold (user's case): the carried box never pushes the player through the wall",
+            player.GlobalPosition.X > 0.25f && player.GlobalPosition.Y > -0.1f,
+            $"player {player.GlobalPosition}, box {carried.GlobalPosition}");
+        player.Drop();
+        await PhysicsFrames(30);
+        Check("hold: dropping the box on top of the player does not push the player through the wall either",
+            player.GlobalPosition.X > 0.25f && player.GlobalPosition.Y > -0.1f, $"player {player.GlobalPosition}, box {carried.GlobalPosition}");
+
         // The user left the map: rooms have no ceiling. A ball over the wall pops back; a player outside dies.
+        main.ShowRoom("1.3");
+        await PhysicsFrames(5);
+        ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-1-3");
         ball.Teleport(new Vector3(30, 7, -2), Vector3.Zero);   // above and beyond the south wall
         await PhysicsFrames(3);
         Check("run: a ball out of its room (over a wall) pops back to its start",

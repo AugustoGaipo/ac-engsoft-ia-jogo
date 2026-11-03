@@ -1622,3 +1622,20 @@ câmera acompanha o olho. São 69 no total.
     - **Correção:** objeto que sai da sala pelos lados ou por baixo volta ao início; jogador fora do
       nível morre na hora ("saiu do mapa"). Por cima não conta, porque a gravidade traz de volta; e o
       jogador usa os limites do nível inteiro, para poder voltar à sala anterior. São 124 verificações.
+- **Correção do relato do usuário:** "não foi isso; fui **esmagado pela caixa que eu carregava** e
+  atravessei a parede". Depois ele ainda contou: "puxando a caixa perto, ela me move; e em cima dela eu
+  consigo **voar**".
+  - **Reproduzido sem janela:** encostado na parede, segurando a caixa e olhando para baixo, o ponto onde
+    a caixa fica caía **dentro do jogador**. O motor o empurrava para fora da caixa, através da parede de
+    0,3 m, e ele saía do mapa. O teste caiu (a sala era reconstruída no meio dele).
+  - **Correção** (o padrão de jogos em primeira pessoa):
+    - a caixa segurada **não colide com quem a segura**, e por isso também não dá para "voar" em cima dela;
+    - ao soltar, ela continua sem colidir com o jogador **até os dois não estarem mais sobrepostos**
+      (consulta de forma), e não por um tempo fixo;
+    - o ponto onde a caixa fica é mantido à frente do corpo (raio do jogador + meia diagonal da caixa +
+      0,1 m) e nunca abaixo dos pés.
+  - 3 verificações novas (segurar encostado na parede olhando para baixo e girando; soltar em cima do
+    jogador). São 127. **Mutação:** sem a regra da caixa segurada → o jogador volta a ser empurrado para
+    fora do mapa.
+  - A correção anterior ("saiu do mapa": objeto fora da sala volta ao início; jogador fora do nível
+    morre) continua valendo como rede de segurança.
