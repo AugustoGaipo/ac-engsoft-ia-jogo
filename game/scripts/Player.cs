@@ -22,12 +22,17 @@ public partial class Player : CharacterBody3D, IHasWeight
     public const float MouseSensitivity = 0.0025f;
 
     private Camera3D _camera = null!;
+    private float _yaw;
+    private float _pitch;
 
     public double MassKg { get; set; } = LevelFile.PlayerMassKg;
 
     public WeightOnButton Weight => new(IsPlayer: true, MassKg: MassKg);
 
     public Camera3D Camera => _camera;
+
+    /// <summary>The eye at the current physics state (not interpolated): aim, hold and throw use it.</summary>
+    public Transform3D Eye => new(Basis.FromEuler(new Vector3(_pitch, _yaw, 0)), GlobalPosition + new Vector3(0, EyeHeight, 0));
 
     public Body? Held { get; private set; }
 
@@ -45,7 +50,8 @@ public partial class Player : CharacterBody3D, IHasWeight
         };
         var size = SpawnDef.PlayerSize.ToGodot();
         player.AddChild(new CollisionShape3D { Shape = new BoxShape3D { Size = size }, Position = new Vector3(0, size.Y / 2, 0) });
-        player._camera = new Camera3D { Name = "Eye", Position = new Vector3(0, EyeHeight, 0), Fov = 75, Current = true };
+        // The camera is drawn every frame from the interpolated body (physics runs at 60 Hz, the screen may run faster).
+        player._camera = new Camera3D { Name = "Eye", Fov = 75, Current = true, TopLevel = true, PhysicsInterpolationMode = PhysicsInterpolationModeEnum.Off };
         player.AddChild(player._camera);
         return player;
     }
@@ -55,9 +61,9 @@ public partial class Player : CharacterBody3D, IHasWeight
     {
         Drop();
         GlobalPosition = spawn.Position.ToGodot();
-        Rotation = new Vector3(0, Mathf.DegToRad((float)spawn.YawDegrees), 0);
-        _camera.Rotation = Vector3.Zero;
         Velocity = Vector3.Zero;
+        Look((float)spawn.YawDegrees, 0);
+        ResetPhysicsInterpolation();
     }
 
     public override void _Ready()
@@ -70,9 +76,9 @@ public partial class Player : CharacterBody3D, IHasWeight
     {
         if (@event is InputEventMouseMotion motion && Input.MouseMode == Input.MouseModeEnum.Captured)
         {
-            RotateY(-motion.Relative.X * MouseSensitivity);
-            var pitch = Mathf.Clamp(_camera.Rotation.X - motion.Relative.Y * MouseSensitivity, -1.5f, 1.5f);
-            _camera.Rotation = new Vector3(pitch, 0, 0);
+            _yaw -= motion.Relative.X * MouseSensitivity;
+            _pitch = Mathf.Clamp(_pitch - motion.Relative.Y * MouseSensitivity, -1.5f, 1.5f);
+            Rotation = new Vector3(0, _yaw, 0);
         }
         else if (@event.IsActionPressed(Controls.Name(GameAction.Hold)))
         {
@@ -86,6 +92,22 @@ public partial class Player : CharacterBody3D, IHasWeight
         {
             Jump();
         }
+    }
+
+    /// <summary>Turns the view: yaw in degrees (0 = looking along -Z), pitch in radians (negative = down).</summary>
+    public void Look(float yawDegrees, float pitch)
+    {
+        _yaw = Mathf.DegToRad(yawDegrees);
+        _pitch = pitch;
+        Rotation = new Vector3(0, _yaw, 0);
+        _camera.GlobalTransform = Eye;
+    }
+
+    /// <summary>Every drawn frame: the interpolated body position and the latest mouse look.</summary>
+    public override void _Process(double delta)
+    {
+        var feet = GetGlobalTransformInterpolated().Origin;
+        _camera.GlobalTransform = new Transform3D(Basis.FromEuler(new Vector3(_pitch, _yaw, 0)), feet + new Vector3(0, EyeHeight, 0));
     }
 
     public override void _PhysicsProcess(double delta)
@@ -135,7 +157,7 @@ public partial class Player : CharacterBody3D, IHasWeight
             return;
         Drop();
         var speed = (float)Formulas.SpeedFromEnergy(ThrowEnergyJoules, body.Mass);
-        body.LinearVelocity = -_camera.GlobalBasis.Z * speed;
+        body.LinearVelocity = -Eye.Basis.Z * speed;
     }
 
     public void Drop() => Held = null;
@@ -143,8 +165,8 @@ public partial class Player : CharacterBody3D, IHasWeight
     /// <summary>The first object or wall hit by a ray from the eye, up to <paramref name="reach"/> meters.</summary>
     public Node3D? Aim(float reach)
     {
-        var from = _camera.GlobalPosition;
-        var query = PhysicsRayQueryParameters3D.Create(from, from - _camera.GlobalBasis.Z * reach,
+        var eye = Eye;
+        var query = PhysicsRayQueryParameters3D.Create(eye.Origin, eye.Origin - eye.Basis.Z * reach,
             Layers.World | Layers.Objects, [GetRid()]);
         var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
         return hit.Count > 0 ? hit["collider"].As<Node3D>() : null;
@@ -159,7 +181,7 @@ public partial class Player : CharacterBody3D, IHasWeight
             Drop();
             return;
         }
-        var target = _camera.GlobalPosition - _camera.GlobalBasis.Z * HoldDistance;
+        var target = Eye.Origin - Eye.Basis.Z * HoldDistance;
         var pull = (target - body.GlobalPosition) * 12f;
         body.LinearVelocity = pull.LimitLength(10f);
         body.AngularVelocity *= 0.5f;

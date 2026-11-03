@@ -172,13 +172,12 @@ public partial class SmokeTest : Node
         // Stand 1.8 m in front of the box of room 1.1 (box at x 4, z 3), looking at it.
         var box = main.GetNode<LevelRunner>("LevelRunner").Bodies.Single();
         player.GlobalPosition = new Vector3(4, 0, 4.8f);
-        player.Rotation = Vector3.Zero;              // looking along -Z, towards the box
-        player.Camera.Rotation = new Vector3(-0.6f, 0, 0);
+        player.Look(0, -0.6f);                       // looking along -Z and down, towards the box
         await PhysicsFrames(5);
         player.ToggleHold();
         Check("player: E holds the aimed box", player.Held == box, $"held {player.Held?.Name ?? "nothing"}");
         await PhysicsFrames(40);
-        var holdPoint = player.Camera.GlobalPosition - player.Camera.GlobalBasis.Z * Player.HoldDistance;
+        var holdPoint = player.Eye.Origin - player.Eye.Basis.Z * Player.HoldDistance;
         Check("player: the held box follows the hold point", box.GlobalPosition.DistanceTo(holdPoint) < 0.3f,
             $"box {box.GlobalPosition}, point {holdPoint}");
         player.ToggleHold();
@@ -187,11 +186,22 @@ public partial class SmokeTest : Node
 
         // The exit grid of room 1.1 lets the player through (it blocks objects only).
         player.GlobalPosition = new Vector3(11, 0, 5);
-        player.Rotation = new Vector3(0, Mathf.DegToRad(-90), 0); // facing +X
+        player.Look(-90, 0);                         // facing +X
         player.ScriptedMove = new Vector2(0, 1);
         await PhysicsFrames(60);
         player.ScriptedMove = null;
         Check("player: walks through the exit grid", player.GlobalPosition.X > 12.3f, $"x {player.GlobalPosition.X}");
+
+        // Play test 2026-11-03: the player's weight counts on the buttons of level 1 ("detects": "any").
+        main.ShowRoom("1.1");
+        var runner = main.GetNode<LevelRunner>("LevelRunner");
+        player.GlobalPosition = runner.Buttons.Single().Position + new Vector3(0, 0.2f, 0);
+        player.ResetPhysicsInterpolation();
+        await PhysicsFrames(30);
+        Check("player: standing on the button presses it and opens the door", runner.Buttons.Single().IsPressed && runner.Doors.Single().IsOpen,
+            $"pressed {runner.Buttons.Single().IsPressed}");
+        Check("player: the camera follows the eye", player.Camera.GlobalPosition.DistanceTo(player.Eye.Origin) < 0.1f,
+            $"camera {player.Camera.GlobalPosition}, eye {player.Eye.Origin}");
     }
 
     private static void Teleport(RigidBody3D body, Vector3 position, Vector3 velocity = default)

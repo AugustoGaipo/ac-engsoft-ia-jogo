@@ -1407,3 +1407,29 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Mutação:** o jogador colidindo com a grade de objetos → "atravessa a grade" caiu (parou em x = 11,2).
 - **O usuário pediu para rodar e está jogando a sala 1.1.**
 - 527 testes verdes (106 + 125 + 248 + 48), 0 avisos.
+
+### Game — primeiro teste de jogo do usuário (sala 1.1) e correções
+O usuário jogou a sala 1.1 e trouxe 3 pontos:
+1. **"O mouse fica meio bugado quando eu ando."** Causa provável:
+   - a física roda a 60 Hz e a tela do notebook desenha mais quadros que isso;
+   - a câmera estava presa ao corpo, que só anda nos passos da física, então andando a imagem dava
+     saltinhos.
+
+   **Correção (o padrão recomendado pelo Godot para primeira pessoa):**
+   - interpolação da física ligada no `project.godot`;
+   - a câmera fica solta do corpo (`TopLevel`) e é posta a cada quadro na posição interpolada, com o
+     giro do mouse;
+   - a mira, o segurar e o arremesso usam o olho do passo da física (`Player.Eye`), que é determinístico.
+
+   Esperando o usuário confirmar jogando.
+2. **"Em cima do botão, o botão não acende; eu também tenho peso."** Não era bug: o arquivo dizia
+   `detects: objects`. Mas o usuário tem razão de que é contraintuitivo.
+   - Os botões das salas 1.1 e 1.3 viraram `any`. A lição não muda: em cima do botão a porta abre, mas
+     ao sair para passar ela fecha, então a caixa continua sendo o caminho.
+   - O teste de design da sala 1.3 agora confere isso: botão no alto, bola leve demais para apertá-lo.
+   - **Pendência:** os botões dos níveis 2 e 5 continuam `objects`; decidir quando forem montados.
+3. **"Não sei os meus valores nem os do que estou mirando."** São os números da HUD, que estavam na
+   tarefa 9. Vão ser **adiantados para a tarefa 6**, junto com a mira.
+
+No teste sem janela entraram duas verificações novas: o jogador em cima do botão abre a porta, e a
+câmera acompanha o olho. São 69 no total.

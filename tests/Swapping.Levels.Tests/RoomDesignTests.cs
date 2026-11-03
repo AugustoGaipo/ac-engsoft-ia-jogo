@@ -48,8 +48,11 @@ public class RoomDesignTests
     {
         var room = Shipped.Room("1.3");
 
-        var button = Assert.Single(room.Buttons, b => b.Detects == ButtonDetects.Objects);
+        // The button counts the player too (play test 2026-11-03): standing on it opens the door, but
+        // leaving it closes the door again, so the box is still the way. The ball alone is too light.
+        var button = Assert.Single(room.Buttons);
         Assert.True(button.Position.Y > room.Spawn.Position.Y + 1, "the button is high (on a ledge)");
+        Assert.All(room.Objects.Where(o => o.Kind == ObjectKind.Ball), ball => Assert.True(ball.MassKg < button.RequiredMassKg));
         Assert.Contains(room.Objects, o => o.Kind == ObjectKind.Box && CanSwap(o, PropertyNames.Position));
     }
 
