@@ -105,4 +105,17 @@ public sealed class BarrierGeometryTests
         Assert.True(BarrierGeometry.Inside(new Vec3(11.5, 0, 4), Grid));
         Assert.False(BarrierGeometry.Inside(new Vec3(11.4, 1, 5), Grid));
     }
+
+    // User's request (2026-11-03): touching a variable barrier counts as being inside it.
+    [Fact]
+    public void A_body_touching_the_barrier_counts_as_inside()
+    {
+        var touching = Box.Centered(new Vec3(11, 1, 5), new Vec3(1, 1, 1));         // face at x 11.5
+        var nearlyTouching = Box.Centered(new Vec3(10.95, 1, 5), new Vec3(1, 1, 1)); // 5 cm gap: physics margin
+        var away = Box.Centered(new Vec3(10.5, 1, 5), new Vec3(1, 1, 1));
+        Assert.True(BarrierGeometry.Touches(touching, Grid));
+        Assert.True(BarrierGeometry.Touches(nearlyTouching, Grid));
+        Assert.False(BarrierGeometry.Touches(away, Grid));
+        Assert.False(BarrierGeometry.Touches(Box.Centered(new Vec3(11, 1, 7.5), new Vec3(1, 1, 1)), Grid)); // beside it
+    }
 }

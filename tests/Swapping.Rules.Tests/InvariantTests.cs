@@ -80,7 +80,7 @@ public class InvariantTests
         Assert.True(swap.Apply(world, new SwapRequest("player", "A", PropertyKind.Mass), now: 0).IsApplied);
         Assert.True(swap.Apply(world, new SwapRequest("player", "B", PropertyKind.Mass), now: 1).IsApplied);
 
-        Restoration.OnEnter(world, "A", BarrierFilter.ExitGrid);
+        Restoration.OnEnter(world, "A", BarrierFilter.Restoring);
         Restoration.RestoreAll(world, "player");
         Restoration.Restore(world, "B", PropertyKind.Mass);
 

@@ -148,7 +148,8 @@ public static class LevelParser
                 Bool(b, "blocksObjects", path) ?? false,
                 Bool(b, "blocksPlayer", path) ?? false,
                 Bool(b, "blocksVariables", path) ?? false,
-                Box(b, "box", path));
+                Box(b, "box", path),
+                Bool(b, "restoresVariables", path) ?? false);
         }
 
         private KillZoneDef KillZone(JsonElement k, string path) => new(Text(k, "id", path), Box(k, "box", path));

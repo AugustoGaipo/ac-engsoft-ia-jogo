@@ -200,6 +200,7 @@ public class ParserTests
         {
             ["id"] = "zone",
             ["blocksVariables"] = true,
+            ["restoresVariables"] = true,
             ["box"] = new JsonObject { ["min"] = new JsonArray(2, 0, 2), ["max"] = new JsonArray(5, 3, 5) },
         };
         room["objects"]![0]!["kind"] = "ball";
@@ -210,6 +211,8 @@ public class ParserTests
         var barrier = parsed.Barriers[0];
         Assert.Null(barrier.Preset);
         Assert.True(barrier.BlocksVariables);
+        Assert.True(barrier.RestoresVariables);
+        Assert.True(barrier.Filter.RestoresOnEntry);
         Assert.False(barrier.BlocksObjects);
         Assert.Equal(ObjectKind.Ball, parsed.Objects[0].Kind);
         Assert.Equal(new[] { "mass" }, parsed.Objects[0].Accepts);

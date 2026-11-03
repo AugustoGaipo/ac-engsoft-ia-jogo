@@ -74,8 +74,8 @@ public partial class Main : Node3D
             Hud.Visible = false;
             var top = new Camera3D { Current = true, Fov = 70 };
             AddChild(top);
-            var wide = args.Contains("--sandbox") ? new Vector3(15, 34, 62) : new Vector3(24, 34, 18);
-            top.LookAtFromPosition(wide, wide with { Y = 0, Z = args.Contains("--sandbox") ? 24 : 5 }, Vector3.Up);
+            var wide = args.Contains("--sandbox") ? new Vector3(18, 46, 76) : new Vector3(24, 34, 18);
+            top.LookAtFromPosition(wide, wide with { Y = 0, Z = args.Contains("--sandbox") ? 30 : 5 }, Vector3.Up);
             _ = SaveScreenshot(args[preview + 1]);
             return;
         }

@@ -1814,3 +1814,23 @@ câmera acompanha o olho. São 69 no total.
   rodadas sozinho (instável sob carga, sem relação com esta mudança).
 - **Erro meu corrigido no teste:** o jogador andava na linha da caixa e a empurrava contra a barreira;
   passei a andar numa faixa ao lado e a recarregar a sala antes de cada troca.
+
+### Game — sala de testes refeita: corredor, barreira que restaura e "encostar conta" (pedido do usuário)
+- **Pedido:** a sala ficou estranha; refazer parecida, com um corredor até as barreiras; uma barreira nova
+  que, além de barrar a troca, devolve os atributos originais trocando com quem está com eles; e a barreira
+  de variáveis também barra a troca quando eu ou o objeto estamos encostando nela (já estava no banco de ideias).
+- **Regras:** `BarrierFilter` ganhou `RestoresVariables` (preset `Restoring`). `RestoresOnEntry` agora é só
+  essa opção, e `BlocksSwaps` = barra variáveis ou restaura. A grade de saída e a barreira verde só barram:
+  restaurar na grade puxaria o jogador de volta ao sair (a sala é reconstruída de qualquer jeito).
+- **Níveis:** campo opcional `restoresVariables` no JSON (`BarrierDef`, parser, spec).
+- **Jogo:** "dentro" virou "encostado": a caixa de cada corpo (cápsula do jogador, caixa girada do objeto) com
+  folga de 8 cm (`BarrierGeometry.Touches`). A cada passo, quem começa a encostar numa barreira rosa recebe
+  de volta cada variável (`Restoration.RestoreAll`) e as atualizações vão para os corpos como numa troca.
+  Cor rosa na paleta.
+- **Sala:** área principal igual; parede ao norte com abertura para um corredor (x 0–4, z 20–30), salão e
+  seis baias (x 0–36, z 34–60), barreira em z = 47, caixa e bola em z = 41, caixa do outro lado em z = 50
+  (z = 53 ficava a 10 m, fora do alcance de 8 m — pego pelo teste sem janela). Captura de cima conferida.
+- **Testes:** regras (barreira só bloqueia não restaura; a que restaura bloqueia e devolve), parser, paleta
+  com 5 cores, `Touches`; sem janela: corredor, baia 6, caixa encostada e jogador encostado recusam a troca,
+  bola longe aceita (controle), troca de massa e devolução ao entrar no rosa. Mutações pegas: folga 0 (1
+  falha) e restaurar = barrar variáveis (2 falhas). Tudo verde.

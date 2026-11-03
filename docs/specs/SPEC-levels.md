@@ -105,7 +105,9 @@ Field rules:
 - `detects`: `"any"` (player or objects) or `"objects"` (only objects press it).
 - A door opens while **all** of its `opensWith` buttons are pressed.
 - A barrier has either a `preset` (`"exitGrid"`) or explicit flags `blocksObjects`, `blocksPlayer`,
-  `blocksVariables` (the three basic barriers, combinable).
+  `blocksVariables` (the three basic barriers, combinable), plus `restoresVariables` (2026-11-03): it also
+  blocks swaps and, when a body starts touching it, gives every variable back to its owner (pink).
+  A body (player or object) touching a barrier that blocks swaps counts as inside it: no swap.
 - `rulesOverride`: optional; any field of `rules` set here replaces the level's value **for that room
   only** (room 1.1 uses `"unlockedProperties": []` because the player has no swap device yet).
 - The player is always 70 kg, 0.07 m³ (`rules` spec); it is not written in the file.

@@ -9,15 +9,20 @@ public static class BarrierPalette
     private static readonly (double R, double G, double B) Player = (1.0, 0.62, 0.2);     // orange: the player
     private static readonly (double R, double G, double B) Both = (0.72, 0.5, 1.0);       // violet: both
     private static readonly (double R, double G, double B) Variables = (0.4, 0.92, 0.62); // green: only variables
+    private static readonly (double R, double G, double B) Restores = (1.0, 0.42, 0.72);  // pink: gives the variables back
     private static readonly (double R, double G, double B) Neutral = (0.75, 0.78, 0.85);
 
-    /// <summary>Objects and/or player decide the color (the exit grid blocks objects, so it is blue); variables alone are green.</summary>
+    /// <summary>
+    /// Objects and/or player decide the color (the exit grid blocks objects, so it is blue); variables alone are
+    /// green, and pink when touching it also restores them.
+    /// </summary>
     public static (double R, double G, double B) For(BarrierFilter filter) =>
         (filter.BlocksObjects, filter.BlocksPlayer) switch
         {
             (true, true) => Both,
             (true, false) => Objects,
             (false, true) => Player,
+            _ when filter.RestoresVariables => Restores,
             _ => filter.BlocksVariables ? Variables : Neutral,
         };
 }

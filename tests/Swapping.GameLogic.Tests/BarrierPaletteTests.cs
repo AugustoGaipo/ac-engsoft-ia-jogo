@@ -14,8 +14,9 @@ public sealed class BarrierPaletteTests
             BarrierPalette.For(new BarrierFilter(BlocksPlayer: true)),
             BarrierPalette.For(new BarrierFilter(BlocksObjects: true, BlocksPlayer: true)),
             BarrierPalette.For(new BarrierFilter(BlocksVariables: true)),
+            BarrierPalette.For(BarrierFilter.Restoring),
         };
-        Assert.Equal(4, colors.Distinct().Count());
+        Assert.Equal(5, colors.Distinct().Count());
     }
 
     [Fact]
@@ -27,7 +28,7 @@ public sealed class BarrierPaletteTests
     [Fact]
     public void Every_color_is_a_valid_light_enough_rgb()
     {
-        foreach (var filter in new[] { new BarrierFilter(), new BarrierFilter(true), new BarrierFilter(false, true), new BarrierFilter(true, true), new BarrierFilter(false, false, true) })
+        foreach (var filter in new[] { new BarrierFilter(), new BarrierFilter(true), new BarrierFilter(false, true), new BarrierFilter(true, true), new BarrierFilter(false, false, true), BarrierFilter.Restoring })
         {
             var (r, g, b) = BarrierPalette.For(filter);
             Assert.InRange(r, 0.0, 1.0);

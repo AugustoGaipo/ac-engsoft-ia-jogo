@@ -78,6 +78,19 @@ public static class BarrierGeometry
 
     public static bool Inside(Vec3 point, Box box) => box.Contains(point);
 
+    /// <summary>
+    /// Gap that still counts as touching: the physics keeps resting bodies a few centimeters apart
+    /// (collision margin), so a box pushed against a solid barrier never quite overlaps it.
+    /// </summary>
+    public const double TouchMarginMeters = 0.08;
+
+    /// <summary>Whether a body's bounding box touches the barrier (user's request: touching counts as inside).</summary>
+    public static bool Touches(Box body, Box barrier)
+    {
+        var m = new Vec3(TouchMarginMeters, TouchMarginMeters, TouchMarginMeters);
+        return new Box(body.Min - m, body.Max + m).Overlaps(barrier);
+    }
+
     private static bool Slab(double from, double to, double min, double max, ref double enter, ref double leave)
     {
         var delta = to - from;

@@ -1,9 +1,10 @@
 // Sandbox (test room) — not a level: not in the catalog, not seen by the API. One station per mechanic,
 // to try a feature before it goes into a real room (user's request, 2026-11-03). Same format and
 // validator as the levels, except the level number/id rules (a test room must not take a level number).
-// Room space: x 0–30, z 0–50, floor at y = 0, the pit x 12–16 goes down to y = -3.
-// z 20–50 is the barrier area: five bays (x 0–6, 6–12, 12–18, 18–24, 24–30), one barrier type each, across z = 35,
-// with a box and a ball on the near side and a box on the far side: 1 objects, 2 player, 3 both, 4 variables, 5 exit grid.
+// Room space: x 0–36, z 0–60, floor at y = 0, the pit x 12–16 goes down to y = -3. Main area x 0–30, z 0–20.
+// A corridor (x 0–4, z 20–30) leads to the barrier hall (z 30–34) and six bays (x 0–36, 6 m each, z 34–60),
+// one barrier type each across z = 47, with a box and a ball on the near side (z 41) and a box on the far side
+// (z 50): 1 objects, 2 player, 3 both, 4 variables (touching counts), 5 exit grid, 6 restoring (gives back).
 {
   "schemaVersion": 1,
   "id": "sandbox",
@@ -18,8 +19,8 @@
   "rooms": [
     {
       "id": "0.1",
-      "teaches": "Sala de testes: empurrar por peso, caixa travada, alcance, buraco, barreira de variáveis, plataforma, botão, porta e grade; ao norte (z 20–50), cinco baias com um tipo de barreira cada.",
-      "bounds": { "min": [0, -3, 0], "max": [30, 6, 50] },
+      "teaches": "Sala de testes: empurrar por peso, caixa travada, alcance, buraco, barreira de variáveis, plataforma, botão, porta e grade; ao norte, um corredor até seis baias com um tipo de barreira cada.",
+      "bounds": { "min": [0, -3, 0], "max": [36, 6, 60] },
       "spawn": { "position": [2, 0, 10], "yawDegrees": -90 },
       "exit": { "min": [29.5, 0, 9], "max": [30, 3, 11] },
       "objects": [
@@ -32,21 +33,24 @@
         { "id": "across-pit", "kind": "box", "position": [18, 0.5, 10], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
         { "id": "behind-barrier", "kind": "box", "position": [21, 0.5, 15], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
         { "id": "ball-on-ledge", "kind": "ball", "position": [24, 2.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
-        { "id": "bay1-box", "kind": "box", "position": [3, 0.5, 31], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay1-ball", "kind": "ball", "position": [1.0, 0.25, 31], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
-        { "id": "bay1-far", "kind": "box", "position": [3, 0.5, 38], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay2-box", "kind": "box", "position": [9, 0.5, 31], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay2-ball", "kind": "ball", "position": [7.0, 0.25, 31], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
-        { "id": "bay2-far", "kind": "box", "position": [9, 0.5, 38], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay3-box", "kind": "box", "position": [15, 0.5, 31], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay3-ball", "kind": "ball", "position": [13.0, 0.25, 31], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
-        { "id": "bay3-far", "kind": "box", "position": [15, 0.5, 38], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay4-box", "kind": "box", "position": [21, 0.5, 31], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay4-ball", "kind": "ball", "position": [19.0, 0.25, 31], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
-        { "id": "bay4-far", "kind": "box", "position": [21, 0.5, 38], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay5-box", "kind": "box", "position": [27, 0.5, 31], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
-        { "id": "bay5-ball", "kind": "ball", "position": [25.0, 0.25, 31], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
-        { "id": "bay5-far", "kind": "box", "position": [27, 0.5, 38], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
+        { "id": "bay1-box", "kind": "box", "position": [3, 0.5, 41], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay1-ball", "kind": "ball", "position": [1, 0.25, 41], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "bay1-far", "kind": "box", "position": [3, 0.5, 50], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay2-box", "kind": "box", "position": [9, 0.5, 41], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay2-ball", "kind": "ball", "position": [7, 0.25, 41], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "bay2-far", "kind": "box", "position": [9, 0.5, 50], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay3-box", "kind": "box", "position": [15, 0.5, 41], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay3-ball", "kind": "ball", "position": [13, 0.25, 41], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "bay3-far", "kind": "box", "position": [15, 0.5, 50], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay4-box", "kind": "box", "position": [21, 0.5, 41], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay4-ball", "kind": "ball", "position": [19, 0.25, 41], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "bay4-far", "kind": "box", "position": [21, 0.5, 50], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay5-box", "kind": "box", "position": [27, 0.5, 41], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay5-ball", "kind": "ball", "position": [25, 0.25, 41], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "bay5-far", "kind": "box", "position": [27, 0.5, 50], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay6-box", "kind": "box", "position": [33, 0.5, 41], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 },
+        { "id": "bay6-ball", "kind": "ball", "position": [31, 0.25, 41], "size": [0.5, 0.5, 0.5], "massKg": 2, "bounce": 0.3 },
+        { "id": "bay6-far", "kind": "box", "position": [33, 0.5, 50], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
       ],
       "buttons": [
         { "id": "button-any", "position": [25, 0, 14], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "any" }
@@ -57,11 +61,12 @@
       "barriers": [
         { "id": "variable-barrier", "blocksVariables": true, "box": { "min": [19.5, 0, 13], "max": [19.6, 3, 20] } },
         { "id": "exit-grid", "preset": "exitGrid", "box": { "min": [29.5, 0, 9], "max": [29.6, 3, 11] } },
-        { "id": "bay1-barrier", "blocksObjects": true, "box": { "min": [0.15, 0, 34.95], "max": [5.85, 5.5, 35.05] } },
-        { "id": "bay2-barrier", "blocksPlayer": true, "box": { "min": [6.15, 0, 34.95], "max": [11.85, 5.5, 35.05] } },
-        { "id": "bay3-barrier", "blocksObjects": true, "blocksPlayer": true, "box": { "min": [12.15, 0, 34.95], "max": [17.85, 5.5, 35.05] } },
-        { "id": "bay4-barrier", "blocksVariables": true, "box": { "min": [18.15, 0, 34.95], "max": [23.85, 5.5, 35.05] } },
-        { "id": "bay5-barrier", "preset": "exitGrid", "box": { "min": [24.15, 0, 34.95], "max": [29.85, 5.5, 35.05] } }
+        { "id": "bay1-barrier", "blocksObjects": true, "box": { "min": [0.15, 0, 46.95], "max": [5.85, 5.5, 47.05] } },
+        { "id": "bay2-barrier", "blocksPlayer": true, "box": { "min": [6.15, 0, 46.95], "max": [11.85, 5.5, 47.05] } },
+        { "id": "bay3-barrier", "blocksObjects": true, "blocksPlayer": true, "box": { "min": [12.15, 0, 46.95], "max": [17.85, 5.5, 47.05] } },
+        { "id": "bay4-barrier", "blocksVariables": true, "box": { "min": [18.15, 0, 46.95], "max": [23.85, 5.5, 47.05] } },
+        { "id": "bay5-barrier", "preset": "exitGrid", "box": { "min": [24.15, 0, 46.95], "max": [29.85, 5.5, 47.05] } },
+        { "id": "bay6-barrier", "blocksVariables": true, "restoresVariables": true, "box": { "min": [30.15, 0, 46.95], "max": [35.85, 5.5, 47.05] } }
       ],
       "killZones": [
         { "id": "pit", "box": { "min": [12, -3, 0], "max": [16, -1, 20] } }

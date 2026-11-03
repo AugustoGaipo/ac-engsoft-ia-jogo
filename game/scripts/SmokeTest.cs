@@ -816,14 +816,24 @@ public partial class SmokeTest : Node
         button!.EmitSignal(BaseButton.SignalName.Pressed);
     }
 
-    // ---- Barrier bays of the test map (z 20–50): one barrier type per bay ----
+    // ---- Barrier bays of the test map (corridor at x 0–4, bays z 34–60): one barrier type per bay ----
 
     private async Task CheckBarrierBays(Main main)
     {
-        // (bay, what the barrier blocks: objects, player, variables)
+        // The corridor: from the main area the player walks north to the barrier hall.
+        main.ShowRoom("0.1");
+        main.Player.GlobalPosition = new Vector3(2, 0, 17);
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(3);
+        await WalkTo(main.Player, 2, 32, maxFrames: 600);
+        Check("sandbox: the corridor leads from the main area to the barrier hall", main.Player.GlobalPosition.Z > 31,
+            $"player {main.Player.GlobalPosition}");
+
+        // (bay, what the barrier blocks: objects, player, swaps)
         var bays = new (int Bay, bool Objects, bool Player, bool Variables)[]
         {
             (1, true, false, false), (2, false, true, false), (3, true, true, false), (4, false, false, true), (5, true, false, true),
+            (6, false, false, true),
         };
         foreach (var (bay, objects, player, variables) in bays)
         {
@@ -836,25 +846,25 @@ public partial class SmokeTest : Node
             var cx = 3f + 6f * (bay - 1);
 
             // The player walks from the near side to the far side: blocked only when the barrier blocks the player.
-            main.Player.GlobalPosition = new Vector3(cx + 1.5f, 0, 32.5f);   // a lane beside the box, so it is not pushed ahead
+            main.Player.GlobalPosition = new Vector3(cx + 1.5f, 0, 44.5f);   // a lane beside the box, so it is not pushed ahead
             main.Player.ResetPhysicsInterpolation();
             await PhysicsFrames(3);
-            await WalkTo(main.Player, cx + 1.5f, 40, maxFrames: 240);
-            var crossed = main.Player.GlobalPosition.Z > 36;
+            await WalkTo(main.Player, cx + 1.5f, 52, maxFrames: 240);
+            var crossed = main.Player.GlobalPosition.Z > 48;
             Check($"bay {bay}: the player {(player ? "is stopped by" : "walks through")} the barrier", crossed == !player,
                 $"player z {main.Player.GlobalPosition.Z}");
 
             // The box is pushed fast to the barrier: blocked only when the barrier blocks objects.
             var box = main.Runner.Bodies.Single(b => b.ContainerId == $"bay{bay}-box");
-            box.Teleport(new Vector3(cx, 0.5f, 33.5f), new Vector3(0, 0, 8));
+            box.Teleport(new Vector3(cx, 0.5f, 45.5f), new Vector3(0, 0, 8));
             await PhysicsFrames(45);
-            var boxCrossed = box.GlobalPosition.Z > 35.3f;
+            var boxCrossed = box.GlobalPosition.Z > 47.3f;
             Check($"bay {bay}: the box {(objects ? "is stopped by" : "goes through")} the barrier", boxCrossed == !objects,
                 $"box z {box.GlobalPosition.Z}");
 
             // Swap with the box on the far side, aiming from the near side: refused only when the barrier blocks variables.
             main.ShowRoom("0.1");                                  // the pushed box now sits in the line of sight
-            main.Player.GlobalPosition = new Vector3(cx, 0, 31);
+            main.Player.GlobalPosition = new Vector3(cx, 0, 43);
             main.Player.ResetPhysicsInterpolation();
             await PhysicsFrames(3);
             var far = main.Runner.Bodies.Single(b => b.ContainerId == $"bay{bay}-far");
@@ -863,6 +873,60 @@ public partial class SmokeTest : Node
             Check($"bay {bay}: a swap through it is {(variables ? "refused" : "allowed")}", main.Swaps.Target == far && refused == variables,
                 $"{main.Swaps.Crosshair}");
         }
+
+        await CheckTouchingBlocksSwaps(main);
+        await CheckRestoringBarrier(main);
+    }
+
+    /// <summary>User's rule: touching a variable barrier (the player or the object) counts as being inside it.</summary>
+    private async Task CheckTouchingBlocksSwaps(Main main)
+    {
+        const string inside = "dentro de uma barreira";
+        main.ShowRoom("0.1");
+        await PhysicsFrames(3);
+        var box = main.Runner.Bodies.Single(b => b.ContainerId == "bay4-box");
+        var ball = main.Runner.Bodies.Single(b => b.ContainerId == "bay4-ball");
+        box.Teleport(new Vector3(21, 0.5f, 46.42f), Vector3.Zero);       // 3 cm from the green barrier (z 46.95)
+        main.Player.GlobalPosition = new Vector3(22.5f, 0, 43);
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(5);
+        await LookAt(main.Player, box.GlobalPosition);
+        Check("bay 4: a box touching the barrier cannot be swapped", main.Swaps.Target == box && main.Swaps.Crosshair.Reason == inside,
+            $"{main.Swaps.Crosshair}");
+        await LookAt(main.Player, ball.GlobalPosition);
+        Check("bay 4: a box away from it can (control)", main.Swaps.Target == ball && main.Swaps.Crosshair.Reason != inside,
+            $"{main.Swaps.Crosshair}");
+
+        main.Player.GlobalPosition = new Vector3(19.5f, 0, 46.6f);        // the capsule 5 cm from the barrier
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(3);
+        await LookAt(main.Player, ball.GlobalPosition);
+        Check("bay 4: the player touching the barrier cannot swap", main.Swaps.Target == ball && main.Swaps.Crosshair.Reason == inside,
+            $"{main.Swaps.Crosshair} at {main.Player.GlobalPosition}");
+    }
+
+    /// <summary>User's request: the pink barrier also gives the variables back, exchanging with whoever holds them.</summary>
+    private async Task CheckRestoringBarrier(Main main)
+    {
+        main.ShowRoom("0.1");
+        await PhysicsFrames(3);
+        var box = main.Runner.Bodies.Single(b => b.ContainerId == "bay6-box");
+        main.Player.GlobalPosition = new Vector3(34.5f, 0, 43);
+        main.Player.ResetPhysicsInterpolation();
+        await PhysicsFrames(3);
+        PressKey(main.Swaps, Key.Key2);
+        await LookAt(main.Player, box.GlobalPosition);
+        var swap = main.Swaps.TrySwap();
+        Check("bay 6: the player swaps mass with the box (player 10 kg, box 70 kg)",
+            swap is { IsApplied: true } && Mathf.IsEqualApprox((float)main.Player.MassKg, 10) && Mathf.IsEqualApprox(box.Mass, 70),
+            $"{swap?.Reason} player {main.Player.MassKg} box {box.Mass}");
+
+        await WalkTo(main.Player, 34.5f, 50, maxFrames: 240);
+        Check("bay 6: walking into the pink barrier gives the player its 70 kg back and the box its 10 kg",
+            main.Swaps.LastRestored == Swapping.Levels.LevelValidator.PlayerId
+            && Mathf.IsEqualApprox((float)main.Player.MassKg, 70) && Mathf.IsEqualApprox(box.Mass, 10),
+            $"restored {main.Swaps.LastRestored}, player {main.Player.MassKg} box {box.Mass}");
+        PressKey(main.Swaps, Key.Key1);
     }
 
     /// <summary>Turns the player's view to a point and lets the aim update.</summary>

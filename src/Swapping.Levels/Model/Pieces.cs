@@ -64,11 +64,12 @@ public sealed record BarrierDef(
     bool BlocksObjects,
     bool BlocksPlayer,
     bool BlocksVariables,
-    Box Box)
+    Box Box,
+    bool RestoresVariables = false)
 {
     public BarrierFilter Filter => Preset == BarrierPreset.ExitGrid
         ? BarrierFilter.ExitGrid
-        : new BarrierFilter(BlocksObjects, BlocksPlayer, BlocksVariables);
+        : new BarrierFilter(BlocksObjects, BlocksPlayer, BlocksVariables, RestoresVariables);
 
     /// <summary>Barrier 1 + barrier 3 (blocks objects and variables, lets the player pass).</summary>
     public bool IsExitGrid => Filter == BarrierFilter.ExitGrid;

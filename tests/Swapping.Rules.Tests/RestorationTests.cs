@@ -39,7 +39,7 @@ public class RestorationTests
         Swap(world, "player", "A", PropertyKind.Mass);
         Swap(world, "player", "B", PropertyKind.Mass);
 
-        var updates = Restoration.OnEnter(world, "A", BarrierFilter.BlocksVariablesOnly);
+        var updates = Restoration.OnEnter(world, "A", BarrierFilter.Restoring);
 
         Assert.Equal(3.0, world.BodyUpdateFor("player").MassKg, Tol);
         Assert.Equal(2.0, world.BodyUpdateFor("A").MassKg, Tol);
@@ -58,7 +58,7 @@ public class RestorationTests
         Swap(world, "player", "box", PropertyKind.Position);
         world.SyncFromPhysics("box", new Vec3(1, 0, 0), new Vec3(2, 0, 0));
 
-        Restoration.OnEnter(world, "box", BarrierFilter.ExitGrid);
+        Restoration.OnEnter(world, "box", BarrierFilter.Restoring);
 
         var box = world.BodyUpdateFor("box");
         var player = world.BodyUpdateFor("player");
@@ -82,7 +82,7 @@ public class RestorationTests
         // B, holding Xa = 2 J, is now moving left.
         world.SyncFromPhysics("B", new Vec3(3, 0, 0), new Vec3(-Math.Sqrt(2 * 2 / 5.0), 0, 0));
 
-        Restoration.OnEnter(world, "A", BarrierFilter.BlocksVariablesOnly);
+        Restoration.OnEnter(world, "A", BarrierFilter.Restoring);
 
         AssertVec(new Vec3(-Math.Sqrt(2 * 2 / 1.0), 0, 0), world.BodyUpdateFor("A").Velocity);
         AssertVec(new Vec3(2, 0, 0), world.BodyUpdateFor("B").Velocity);
@@ -183,8 +183,29 @@ public class RestorationTests
         Assert.False(grid.BlocksPlayer);
         Assert.True(grid.BlocksPassageOf(Box("A")));
         Assert.False(grid.BlocksPassageOf(Player()));
-        Assert.True(grid.RestoresOnEntry);
+        Assert.False(grid.RestoresOnEntry);   // the room is rebuilt anyway; restoring at the exit would pull the player back
         Assert.True(grid.BlocksSwaps);
+    }
+
+    // User's request (2026-11-03): one barrier only blocks swaps, another also gives the variables back.
+    [Fact]
+    public void BlockingBarrier_DoesNotRestore_RestoringBarrierDoesAndBlocksSwaps()
+    {
+        var world = new World(Permissive);
+        world.Add(Player(), Vec3.Zero, 10, Vec3.Zero);
+        world.Add(Box("A"), new Vec3(1, 0, 0), 2, Vec3.Zero);
+        Swap(world, "player", "A", PropertyKind.Mass);
+
+        Assert.Empty(Restoration.OnEnter(world, "A", BarrierFilter.BlocksVariablesOnly));
+        Assert.Equal(10.0, world.BodyUpdateFor("A").MassKg, Tol);
+        Assert.True(BarrierFilter.BlocksVariablesOnly.BlocksSwaps);
+
+        var restoreOnly = new BarrierFilter(RestoresVariables: true);
+        Assert.True(restoreOnly.BlocksSwaps);
+        Assert.True(restoreOnly.RestoresOnEntry);
+        Assert.Equal(2, Restoration.OnEnter(world, "A", restoreOnly).Count);
+        Assert.Equal(2.0, world.BodyUpdateFor("A").MassKg, Tol);
+        Assert.Equal(10.0, world.BodyUpdateFor("player").MassKg, Tol);
     }
 
     [Fact]
@@ -198,5 +219,6 @@ public class RestorationTests
 
         var all = playerWall.Combine(BarrierFilter.ExitGrid);
         Assert.True(all.BlocksPlayer && all.BlocksObjects && all.BlocksVariables);
+        Assert.True(all.Combine(BarrierFilter.Restoring).RestoresVariables);
     }
 }
