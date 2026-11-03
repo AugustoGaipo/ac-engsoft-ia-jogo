@@ -1859,3 +1859,6 @@ câmera acompanha o olho. São 69 no total.
 - **Testes:** regras (5 casos + continuidade no teto), barra (linear, cheia, toque); sem janela: toque só
   solta, 1,5 s dá meia barra e a velocidade de 60 J. Mutações pegas: excedente sem dividir (4 falhas, pulo
   junto) e encher em 1 s (2 falhas). Tudo verde.
+- **Ajuste (pedido do usuário, "coloca mais forte"):** barra cheia de 120 J para 400 J (meia barra 200 J).
+  Barra cheia: caixa de 10 kg 8,94 m/s, bola de 2 kg 17,5 m/s (bruto 20), 1 kg 21,1 m/s (bruto 28,3).
+  Teste da barra e verificação sem janela atualizados. Tudo verde.

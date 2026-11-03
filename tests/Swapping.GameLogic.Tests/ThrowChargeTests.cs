@@ -13,10 +13,10 @@ public sealed class ThrowChargeTests
         Assert.Equal(fraction, ThrowCharge.Fraction(held), 1e-9);
 
     [Fact]
-    public void A_full_bar_gives_120_joules_and_half_gives_the_old_60()
+    public void A_full_bar_gives_400_joules_and_half_gives_200()
     {
-        Assert.Equal(120, ThrowCharge.EnergyJoules(3), 1e-9);
-        Assert.Equal(60, ThrowCharge.EnergyJoules(1.5), 1e-9);
+        Assert.Equal(400, ThrowCharge.EnergyJoules(3), 1e-9);
+        Assert.Equal(200, ThrowCharge.EnergyJoules(1.5), 1e-9);
     }
 
     [Theory]

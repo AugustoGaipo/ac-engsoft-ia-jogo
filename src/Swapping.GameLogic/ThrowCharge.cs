@@ -8,7 +8,7 @@ namespace Swapping.GameLogic;
 public static class ThrowCharge
 {
     public const double FullSeconds = 3.0;
-    public const double MaxEnergyJoules = 120.0;
+    public const double MaxEnergyJoules = 400.0;
     public const double TapSeconds = 0.15;
 
     /// <summary>0 (empty) to 1 (full) after holding for <paramref name="heldSeconds"/>.</summary>
