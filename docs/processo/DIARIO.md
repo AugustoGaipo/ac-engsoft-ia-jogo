@@ -1757,3 +1757,12 @@ câmera acompanha o olho. São 69 no total.
 - **Tropeço meu (corrigido):** um `sed` com número de linha vazio espalhou 66 linhas de comentário repetidas
   em `PropertyKeys.cs` no commit anterior. Comentários não quebram a compilação, então os testes passaram.
   A primeira mutação "pega" na verdade não tinha sido aplicada. Limpei o arquivo e refiz a mutação (2 falhas).
+
+### Game — listras nas barreiras (pedido do usuário)
+- **Pedido:** padrão de listras diagonais, em tom mais escuro da cor de cada barreira (não preto), correndo
+  da direita para a esquerda sem parar, para parecer "proibido".
+- **Feito:** shader em `Barrier` (`Mechanisms.cs`): listras diagonais de 0,6 m em todas as faces, na cor da
+  barreira × 0,4 e mais opacas; o sentido é "para a esquerda de quem olha" nos dois lados da parede. A cor
+  base de cada barreira não mudou (azul da grade de saída, rosa das outras).
+- **Verificação:** `SmokeTest` confere que toda barreira tem o material com listras mais escuras que a base
+  e não pretas; captura de tela do mapa de teste mostra as listras. O movimento só se vê jogando.

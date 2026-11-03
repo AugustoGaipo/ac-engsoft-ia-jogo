@@ -97,6 +97,52 @@ public partial class Door : StaticBody3D
 public partial class Barrier : StaticBody3D
 {
     public BarrierDef Def { get; private set; } = null!;
+    /// <summary>
+    /// The "forbidden" look: diagonal stripes in a darker shade of the barrier's color, sliding from right to
+    /// left forever. The stripe size is in meters on every face, and the direction is "to the viewer's left"
+    /// whichever side of the wall is seen.
+    /// </summary>
+    private static readonly Shader StripeShader = new()
+    {
+        Code = @"
+shader_type spatial;
+render_mode unshaded, cull_disabled, blend_mix, depth_draw_never;
+
+uniform vec3 base_color = vec3(1.0, 0.4, 0.8);
+uniform vec3 stripe_color = vec3(0.4, 0.16, 0.32);
+uniform float base_alpha = 0.35;
+uniform float stripe_alpha = 0.7;
+uniform float period = 0.6;
+uniform float speed = 0.5;
+
+varying vec3 local_pos;
+varying vec3 local_normal;
+
+void vertex() {
+    local_pos = VERTEX;
+    local_normal = NORMAL;
+}
+
+void fragment() {
+    vec3 n = local_normal;
+    vec3 a = abs(n);
+    float u; // to the viewer's right
+    float v; // up
+    if (a.y > a.x && a.y > a.z) {
+        u = local_pos.x; v = local_pos.z;
+    } else if (a.x > a.z) {
+        u = (n.x > 0.0 ? -1.0 : 1.0) * local_pos.z; v = local_pos.y;
+    } else {
+        u = (n.z > 0.0 ? 1.0 : -1.0) * local_pos.x; v = local_pos.y;
+    }
+    float band = fract((u - v) / period + speed * TIME);
+    float stripe = step(0.5, band);
+    ALBEDO = mix(base_color, stripe_color, stripe);
+    ALPHA = mix(base_alpha, stripe_alpha, stripe);
+}
+",
+    };
+
 
     public static Barrier Create(BarrierDef def)
     {
@@ -115,7 +161,7 @@ public partial class Barrier : StaticBody3D
             Mesh = new BoxMesh
             {
                 Size = def.Box.Size(),
-                Material = new StandardMaterial3D { AlbedoColor = color, Transparency = BaseMaterial3D.TransparencyEnum.Alpha },
+                Material = StripeMaterial(color),
             },
         });
         barrier.AddChild(new CollisionShape3D { Shape = new BoxShape3D { Size = def.Box.Size() } });
@@ -133,6 +179,20 @@ public partial class Barrier : StaticBody3D
         }
         return barrier;
     }
+
+    /// <summary>Stripes are the barrier's color made darker (not black), a bit more opaque than the base.</summary>
+    public static ShaderMaterial StripeMaterial(Color color)
+    {
+        var material = new ShaderMaterial { Shader = StripeShader };
+        material.SetShaderParameter("base_color", new Vector3(color.R, color.G, color.B));
+        material.SetShaderParameter("stripe_color", new Vector3(color.R, color.G, color.B) * StripeDarkness);
+        material.SetShaderParameter("base_alpha", color.A);
+        material.SetShaderParameter("stripe_alpha", Mathf.Min(0.85f, color.A * 2.4f));
+        return material;
+    }
+
+    /// <summary>Stripe color = base color × this (0 would be black).</summary>
+    public const float StripeDarkness = 0.4f;
 }
 
 /// <summary>The exit of a room: the player crossing it starts the next room (Task 8).</summary>
