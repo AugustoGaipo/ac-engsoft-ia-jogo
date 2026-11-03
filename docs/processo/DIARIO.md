@@ -1292,3 +1292,32 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - os níveis 2, 3 e 5 **não** estão neste plano (vão numa revisão da spec).
 - Achado na leitura: a instalação do Godot já traz os pacotes `Godot.NET.Sdk` 4.7.2
   (`GodotSharp/Tools/nupkgs`), que podem servir como fonte local se o NuGet falhar.
+
+### Game — tarefa 1: projeto Godot e teste sem janela ✅
+- **`game/`:**
+  - `project.godot` (Godot 4.7, Forward+, física a 60 Hz, nomes das 5 camadas de colisão);
+  - `Swapping.Game.csproj` (`Godot.NET.Sdk` 4.7.2, referencia o `rules` e o `levels`) na solução;
+  - `main.tscn` com `Main.cs`, que lê os argumentos depois do `--`;
+  - `SmokeTest.cs`: imprime uma linha por verificação e devolve 0 ou 1.
+- **G6:** um passo do MSBuild copia `levels/*.json` para `game/levels/` antes de cada build. As cópias
+  ficam fora do git.
+- **Fase vermelha:** os 2 testes (`GodotSmokeTests`) falharam por tempo esgotado. Sem o `project.godot`,
+  o Godot ficou parado até o limite de 2 minutos.
+- **O risco principal saiu barato:**
+  - o `Godot.NET.Sdk` veio do nuget.org sem problema;
+  - o build do Godot deu 0 avisos, mesmo com `TreatWarningsAsErrors`;
+  - o Godot rodou sem janela e sem `--import` prévio;
+  - o C# do jogo usou o `LevelCatalog` e leu as 4 salas do nível 1.
+- **Três conferências além dos testes:**
+  - **mutação:** o `SmokeTest` devolvendo 0 numa falha → o teste "uma falha sai com 1" caiu;
+  - **máquina sem Godot:** os 2 testes são pulados com uma mensagem. Na primeira tentativa **não**
+    pularam, porque no Windows o `GetFolderPath` ignora a variável `LOCALAPPDATA` que eu tinha trocado
+    para simular. Agora o `GodotPath` lê a variável primeiro;
+  - **captura de tela** (`--screenshot <arquivo.png>`, com janela, Vulkan na RTX 4050): abri a imagem e
+    vi o cubo provisório da cena principal. Dá para eu conferir o visual nas próximas tarefas.
+- **Decisões do agente (reversíveis):**
+  - por enquanto, o `--screenshot` recebe o arquivo; a sala escolhida entra na tarefa 3;
+  - o projeto do jogo não tem `packages.lock.json`, porque o editor do Godot faz os seus próprios builds
+    e o modo travado poderia atrapalhar;
+  - o cubo provisório (`Placeholder`) sai na tarefa 3.
+- 481 testes verdes (106 + 125 + 248 + 2), 0 avisos.

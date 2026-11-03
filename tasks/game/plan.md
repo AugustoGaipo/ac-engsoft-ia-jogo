@@ -54,7 +54,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 
 ## Task List
 ### Phase 1: Foundation
-- [ ] Task 1: Godot project, level files copy and headless smoke-test entry
+- [x] Task 1: Godot project, level files copy and headless smoke-test entry
 - [ ] Task 2: `Swapping.GameLogic` with the run tracker and the architecture test
 
 ### Checkpoint: Foundation

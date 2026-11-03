@@ -11,3 +11,6 @@ bin/
 obj/
 TestResults/
 *.db
+
+# Level files copied into the game at build time (G6); the source is levels/
+game/levels/*.json

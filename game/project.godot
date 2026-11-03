@@ -1,0 +1,26 @@
+; Swapping — Godot 4.7 .NET project (first slice: level 1). See docs/specs/SPEC-game.md.
+
+config_version=5
+
+[application]
+
+config/name="Swapping"
+config/description="Puzzle 3D em primeira pessoa de troca de propriedades."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7", "C#", "Forward Plus")
+
+[dotnet]
+
+project/assembly_name="Swapping.Game"
+
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="player"
+3d_physics/layer_3="objects"
+3d_physics/layer_4="barrier-objects"
+3d_physics/layer_5="barrier-player"
+
+[physics]
+
+common/physics_ticks_per_second=60

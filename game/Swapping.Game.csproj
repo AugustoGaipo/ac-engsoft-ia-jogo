@@ -1,0 +1,24 @@
+<Project Sdk="Godot.NET.Sdk/4.7.2">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>Swapping.Game</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Swapping.Rules\Swapping.Rules.csproj" />
+    <ProjectReference Include="..\src\Swapping.Levels\Swapping.Levels.csproj" />
+  </ItemGroup>
+
+  <!-- G6: the game reads the same level files as the API. They are copied into res://levels before
+       every build; the copies are git-ignored and never edited by hand. -->
+  <ItemGroup>
+    <LevelFile Include="..\levels\*.json" />
+  </ItemGroup>
+  <Target Name="CopyLevelFiles" BeforeTargets="BeforeBuild">
+    <Copy SourceFiles="@(LevelFile)" DestinationFolder="$(MSBuildProjectDirectory)\levels" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

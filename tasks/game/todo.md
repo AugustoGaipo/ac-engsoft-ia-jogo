@@ -27,10 +27,10 @@ collision layer names), `Swapping.Game.csproj` (`Godot.NET.Sdk` 4.7.2, `net8.0`,
 A test in `tests/Swapping.GameLogic.Tests` (created here with only this test) runs the console exe
 headless, and is skipped with a message when Godot is not found.
 **Acceptance criteria:**
-- [ ] SC 1 (part): `dotnet build Swapping.sln` builds the Godot assembly with zero warnings.
-- [ ] SC 10 (harness): headless `--smoke-test level-1` loads `level_1.json` through `LevelCatalog` (4 rooms,
+- [x] SC 1 (part): `dotnet build Swapping.sln` builds the Godot assembly with zero warnings.
+- [x] SC 10 (harness): headless `--smoke-test level-1` loads `level_1.json` through `LevelCatalog` (4 rooms,
       no errors) and exits 0; a broken check exits 1 with its name in the output.
-- [ ] `game/levels/*.json` and `game/.godot/` are not tracked by git.
+- [x] `game/levels/*.json` and `game/.godot/` are not tracked by git.
 **Dependencies:** None
 **Files:** `game/project.godot`, `game/Swapping.Game.csproj`, `game/scenes/main.tscn`, `game/scripts/Main.cs`,
 `game/scripts/SmokeTest.cs`, `tests/Swapping.GameLogic.Tests/GodotSmokeTests.cs`, `.gitignore`
