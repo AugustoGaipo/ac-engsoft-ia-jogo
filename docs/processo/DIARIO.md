@@ -1697,3 +1697,8 @@ câmera acompanha o olho. São 69 no total.
 - **Tarefa 12 — `LevelProgress` ✅:** progresso local puro (abre em ordem, dois recordes separados,
   "continuar", JSON com versão, arquivo ruim → progresso novo). 12 testes; mutações pegas: guardar só a
   última contagem de trocas, e aceitar resultado de nível trancado.
+- **Tarefa 13 — novo catálogo ✅:** `level_2.json` = Peso (2.1 e 2.2 das barreiras, mais as antigas 3.1 e
+  3.2 deslocadas 24 m em x como 2.3 e 2.4), `level_3.json` = Energia (as antigas 5.1 e 5.2), `level_5.json`
+  removido. Os objetos de peso e de energia ganharam `accepts`, e os testes de desenho agora verificam que
+  nenhum objeto dessas salas aceita uma troca que pule a lição. A API foi ajustada só nos testes que
+  contavam os níveis. 591 testes verdes.

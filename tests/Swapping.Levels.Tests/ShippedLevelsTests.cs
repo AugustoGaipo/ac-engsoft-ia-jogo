@@ -39,12 +39,12 @@ public class ShippedLevelsTests
 
     // SC 11
     [Fact]
-    public void Catalog_HasTheFridayLevels_With11Rooms()
+    public void Catalog_HasTheThreeLevelsOfSlice2_With10Rooms()
     {
         var levels = Shipped.Load().Levels;
 
-        Assert.Equal(new[] { "level-1", "level-2", "level-3", "level-5" }, levels.Select(l => l.Id));
-        Assert.Equal(11, levels.Sum(l => l.Rooms.Count));
+        Assert.Equal(new[] { "level-1", "level-2", "level-3" }, levels.Select(l => l.Id));
+        Assert.Equal(10, levels.Sum(l => l.Rooms.Count));
     }
 
     [Fact]

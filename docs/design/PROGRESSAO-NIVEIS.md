@@ -74,3 +74,15 @@ Um nível por propriedade, mais as barreiras, os buracos e as paredes (decisão 
 ## Em aberto
 - Recarga dos níveis 7–10 (decidir jogando; nos níveis 1–6 é 1 s).
 - Raio de busca do ponto livre mais próximo (troca normal e quântico).
+
+### Corte da fatia 2 (2026-11-03, decisão do usuário)
+| Nível | Libera | Salas |
+|---|---|---|
+| **1** Posição | posição | 1.1 a 1.4 |
+| **2** Peso | posição e peso | 2.1 barreira de objetos, 2.2 barreira do jogador, 2.3 botão pesado (antigo 3.1), 2.4 pulo pela massa (antigo 3.2) |
+| **3** Energia | as três | 3.1 receber energia (antigo 5.1), 3.2 dar energia (antigo 5.2) |
+| **Mapa de teste** | as três | sala livre no menu, fora do progresso e do ranking |
+
+- A troca é escolhida com as teclas 1/2/3. Os objetos das salas de peso e de energia só aceitam aquela
+  propriedade, para que uma habilidade antiga não pule a lição.
+- Saem do catálogo: a zona sem trocas (antiga 2.3) e os níveis 4 e 5.

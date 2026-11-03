@@ -1,15 +1,15 @@
-// Level 2 — Barreiras. Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
+// Level 2 — Peso (with the barriers). Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
 // Level space: meters, Y up, rooms side by side along +X. Floor at y = 0.
 // Numbers are a first draft, tuned while building the Godot scene.
 {
   "schemaVersion": 1,
   "id": "level-2",
   "number": 2,
-  "name": "Barreiras",
+  "name": "Peso",
   "scene": "res://levels/level_2.tscn",
   "rules": {
-    "unlockedProperties": ["position"],
-    "rangeMeters": { "position": 8.0 },
+    "unlockedProperties": ["position", "mass"],
+    "rangeMeters": { "position": 8.0, "mass": 8.0 },
     "cooldownSeconds": 1.0
   },
   "rooms": [
@@ -50,23 +50,36 @@
     },
     {
       "id": "2.3",
-      "teaches": "Barreira 3 (zona sem trocas): preparar as trocas antes de entrar.",
+      "teaches": "Botão que exige mais peso que o jogador: trocar o peso com uma caixa pesada.",
       "bounds": { "min": [24, -3, 0], "max": [36, 6, 10] },
       "spawn": { "position": [25, 0, 5], "yawDegrees": -90 },
       "exit": { "min": [35.5, 0, 4], "max": [36, 3, 6] },
-      // No swap works through or inside the zone: carry the box across it to the button.
+      // The player (70 kg) is too light for the 150 kg button; take the crate's 300 kg and stand on it.
       "objects": [
-        { "id": "box-2-3", "kind": "box", "position": [26, 0.5, 8], "size": [1, 1, 1], "massKg": 10, "bounce": 0.1 }
+        { "id": "crate-2-3", "kind": "box", "position": [30, 0.5, 2], "size": [1, 1, 1], "massKg": 300, "accepts": ["mass"], "bounce": 0.05 }
       ],
       "buttons": [
-        { "id": "button-2-3", "position": [34, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
+        { "id": "heavy-button-2-3", "position": [30, 0, 7], "size": [1.5, 0.1, 1.5], "requiredMassKg": 150, "detects": "any" }
       ],
       "doors": [
-        { "id": "door-2-3", "box": { "min": [35, 0, 4], "max": [35.3, 3, 6] }, "opensWith": ["button-2-3"] }
+        { "id": "door-2-3", "box": { "min": [34, 0, 4], "max": [34.3, 3, 6] }, "opensWith": ["heavy-button-2-3"] }
       ],
       "barriers": [
-        { "id": "zone-2-3", "blocksVariables": true, "box": { "min": [28, 0, 0], "max": [32, 6, 10] } },
         { "id": "exit-grid-2-3", "preset": "exitGrid", "box": { "min": [35.5, 0, 4], "max": [35.6, 3, 6] } }
+      ]
+    },
+    {
+      "id": "2.4",
+      "teaches": "O pulo depende da massa: com 7 kg o jogador pula ~1,8 m; com 70 kg, só 0,5 m.",
+      "bounds": { "min": [36, -3, 0], "max": [48, 6, 10] },
+      "spawn": { "position": [37, 0, 5], "yawDegrees": -90 },
+      // Scenery: a 1.5 m ledge from x = 44 to x = 48; the exit is on top of it.
+      "exit": { "min": [47.5, 1.5, 4], "max": [48, 4.5, 6] },
+      "objects": [
+        { "id": "light-box-2-4", "kind": "box", "position": [40, 0.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 7, "accepts": ["mass"], "bounce": 0.1 }
+      ],
+      "barriers": [
+        { "id": "exit-grid-2-4", "preset": "exitGrid", "box": { "min": [47.5, 1.5, 4], "max": [47.6, 4.5, 6] } }
       ]
     }
   ]

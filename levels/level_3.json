@@ -1,50 +1,56 @@
-// Level 3 — Peso. Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
-// Level space: meters, Y up, rooms side by side along +X. Floor at y = 0.
+// Level 3 — Energia. Rooms follow docs/design/PROGRESSAO-NIVEIS.md.
+// Level space: meters, Y up, rooms side by side along +X. Floor at y = 0; pits go down to y = -3.
 // Numbers are a first draft, tuned while building the Godot scene.
 {
   "schemaVersion": 1,
   "id": "level-3",
   "number": 3,
-  "name": "Peso",
+  "name": "Energia",
   "scene": "res://levels/level_3.tscn",
   "rules": {
-    "unlockedProperties": ["mass"],
-    "rangeMeters": { "mass": 8.0 },
+    "unlockedProperties": ["position", "mass", "kineticEnergy"],
+    "rangeMeters": { "position": 8.0, "mass": 8.0, "kineticEnergy": 8.0 },
     "cooldownSeconds": 1.0
   },
   "rooms": [
     {
       "id": "3.1",
-      "teaches": "Botão que exige mais peso que o jogador: trocar o peso com uma caixa pesada.",
+      "teaches": "Receber energia de uma bola em movimento e ser lançado na direção dela.",
       "bounds": { "min": [0, -3, 0], "max": [12, 6, 10] },
-      "spawn": { "position": [1, 0, 5], "yawDegrees": -90 },
-      "exit": { "min": [11.5, 0, 4], "max": [12, 3, 6] },
-      // The player (70 kg) is too light for the 150 kg button; take the crate's 300 kg and stand on it.
+      "spawn": { "position": [1, 0, 3], "yawDegrees": -90 },
+      "exit": { "min": [11.5, 0, 1], "max": [12, 3, 3] },
+      // Scenery: the ball rolls back and forth in a channel along z = 8.5 (walls at both ends).
+      // Swap while it rolls toward +X to be thrown across the pit; swapping while it rolls back throws you back.
       "objects": [
-        { "id": "crate-3-1", "kind": "box", "position": [6, 0.5, 2], "size": [1, 1, 1], "massKg": 300, "bounce": 0.05 }
-      ],
-      "buttons": [
-        { "id": "heavy-button-3-1", "position": [6, 0, 7], "size": [1.5, 0.1, 1.5], "requiredMassKg": 150, "detects": "any" }
-      ],
-      "doors": [
-        { "id": "door-3-1", "box": { "min": [10, 0, 4], "max": [10.3, 3, 6] }, "opensWith": ["heavy-button-3-1"] }
+        { "id": "ball-3-1", "kind": "ball", "position": [3, 0.3, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 20, "accepts": ["kineticEnergy"],
+          "velocity": [8, 0, 0], "bounce": 0.95 }
       ],
       "barriers": [
-        { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 4], "max": [11.6, 3, 6] } }
+        { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 1], "max": [11.6, 3, 3] } }
+      ],
+      "killZones": [
+        { "id": "pit-3-1", "box": { "min": [6, -3, 0], "max": [9, -1, 6] } }
       ]
     },
     {
       "id": "3.2",
-      "teaches": "O pulo depende da massa: com 7 kg o jogador pula ~1,8 m; com 70 kg, só 0,5 m.",
+      "teaches": "Dar energia: correr e passar a energia para uma caixa parada.",
       "bounds": { "min": [12, -3, 0], "max": [24, 6, 10] },
-      "spawn": { "position": [13, 0, 5], "yawDegrees": -90 },
-      // Scenery: a 1.5 m ledge from x = 20 to x = 24; the exit is on top of it.
-      "exit": { "min": [23.5, 1.5, 4], "max": [24, 4.5, 6] },
+      "spawn": { "position": [13, 0, 2], "yawDegrees": -90 },
+      "exit": { "min": [23.5, 0, 1], "max": [24, 3, 3] },
+      // Scenery: the box sits in a closed channel (z 4–6) that the player can't enter, aimed at the button.
+      // The only way to move it is to run along +X and give it your energy.
       "objects": [
-        { "id": "light-box-3-2", "kind": "box", "position": [16, 0.25, 3], "size": [0.5, 0.5, 0.5], "massKg": 7, "bounce": 0.1 }
+        { "id": "box-3-2", "kind": "box", "position": [15, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "accepts": ["kineticEnergy"], "bounce": 0.1 }
+      ],
+      "buttons": [
+        { "id": "button-3-2", "position": [21, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
+      ],
+      "doors": [
+        { "id": "door-3-2", "box": { "min": [22.5, 0, 1], "max": [22.8, 3, 3] }, "opensWith": ["button-3-2"] }
       ],
       "barriers": [
-        { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.5, 1.5, 4], "max": [23.6, 4.5, 6] } }
+        { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 1], "max": [23.6, 3, 3] } }
       ]
     }
   ]

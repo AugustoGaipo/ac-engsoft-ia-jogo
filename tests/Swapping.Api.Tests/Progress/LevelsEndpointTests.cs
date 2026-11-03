@@ -17,16 +17,16 @@ public class LevelsEndpointTests
     }
 
     [Fact]
-    public async Task With_the_shipped_levels_folder_the_API_lists_the_4_Friday_levels()
+    public async Task With_the_shipped_levels_folder_the_API_lists_the_3_shipped_levels()
     {
         using var factory = new ApiFactory();
         var client = factory.CreateClient();
 
         var levels = await Levels(client);
 
-        Assert.Equal(new[] { 1, 2, 3, 5 }, levels.Select(l => l.Number));
-        Assert.Equal(new[] { 4, 3, 2, 2 }, levels.Select(l => l.Rooms));
-        Assert.Equal(new[] { "level-1", "level-2", "level-3", "level-5" }, levels.Select(l => l.Id));
+        Assert.Equal(new[] { 1, 2, 3 }, levels.Select(l => l.Number));
+        Assert.Equal(new[] { 4, 4, 2 }, levels.Select(l => l.Rooms));
+        Assert.Equal(new[] { "level-1", "level-2", "level-3" }, levels.Select(l => l.Id));
         Assert.All(levels, l => Assert.False(string.IsNullOrWhiteSpace(l.Name)));
     }
 
@@ -39,7 +39,7 @@ public class LevelsEndpointTests
 
         var levels = await Levels(client);
 
-        Assert.Equal(new[] { ("level-1", 1, "Test one", 4), ("level-2", 2, "Test two", 3), ("level-4", 4, "Test four", 2) }, levels);
+        Assert.Equal(new[] { ("level-1", 1, "Test one", 4), ("level-2", 2, "Test two", 4), ("level-4", 4, "Test four", 2) }, levels);
     }
 
     [Fact]
