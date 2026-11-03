@@ -9,7 +9,7 @@ public static class Formulas
     public const double SinkFactor = 1.1;
     public const double FloatFactor = 0.1;
     public const double JumpEnergyJoules = 343.0;
-    public const double MaxLegSpeed = 6.0;
+
     public const double DefaultSwimSpeed = 3.0;
 
     private const double BandTolerance = 1e-9;
@@ -42,7 +42,7 @@ public static class Formulas
         onGround ? 0 : objectMassKg * addedSpeed / throwerMassKg;
 
     public static double JumpTakeoffSpeed(double massKg) =>
-        Math.Min(SpeedFromEnergy(JumpEnergyJoules, massKg), MaxLegSpeed);
+        SpeedFromEnergy(JumpEnergyJoules, massKg);
 
     /// <summary>Jump height h = v²/(2·g_eff). Returns +∞ when the body is not denser than the medium.</summary>
     public static double JumpHeight(double massKg, double density, double fluidDensity)

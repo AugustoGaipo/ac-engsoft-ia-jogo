@@ -100,7 +100,7 @@ public class FormulaTests
     [Theory] // SC 12 (density 1000 kg/m3: player body, g_eff ~ g)
     [InlineData(70, 0.50)]
     [InlineData(35, 1.00)]
-    [InlineData(7, 1.84)]
+    [InlineData(7, 5.01)]
     [InlineData(300, 0.12)]
     public void JumpHeight_InAir(double mass, double expected)
     {
@@ -111,7 +111,7 @@ public class FormulaTests
     [Theory] // SC 12 with the real density of the player: fixed volume 0.07 m3, so rho = m / 0.07
     [InlineData(70, 0.50)]
     [InlineData(35, 1.00)]
-    [InlineData(7, 1.86)]
+    [InlineData(7, 5.06)]
     [InlineData(300, 0.12)]
     public void JumpHeight_InAir_WithPlayerFixedVolume(double mass, double expected)
     {
@@ -120,9 +120,12 @@ public class FormulaTests
         Assert.Equal(expected, h, 0.01);
     }
 
-    [Fact]
-    public void JumpTakeoffSpeed_IsCappedByLegs() =>
-        Assert.Equal(6.0, Formulas.JumpTakeoffSpeed(7), Tol);
+    [Theory] // no cap: the take-off speed is just sqrt(2·343/m), so a light body leaves the ground faster
+    [InlineData(7, 9.8995)]
+    [InlineData(1, 26.1916)]
+    [InlineData(70, 3.1305)]
+    public void JumpTakeoffSpeed_HasNoCap(double mass, double expected) =>
+        Assert.Equal(expected, Formulas.JumpTakeoffSpeed(mass), 0.001);
 
     [Fact]
     public void JumpNearMediumDensity_IsMoonLike()

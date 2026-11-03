@@ -110,14 +110,14 @@ properties; the game always uses "all" for now.
   water (stops quickly), low drag in air and gas (drifts, like in space).
 - **Jumping (physically correct; tune after playtesting).**
   - The legs give a fixed energy per jump: E_jump = 343 J (a 0.5 m jump at 70 kg).
-  - Take-off speed v = min(√(2·E_jump ÷ m), v_legs_max), with v_legs_max = 6 m/s (legs cannot
-    extend infinitely fast).
+  - Take-off speed v = √(2·E_jump ÷ m), **with no cap** (the user removed the old v_legs_max = 6 m/s on 2026-11-03: a light body
+    leaves the ground faster and jumps much higher).
   - Effective gravity near the medium's density: g_eff = g · (1 − ρ_fluid ÷ ρ) when ρ > ρ_fluid. A
     lighter body jumps higher but falls at the normal speed; only close to the medium's density does
     the fall become slow, "moon-like".
   - Jump height h = v² ÷ (2·g_eff). Examples in air (ρ_air = 1.2), with the player's **fixed volume
     of 0.07 m³**, so ρ = m ÷ 0.07: 70 kg (ρ 1 000) → 0.50 m; 35 kg (ρ 500) → 1.00 m;
-    7 kg (ρ 100, capped at 6 m/s) → **1.86 m**; 300 kg (ρ ≈ 4 286) → 0.12 m. (An earlier draft said
+    7 kg (ρ 100) → **5.06 m**; 300 kg (ρ ≈ 4 286) → 0.12 m. (Before the cap was removed this was 1.86 m; an earlier draft said
     1.84 m for 7 kg: that value only holds if the body keeps ρ ≈ 1 000, i.e. if the volume changed.)
   - ⚠️ **Note for later:** compare this with a tuned, gameplay-first jump in playtests and keep the one
     that feels better.

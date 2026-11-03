@@ -1777,3 +1777,12 @@ câmera acompanha o olho. São 69 no total.
   pega: trocar a cor dos objetos pela do jogador.
 - Captura de tela do mapa de teste conferida (ampliada): listras finas, parede transparente, caixa
   atrás visível. O movimento da direita para a esquerda só se vê jogando.
+
+### Rules — tirado o limite de velocidade de decolagem do pulo (pedido do usuário)
+- **Pedido:** tirar o máximo que o pulo podia ter por peso/força.
+- **Feito:** `Formulas.MaxLegSpeed` (6 m/s) saiu e `JumpTakeoffSpeed` agora é só √(2·343/m). Um corpo de
+  7 kg passou de 1,86 m para 5,06 m de pulo, e 1 kg decola a 26 m/s. O corpo de 70 kg não mudou (0,5 m).
+  Testes: o do limite virou `JumpTakeoffSpeed_HasNoCap` (3 casos, falhava com o limite) e os dois casos de
+  7 kg de `JumpHeight` foram atualizados. Spec das regras atualizada. Tudo verde.
+- **Atenção no design:** corpos leves (troca de massa para algo pequeno) agora pulam muito alto; se uma sala
+  2.4 ficar fácil demais, ajustar a sala ou a energia de pulo (`JumpEnergyJoules`).
