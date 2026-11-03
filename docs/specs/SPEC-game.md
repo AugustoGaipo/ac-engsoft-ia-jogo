@@ -221,37 +221,51 @@ public partial class SwapController : Node3D
 
 ---
 
-# Slice 2: menu, local progress and levels 2, 3 and 5 (2026-11-03)
+# Slice 2: menu, local progress, property keys and levels 2 and 3 (2026-11-03)
 
-Asked by the user on 2026-11-03: simple levels for the other skills, and a game menu. Levels 2
-(Barreiras), 3 (Peso) and 5 (Energia) already exist in `levels/` with their design tests; each level
-unlocks **one** property, so no property picker is needed.
+Asked by the user on 2026-11-03: simple levels for the other skills and a game menu. The level list is
+cut and redone as **three levels plus a test map**:
+
+| Level | Name | Unlocks | Rooms |
+|---|---|---|---|
+| 1 | Posição | position | 1.1–1.4 (as shipped) |
+| 2 | Peso | position, mass | 2.1 barrier for objects, 2.2 barrier for the player, 2.3 heavy button, 2.4 jump depends on mass |
+| 3 | Energia | position, mass, energy | 3.1 receive energy from a rolling ball, 3.2 give energy to a box |
+| — | Mapa de teste | all three | the sandbox room, always open, out of the progress and of the rankings |
+
+The old rooms keep their lesson and their numbers move (old 3.1/3.2 → 2.3/2.4, old 5.1/5.2 → 3.1/3.2).
+The no-swap zone room (old 2.3) and levels 4 and 5 leave the catalog. Objects of the weight and energy
+rooms **accept only that property** (`accepts`), so an earlier skill can't skip the lesson.
 
 ### What changes
-- **Main menu** (first screen): title, **Jogar** (continues: the first unlocked level not yet
-  finished, or the last level), **Níveis**, **Controles**, **Sair**.
-- **Level select:** one card per catalog level (1, 2, 3, 5), in catalog order. A locked card shows a
-  lock and cannot be chosen. A finished card shows the best time and the fewest swaps.
-- **Local progress** in `user://progress.json`: finished levels and the best time and best swaps per
-  level (two separate bests, like the API's two rankings). Level 1 is always unlocked; finishing a level
-  unlocks the next one in the catalog. An unreadable or unknown file → fresh progress (the old file is
-  kept as `progress.corrupt.json`). Unknown level ids in the file are ignored.
-- **End screen:** buttons **Próximo nível** (hidden on the last level) and **Menu**.
-- **Pause menu:** gains **Menu**.
-- **Levels 2, 3 and 5** get their Godot scenery (`level_N.tscn`), built the same way as level 1.
-  Barriers are seen-through colored walls: objects barrier, player barrier, no-swap zone (three colors).
-- `--level <id>` starts that level directly (tests and screenshots); with no arguments the menu opens.
-  The smoke test takes the level id as before.
+- **Property keys:** `1` position, `2` mass, `3` kinetic energy. A key of a property the level does not
+  unlock does nothing. The chosen property starts as the first unlocked one in each level, is shown on the
+  HUD, and the crosshair and the outline use it (aiming at an object that refuses it → red crosshair).
+- **Mouse wheel rotates the held object** around the vertical axis (15° per notch).
+- **Main menu** (first screen): title, **Jogar** (continue), **Níveis**, **Mapa de teste**, **Controles**, **Sair**.
+- **Level select:** one card per catalog level in order; locked cards show a lock and can't be chosen;
+  finished cards show the best time and the fewest swaps.
+- **Local progress** in `user://progress.json`: finished levels and the two bests per level (time and
+  swaps, kept apart like the API's two rankings). Level 1 is always open; finishing a level opens the next.
+  An unreadable or unknown file → fresh progress (the old file is kept as `progress.corrupt.json`);
+  unknown level ids are ignored.
+- **End screen:** **Próximo nível** (hidden on the last level) and **Menu**. **Pause menu** gains **Menu**.
+- **Levels 2 and 3** get their Godot scenery (`level_N.tscn`) built like level 1. Barriers are
+  see-through colored walls (one color for objects, another for the player).
+- `--level <id>` starts that level directly; `--sandbox` the test map; no arguments → the menu.
 
 ### Not in this slice
-`sync` with the API, level 4, the charge bar of the throw, sound.
+`sync` with the API, the throw charge bar, sound, the no-swap zone.
 
 ### Success criteria (slice 2)
-13. `LevelProgress` (in `Swapping.GameLogic`, no Godot) unlocks in catalog order, keeps the two bests
-    independently, ignores unknown ids, and round-trips to JSON; a corrupt text gives fresh progress.
-14. "Continue" picks the first unlocked level not finished; when all are finished, the last level.
-15. The headless menu check: the menu opens with no arguments; a locked card can't be started; finishing
-    level 1 in the smoke run unlocks level 2 and writes the progress file.
-16. Headless scripted runs of levels 2, 3 and 5 finish each level (exit code 0), each room solved the
-    planned way.
-17. Line coverage of `Swapping.GameLogic` stays ≥ 90 %; zero warnings; all tests green.
+13. `LevelProgress` (in `Swapping.GameLogic`, no Godot) opens levels in catalog order, keeps the two bests
+    apart, ignores unknown ids and locked results, and round-trips to JSON; corrupt text → fresh progress.
+14. "Continue" picks the first open level not finished; with all finished, the last level.
+15. `PropertyKeys`: keys 1/2/3 map to the three properties; a property not unlocked is refused; the
+    default is the first unlocked one.
+16. The shipped catalog is levels 1, 2, 3 with 4 + 4 + 2 rooms; each room keeps a design test; the API
+    tests still pass with the new catalog.
+17. Headless checks: no arguments opens the menu; a locked card can't start; finishing level 1 opens
+    level 2 and writes the progress file; scripted runs of levels 2 and 3 finish (exit code 0), each room
+    the planned way (mass swap for 2.3/2.4, energy swap for 3.1/3.2); the wheel rotates a held box.
+18. Line coverage of `Swapping.GameLogic` stays ≥ 90 %; zero warnings; all tests green.
