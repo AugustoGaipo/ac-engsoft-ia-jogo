@@ -129,6 +129,7 @@ public partial class SwapController : Node
             {
                 // Task 7: a swap exchanges centers, so the feet may end up inside the floor or a ledge.
                 var spot = MakeRoom.ForPlayer(_player, center, swapped);
+                GD.Print($"[game] swap with {string.Join(",", swapped.Select(b => b.ContainerId))}: player from {_player.GlobalPosition} to center {center} → {spot.Outcome} {spot.Point}");
                 LastMakeRoom = spot.Outcome;
                 _player.PlaceAtCenter(spot.Point?.ToGodot() ?? center, update.Velocity.ToGodot(), update.MassKg);
                 died = spot.Outcome == MakeRoomOutcome.Death;
