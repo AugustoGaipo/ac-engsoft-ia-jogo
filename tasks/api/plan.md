@@ -63,7 +63,7 @@ Host + test factory + hardening                      (Task 1)
 - [x] Task 10: Rankings
 
 ### Phase 4: Wrap-up
-- [ ] Task 11: Architecture, coverage, dependency audit and report
+- [x] Task 11: Architecture, coverage, dependency audit and report
 
 ### Checkpoint: Complete
 

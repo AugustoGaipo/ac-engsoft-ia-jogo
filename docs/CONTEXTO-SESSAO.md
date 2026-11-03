@@ -142,3 +142,11 @@ Pendência resolvida (sessão 2): o professor já libera jogos que não sejam si
   aprovar.
 - **Atraso no cronograma:** terça era o dia do `game` nível 1. Os níveis 2, 3 e 5 e o `sync` (quarta)
   são os primeiros candidatos a corte.
+- **Tarefa 11 feita: a API está completa.**
+  - Relatório: `docs/processo/RELATORIO-api.md` (58 de 58 critérios ligados a testes).
+  - Cobertura: `Profiles/` 98,3 % e `Progress/` 96,5 %. 0 pacotes vulneráveis (os transitivos do xunit
+    foram fixados em `tests/Directory.Build.props`).
+  - O C4 tem o diagrama de Componentes da API, e o README tem as rotas.
+  - 479 testes verdes (106 + 125 + 248).
+- **Próximo passo:** o `game` nível 1 no Godot, depois que o usuário aprovar a `SPEC-game.md`.
+  Depois, o plano e as tarefas em `tasks/game/`.

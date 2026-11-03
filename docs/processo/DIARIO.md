@@ -1234,3 +1234,34 @@ o que segue para um possível lançamento são as regras de troca e as fases.
   - `AheadOf` do modo `moves` contando a mesma data como "na frente" → 3 testes caíram;
   - `top` aceitando até 1000 → 1 teste caiu.
 - 475 testes verdes (106 + 125 + 244), 0 avisos.
+
+### API — tarefa 11: arquitetura, cobertura, auditoria e relatório ✅ (checkpoint: API completa)
+- **Testes de arquitetura** (`ArchitectureTests`, 4 testes):
+  - nenhum arquivo de `Profiles/` cita o namespace ou um tipo de `Progress/`;
+  - nenhum campo, propriedade ou assinatura de `Profiles/` usa um tipo de `Progress/` (por reflexão);
+  - a API não referencia Godot e só tem o pacote `Microsoft.EntityFrameworkCore.Sqlite`;
+  - nenhum arquivo de `src/Swapping.Api` roda SQL cru (`FromSqlRaw`, `ExecuteSqlRaw`, `SqlQueryRaw` e
+    parecidos).
+  - **Mutação:** um arquivo em `Profiles/` com uma propriedade `RankingMode` e um `ExecuteSqlRaw` →
+    os 3 testes certos caíram.
+- **Cobertura** (rodada única, 479 testes passando): `Profiles/` **98,3 %**, `Progress/` **96,5 %**
+  (meta ≥ 90 %), a API inteira 96,7 %. O que falta: os ramos `default` que lançam exceção, o catálogo
+  vazio e a nova tentativa depois de dois envios simultâneos.
+- **Auditoria** (`dotnet list package --vulnerable --include-transitive`):
+  - nenhum pacote vulnerável no `rules`, no `levels` e na API;
+  - nos 3 projetos de teste, o xunit 2.5.3 puxa o `NETStandard.Library` 1.6.1, que traz o
+    `System.Net.Http` 4.3.0 e o `System.Text.RegularExpressions` 4.3.0, os dois com aviso **alto**;
+  - **decisão do agente:** fixar as versões corrigidas (4.3.4 e 4.3.1) num `tests/Directory.Build.props`.
+    No .NET 8 essas DLLs nem são carregadas, mas assim a auditoria fica limpa;
+  - auditoria de novo: **0 em 6 projetos**. O `restore --locked-mode` passa.
+- **Tropeço:** no meio do restore, o `api.nuget.org` não resolveu (falha de rede passageira) e o
+  arquivo de lock ficou pela metade. Na segunda tentativa deu certo, e o `--locked-mode` confirmou.
+- **Conferido com a API rodando de verdade** (`dotnet run` + `curl`, banco temporário, níveis reais):
+  - 4 níveis listados;
+  - 2 perfis enviaram resultados;
+  - `time` → Bia, Ana; `moves` → Ana, Bia; `…/me` da Ana → 2º de 2;
+  - `TIME;DROP` → 400, `..%2F..%2Fetc` → 404.
+- **Relatório** em `docs/processo/RELATORIO-api.md`: os 31 critérios do `profiles` e os 27 do
+  `progress`, cada um ligado aos testes que o cobrem. C4 com o diagrama de Componentes da API e
+  README com as rotas.
+- 479 testes verdes (106 + 125 + 248), 0 avisos.

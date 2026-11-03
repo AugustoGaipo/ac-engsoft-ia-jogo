@@ -159,13 +159,13 @@ policy), `GET /progress/me`, security events for refused results.
 coverage of both folders, `dotnet list package --vulnerable --include-transitive`, build with
 `--locked-mode`, report `docs/processo/RELATORIO-api.md` (criterion → test), C4 and README updated.
 **Acceptance criteria:**
-- [ ] P-SC 17, 24 (source part), G-SC 17: architecture tests green.
-- [ ] P-SC 18, G-SC 17: line coverage ≥ 90 % in `Profiles/` and in `Progress/`.
-- [ ] P-SC 30: the audit result is in the diary; the report maps every criterion to a test.
+- [x] P-SC 17, 24 (source part), G-SC 17: architecture tests green.
+- [x] P-SC 18, G-SC 17: line coverage ≥ 90 % in `Profiles/` and in `Progress/`.
+- [x] P-SC 30: the audit result is in the diary; the report maps every criterion to a test.
 **Dependencies:** Task 10
 **Files:** `tests/.../ArchitectureTests.cs`, `docs/processo/RELATORIO-api.md`, `docs/processo/DIARIO.md`,
 `docs/architecture/C4.md`, `README.md`
 **Scope:** M
 
 ### Checkpoint: Complete
-- [ ] All criteria of both specs have a test; build clean; all green; pushed.
+- [x] All criteria of both specs have a test; build clean; all green; pushed.
