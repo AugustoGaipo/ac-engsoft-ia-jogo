@@ -133,9 +133,11 @@ public partial class Player : CharacterBody3D, IHasWeight
         if (direction.LengthSquared() > 1)
             direction = direction.Normalized();
 
+        // While pushing, the player moves only as fast as the pushed body can (PushImpulse).
+        var speed = _pushSpeed is { } pushing ? Mathf.Min(WalkSpeed, pushing) : WalkSpeed;
         var velocity = Velocity;
-        velocity.X = direction.X * WalkSpeed;
-        velocity.Z = direction.Z * WalkSpeed;
+        velocity.X = direction.X * speed;
+        velocity.Z = direction.Z * speed;
         if (!IsOnFloor())
             velocity.Y -= (float)(Formulas.Gravity * delta);
         Velocity = velocity;
@@ -203,16 +205,25 @@ public partial class Player : CharacterBody3D, IHasWeight
             Drop();
     }
 
+    private float? _pushSpeed;
+
+    /// <summary>Whether the last step pushed (or tried to push) a body, and at what speed.</summary>
+    public float? PushSpeed => _pushSpeed;
+
     private void PushBodies(Vector3 direction)
     {
+        _pushSpeed = null;
         if (direction == Vector3.Zero)
             return;
         for (var i = 0; i < GetSlideCollisionCount(); i++)
         {
-            if (GetSlideCollision(i).GetCollider() is not Body body || body == Held)
+            var collision = GetSlideCollision(i);
+            // Only a body in front, not one under the feet.
+            if (collision.GetCollider() is not Body body || body == Held || collision.GetNormal().Dot(direction) > -0.5f)
                 continue;
-            var along = body.LinearVelocity.Dot(direction);
-            var impulse = PushImpulse.Impulse(MassKg, body.Mass, WalkSpeed, along);
+            var canPush = (float)PushImpulse.Speed(body.Mass, WalkSpeed);
+            _pushSpeed = _pushSpeed is { } other ? Mathf.Min(other, canPush) : canPush;
+            var impulse = PushImpulse.Impulse(body.Mass, WalkSpeed, body.LinearVelocity.Dot(direction));
             if (impulse > 0)
                 body.ApplyCentralImpulse(direction * (float)impulse);
         }

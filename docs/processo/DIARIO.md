@@ -1483,3 +1483,18 @@ câmera acompanha o olho. São 69 no total.
     (`Body.IgnoreForAMoment`). O clique só agenda a troca, que roda dentro do passo de física.
   - Verificação nova: depois de 1 s, a caixa está assentada embaixo de onde o jogador estava e parada.
     São 82 verificações.
+- **Teste de jogo do usuário:** "empurro a caixa muito fácil, nem parece que tem peso".
+  - **Duas causas:**
+    - a fórmula levava a caixa quase à velocidade de caminhada, e o jogador não desacelerava;
+    - o corpo cinemático do jogador também empurrava a caixa como se tivesse massa infinita.
+  - **Correção:** o empurrão virou **força**. São 200 N de empurrão contra o atrito de 0,6·m·g, e a
+    velocidade é caminhada × (1 − atrito / força).
+    - 10 kg: ~2,1 m/s;
+    - 30 kg: ~0,35 m/s;
+    - acima de ~34 kg: não se mexe.
+    O jogador desacelera para a mesma velocidade enquanto empurra, e as caixas não reagem mais ao corpo
+    do jogador (ele ainda bate nelas e sobe nelas).
+  - Números de rascunho, para ajustar jogando. O caixote de 300 kg do nível 3 fica impossível de
+    empurrar, o que combina com o "mal se mexe" da spec.
+  - Testes: 7 da fórmula nova. Sem janela: 10 kg anda 1–2,4 m em 1 s; 300 kg não sai do lugar. São 84
+    verificações.

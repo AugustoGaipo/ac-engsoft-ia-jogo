@@ -36,33 +36,47 @@ public sealed class ControlsTests
 
 public sealed class PushImpulseTests
 {
+    // Draft numbers (play test 2026-11-03): 200 N of push, friction 0.6, g = 9.8.
+
     [Fact]
-    public void A_light_box_is_pushed_almost_at_walking_speed()
+    public void A_light_box_moves_a_bit_slower_than_walking()
     {
-        // 70 kg player at 3 m/s against a 10 kg box at rest: the box gets 3 × 70 / 80 = 2.625 m/s.
-        Assert.Equal(10 * 2.625, PushImpulse.Impulse(70, 10, 3, bodySpeedAlong: 0), precision: 6);
+        // 10 kg: friction 58.8 N → 3 × (1 − 58.8 / 200) = 2.118 m/s.
+        Assert.Equal(3 * (1 - 58.8 / 200), PushImpulse.Speed(10, 3), precision: 6);
     }
 
     [Fact]
-    public void A_heavy_crate_barely_moves()
+    public void A_30_kg_box_crawls()
     {
-        var light = PushImpulse.Impulse(70, 10, 3, 0) / 10;
-        var heavy = PushImpulse.Impulse(70, 300, 3, 0) / 300;
+        Assert.InRange(PushImpulse.Speed(30, 3), 0.3, 0.4);
+    }
 
-        Assert.True(heavy < light / 4, $"{heavy} m/s vs {light} m/s");
-        Assert.Equal(3.0 * 70 / 370, heavy, precision: 6);
+    [Theory]
+    [InlineData(34.1)]
+    [InlineData(300)]
+    public void A_box_heavier_than_the_push_can_beat_does_not_move(double massKg)
+    {
+        Assert.Equal(0, PushImpulse.Speed(massKg, 3));
+        Assert.Equal(0, PushImpulse.Impulse(massKg, 3, bodySpeedAlong: 0));
     }
 
     [Fact]
-    public void A_body_already_moving_fast_enough_gets_no_impulse()
+    public void The_impulse_brings_the_box_up_to_the_push_speed()
     {
-        Assert.Equal(0, PushImpulse.Impulse(70, 10, 3, bodySpeedAlong: 2.625));
-        Assert.Equal(0, PushImpulse.Impulse(70, 10, 3, bodySpeedAlong: 5));
+        Assert.Equal(10 * PushImpulse.Speed(10, 3), PushImpulse.Impulse(10, 3, bodySpeedAlong: 0), precision: 6);
+        Assert.Equal(10 * (PushImpulse.Speed(10, 3) - 1), PushImpulse.Impulse(10, 3, bodySpeedAlong: 1), precision: 6);
+    }
+
+    [Fact]
+    public void A_box_already_moving_fast_enough_gets_no_impulse()
+    {
+        Assert.Equal(0, PushImpulse.Impulse(10, 3, bodySpeedAlong: 2.5));
     }
 
     [Fact]
     public void Standing_still_pushes_nothing()
     {
-        Assert.Equal(0, PushImpulse.Impulse(70, 10, 0, 0));
+        Assert.Equal(0, PushImpulse.Speed(10, 0));
+        Assert.Equal(0, PushImpulse.Impulse(10, 0, 0));
     }
 }

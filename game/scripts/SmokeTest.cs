@@ -206,6 +206,25 @@ public partial class SmokeTest : Node
             $"pressed {runner.Buttons.Single().IsPressed}");
         Check("player: the camera follows the eye", player.Camera.GlobalPosition.DistanceTo(player.Eye.Origin) < 0.1f,
             $"camera {player.Camera.GlobalPosition}, eye {player.Eye.Origin}");
+
+        // Play test 2026-11-03: pushing has weight (PushImpulse: 200 N against friction).
+        foreach (var (mass, minMove, maxMove) in new[] { (10f, 1.0f, 2.4f), (300f, -1f, 0.05f) })
+        {
+            main.ShowRoom("1.1");
+            var pushed = main.Runner.Bodies.Single();
+            pushed.Mass = mass;
+            player.GlobalPosition = new Vector3(2.6f, 0, 3);   // 0.6 m before the box at x = 4 (faces touch at x 3.2/3.5)
+            player.ResetPhysicsInterpolation();
+            player.Look(-90, 0);                                // facing +X
+            await PhysicsFrames(5);
+            var start = pushed.GlobalPosition.X;
+            player.ScriptedMove = new Vector2(0, 1);
+            await PhysicsFrames(60);
+            player.ScriptedMove = null;
+            var moved = pushed.GlobalPosition.X - start;
+            Check($"player: walking 1 s into a {mass} kg box moves it {minMove}–{maxMove} m", moved > minMove && moved < maxMove,
+                $"moved {moved:0.00} m, player push speed {player.PushSpeed}");
+        }
     }
 
     // ---- Task 6 (SC 3, 5): crosshair from the rules' dry run, the swap applied and written back ----

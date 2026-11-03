@@ -89,7 +89,9 @@ public partial class Body : RigidBody3D, IHasWeight
             Mass = (float)def.MassKg,
             ContinuousCd = true,
             CollisionLayer = Layers.Objects,
-            CollisionMask = Layers.World | Layers.Player | Layers.Objects | Layers.BarrierObjects,
+            // Not the player's layer: the player's kinematic body would shove a box as if with infinite mass.
+            // The player still collides with boxes (stands on them, stops at them) and pushes through PushImpulse.
+            CollisionMask = Layers.World | Layers.Objects | Layers.BarrierObjects,
             PhysicsMaterialOverride = new PhysicsMaterial { Bounce = (float)def.Bounce, Friction = Friction },
             Position = def.Position.ToGodot(),
             LinearVelocity = def.Velocity.ToGodot(),
