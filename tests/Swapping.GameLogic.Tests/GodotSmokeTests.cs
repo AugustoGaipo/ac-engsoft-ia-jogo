@@ -80,6 +80,15 @@ public sealed class GodotSmokeTests
     }
 
     [GodotFact]
+    public void The_menu_smoke_test_passes()
+    {
+        var (exitCode, output) = RunGame("--smoke-menu");
+
+        Assert.True(exitCode == 0, $"exit code {exitCode}{Environment.NewLine}{output}");
+        Assert.Contains("[smoke] PASSED", output);
+    }
+
+    [GodotFact]
     public void A_failing_check_exits_1_and_names_the_check()
     {
         var (exitCode, output) = RunGame("--smoke-test", "level-404");

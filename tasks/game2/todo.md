@@ -9,7 +9,7 @@ Each task: red test → code → mutation → diary → tick → commit and push
       API tests updated. SC 16.
 - [ ] **Task 14 — Property keys and wheel rotation (S/M).** `PropertyKeys` in GameLogic (tests), keys in
       `Controls`, HUD shows the property, `SwapController` uses it; wheel turns the held object. SC 15.
-- [ ] **Task 15 — Menu, level select, test map, end and pause buttons (M).** `Menu.cs`, `Main.cs`,
+- [x] **Task 15 — Menu, level select, test map, end and pause buttons (M).** `Menu.cs`, `Main.cs`,
       `RunFlow.cs`, progress file, headless menu checks. SC 17.
 - [ ] **Task 16 — Level 2 scene and barrier looks (M).** `level_2.tscn`, scripted run. SC 17.
 - [ ] **Task 17 — Level 3 scene (M).** `level_3.tscn`, scripted run. SC 17.

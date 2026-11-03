@@ -529,6 +529,21 @@ public partial class SmokeTest : Node
             result is { LevelId: "level-1", Swaps: 4, Deaths: 0, RoomRestarts: 0 } && result.TimeMs >= 4_000,
             $"{result}");
         GD.Print($"[smoke] info full run of level 1: {result}");
+
+        // Task 15 (SC 17): finishing level 1 opens level 2 and writes the progress file; the end screen has its buttons.
+        Check("progress (SC 17): finishing level 1 records it and opens level 2",
+            main.Progress.IsFinished("level-1") && main.Progress.IsUnlocked("level-2"), "level 1 not recorded");
+        var saved = Godot.FileAccess.FileExists(main.ProgressPath) ? Godot.FileAccess.GetFileAsString(main.ProgressPath) : "";
+        Check("progress (SC 17): the progress file is written with level 1", saved.Contains("level-1") && saved.Contains("\"timeMs\""), saved);
+        Check("end screen: has the Menu button", Menu.FindButton(flow.EndPanel, "Menu") is not null, "missing");
+        Check("end screen: has Próximo nível, hidden here because level 2 has no scene yet or shown when it has one",
+            Menu.FindButton(flow.EndPanel, "Próximo nível") is not null
+            && flow.NextButtonVisible == (main.NextPlayable("level-1") is not null), $"visible {flow.NextButtonVisible}");
+        var realHasScene = main.HasScene;
+        main.HasScene = _ => true;
+        Check("end screen: Próximo nível leads to level 2 when its scene exists", main.NextPlayable("level-1") == "level-2" && main.NextPlayable("level-3") is null,
+            $"{main.NextPlayable("level-1")}");
+        main.HasScene = realHasScene;
         flow.RestartLevel();
     }
 
@@ -630,6 +645,116 @@ public partial class SmokeTest : Node
         await LookAt(main.Player, behind.GlobalPosition);
         Check("sandbox: a swap through the variable barrier is refused with \"barreira no caminho\"",
             main.Swaps.Target == behind && main.Swaps.Crosshair.Reason == "barreira no caminho", $"{main.Swaps.Crosshair}");
+    }
+
+    // ---- Task 15 (SC 17): the menu, with no window. Run with --smoke-menu (no other argument: the default start) ----
+
+    public async Task<int> RunMenu(Main main)
+    {
+        try
+        {
+            var menu = main.Menu;
+            await PhysicsFrames(2);
+            Check("menu: no arguments opens the menu with nothing loaded", menu.IsOpen && menu.Screen == "main" && main.Runner.Room is null,
+                $"open {menu.IsOpen}, screen {menu.Screen}");
+            Check("menu: the player does not run behind the menu", main.Player.ProcessMode == ProcessModeEnum.Disabled, $"{main.Player.ProcessMode}");
+            foreach (var text in new[] { "Jogar", "Níveis", "Mapa de teste", "Controles", "Sair" })
+                Check($"menu: button {text}", Menu.FindButton(menu, text) is not null, "missing");
+
+            // Cards: level 1 has a scene; 2 and 3 do not yet → "Em construção" (even though they are also locked).
+            main.HasScene = level => level.Id == "level-1";
+            Press(menu, "Níveis");
+            Check("menu: one card per catalog level", menu.Cards.Count == 3 && menu.Screen == "levels", $"{menu.Cards.Count} cards");
+            Check("menu: level 1 open, levels without a scene \"Em construção\"",
+                menu.StatusOf("level-1") == Swapping.GameLogic.LevelStatus.Available
+                && menu.StatusOf("level-2") == Swapping.GameLogic.LevelStatus.UnderConstruction
+                && menu.StatusOf("level-3") == Swapping.GameLogic.LevelStatus.UnderConstruction, "wrong status");
+
+            // With scenes everywhere the same cards show the normal padlock.
+            main.HasScene = _ => true;
+            menu.Show("levels");
+            Check("menu: with scenes, level 2 and 3 show the padlock and their cards are disabled",
+                menu.StatusOf("level-2") == Swapping.GameLogic.LevelStatus.Locked
+                && menu.StatusOf("level-3") == Swapping.GameLogic.LevelStatus.Locked
+                && menu.Cards["level-2"].Disabled && menu.Cards["level-3"].Disabled && !menu.Cards["level-1"].Disabled, "wrong cards");
+            var started = new List<string>();
+            menu.LevelRequested += started.Add;
+            menu.Cards["level-2"].EmitSignal(BaseButton.SignalName.Pressed);
+            Check("menu: a locked card can't start", started.Count == 0 && menu.IsOpen, $"started {string.Join(",", started)}");
+
+            // Under construction can't start either.
+            main.HasScene = level => level.Id == "level-1";
+            menu.Show("levels");
+            menu.Cards["level-2"].EmitSignal(BaseButton.SignalName.Pressed);
+            Check("menu: an under-construction card can't start", started.Count == 0, $"started {string.Join(",", started)}");
+            menu.LevelRequested -= started.Add;
+
+            // Level 1 from its card, then the pause menu's Menu button.
+            menu.Cards["level-1"].EmitSignal(BaseButton.SignalName.Pressed);
+            await PhysicsFrames(5);
+            Check("menu: the level-1 card starts level 1", !menu.IsOpen && main.Runner.Level.Id == "level-1" && main.Runner.Room?.Id == "1.1",
+                $"open {menu.IsOpen}");
+            Check("menu: the player runs again in the level", main.Player.ProcessMode == ProcessModeEnum.Inherit, $"{main.Player.ProcessMode}");
+            main.Flow.SetPaused(true);
+            Press(main.Flow.PausePanel, "Menu");
+            await PhysicsFrames(3);
+            Check("pause: the Menu button goes back to the menu, unpaused, nothing loaded",
+                menu.IsOpen && !main.Flow.IsPaused && !GetTree().Paused && main.Runner.Room is null, $"open {menu.IsOpen}");
+
+            // "Jogar" continues: with fresh progress it is level 1.
+            Press(menu, "Jogar");
+            await PhysicsFrames(3);
+            Check("menu: Jogar continues at level 1 on fresh progress", main.Runner.Level.Id == "level-1" && !menu.IsOpen, "");
+            main.ShowMenu();
+
+            // The test map.
+            Press(menu, "Mapa de teste");
+            await PhysicsFrames(3);
+            Check("menu: Mapa de teste opens the sandbox", main.Runner.Level.Id == "sandbox" && main.Runner.Room?.Id == "0.1",
+                $"{main.Runner.Level.Id}");
+            main.ShowMenu();
+
+            // Controls screen and back.
+            Press(menu, "Controles");
+            Check("menu: Controles shows the controls screen", menu.Screen == "controls", menu.Screen);
+            Press(menu, "Voltar");
+            Check("menu: Voltar returns to the first screen", menu.Screen == "main", menu.Screen);
+
+            // The progress file: write, read back; an unreadable file is kept aside and progress starts fresh.
+            main.Progress.Record(new Swapping.GameLogic.RunResult("level-1", 20_000, 4, 0, 0, DateTimeOffset.UtcNow));
+            ProgressStore.Save(Main.SmokeProgressPath, main.Progress);
+            var ids = new[] { "level-1", "level-2", "level-3" };
+            var again = ProgressStore.Load(Main.SmokeProgressPath, ids);
+            Check("progress: saved to the file and read back", again.IsFinished("level-1") && again.Best("level-1") is { TimeMs: 20_000, Swaps: 4 }, "not read back");
+            using (var bad = Godot.FileAccess.Open(Main.SmokeProgressPath, Godot.FileAccess.ModeFlags.Write))
+                bad!.StoreString("{ not json");
+            var fresh = ProgressStore.Load(Main.SmokeProgressPath, ids);
+            var corruptCopy = Godot.FileAccess.FileExists("user://progress.smoke.corrupt.json");
+            Check("progress: an unreadable file starts fresh and is kept as .corrupt.json", fresh.IsCorrupt && !fresh.IsFinished("level-1") && corruptCopy,
+                $"corrupt {fresh.IsCorrupt}, copy {corruptCopy}");
+            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath("user://progress.smoke.corrupt.json"));
+            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(Main.SmokeProgressPath));
+
+            GD.Print($"[smoke] PASSED {_passed} checks");
+            return 0;
+        }
+        catch (SmokeFailure failure)
+        {
+            GD.PrintErr($"[smoke] FAIL {failure.Message}");
+            return 1;
+        }
+        catch (Exception exception)
+        {
+            GD.PrintErr($"[smoke] FAIL unexpected {exception.GetType().Name}: {exception.Message}");
+            return 1;
+        }
+    }
+
+    private void Press(Node root, string text)
+    {
+        var button = Menu.FindButton(root, text);
+        Check($"button \"{text}\" exists", button is not null, "missing");
+        button!.EmitSignal(BaseButton.SignalName.Pressed);
     }
 
     /// <summary>Turns the player's view to a point and lets the aim update.</summary>

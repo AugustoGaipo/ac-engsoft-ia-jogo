@@ -1,6 +1,8 @@
 using Godot;
 using Swapping.Game.Pieces;
 using Swapping.GameLogic;
+using Swapping.Levels;
+using Swapping.Levels.Model;
 
 namespace Swapping.Game;
 
@@ -10,7 +12,8 @@ namespace Swapping.Game;
 /// <c>--smoke-test &lt;levelId&gt;</c> runs the scripted checks and quits with 0 or 1;
 /// <c>--screenshot &lt;room&gt; &lt;file.png&gt;</c> saves what a room's spawn sees and quits;
 /// <c>--preview-shot &lt;file.png&gt;</c> saves the editor preview seen from above;
-/// <c>--sandbox</c> plays the test room instead of level 1.
+/// <c>--sandbox</c> plays the test room; <c>--level &lt;id&gt;</c> plays that level directly;
+/// <c>--smoke-menu</c> runs the headless menu checks; with no arguments the menu opens.
 /// </summary>
 public partial class Main : Node3D
 {
@@ -44,10 +47,22 @@ public partial class Main : Node3D
         Hud.Setup(Player, Swaps, Flow);
 
         var args = OS.GetCmdlineUserArgs();
+        // Scripted runs must never touch the player's real progress file.
+        if (args.Contains("--smoke-test") || args.Contains("--smoke-menu"))
+            ProgressPath = SmokeProgressPath;
+        SetupMenu();
+
         var smoke = Array.IndexOf(args, "--smoke-test");
         if (smoke >= 0)
         {
             _ = RunSmokeTest(smoke + 1 < args.Length ? args[smoke + 1] : "level-1");
+            return;
+        }
+
+        if (args.Contains("--smoke-menu"))
+        {
+            ShowMenu();
+            _ = RunSmokeMenu();
             return;
         }
 
@@ -62,6 +77,13 @@ public partial class Main : Node3D
             var wide = args.Contains("--sandbox") ? new Vector3(15, 26, 22) : new Vector3(24, 34, 18);
             top.LookAtFromPosition(wide, wide with { Y = 0, Z = args.Contains("--sandbox") ? 10 : 5 }, Vector3.Up);
             _ = SaveScreenshot(args[preview + 1]);
+            return;
+        }
+
+        var direct = args.Contains("--sandbox") || Array.IndexOf(args, "--level") >= 0 || Array.IndexOf(args, "--screenshot") >= 0;
+        if (!direct)
+        {
+            ShowMenu();
             return;
         }
 
@@ -87,10 +109,105 @@ public partial class Main : Node3D
 
     private void LoadChosenLevel(string[] args)
     {
+        var level = Array.IndexOf(args, "--level");
         if (args.Contains("--sandbox"))
             _runner.LoadSandbox();
         else
-            _runner.LoadLevel("level-1");
+            _runner.LoadLevel(level >= 0 && level + 1 < args.Length ? args[level + 1] : "level-1");
+    }
+
+    // ---- Menu, progress and moving between levels ----
+
+    public const string SmokeProgressPath = "user://progress.smoke.json";
+
+    public Menu Menu { get; private set; } = null!;
+
+    public LevelProgress Progress { get; private set; } = null!;
+
+    /// <summary>Where the progress is saved; scripted runs use a separate file.</summary>
+    public string ProgressPath { get; private set; } = ProgressStore.DefaultPath;
+
+    /// <summary>Whether a level has its scenery scene. Replaceable so tests can pretend a scene exists.</summary>
+    public Func<LevelFile, bool> HasScene { get; set; } = level => ResourceLoader.Exists(level.Scene);
+
+    private IReadOnlyList<LevelFile> _catalogLevels = [];
+
+    private void SetupMenu()
+    {
+        var catalog = LevelCatalog.Load(ProjectSettings.GlobalizePath("res://levels"));
+        if (catalog.Errors.Count > 0)
+            throw new InvalidOperationException(string.Join("; ", catalog.Errors.Select(e => $"{e.Path}: {e.Code} {e.Message}")));
+        _catalogLevels = catalog.Levels;
+        if (ProgressPath == SmokeProgressPath)
+            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(ProgressPath));
+        Progress = ProgressStore.Load(ProgressPath, _catalogLevels.Select(l => l.Id).ToList());
+
+        Menu = new Menu { Name = "Menu" };
+        AddChild(Menu);
+        Menu.Setup(_catalogLevels, Progress, HasSceneOf);
+        Menu.LevelRequested += StartLevel;
+        Menu.SandboxRequested += StartSandbox;
+        Flow.MenuRequested += ShowMenu;
+        Flow.NextLevelRequested += () =>
+        {
+            if (Flow.Result is { } result && NextPlayable(result.LevelId) is { } next)
+                StartLevel(next);
+        };
+        Flow.LevelFinished += OnLevelFinished;
+    }
+
+    private bool HasSceneOf(string levelId) => _catalogLevels.FirstOrDefault(l => l.Id == levelId) is { } level && HasScene(level);
+
+    /// <summary>The level after this one, if it can be played now.</summary>
+    public string? NextPlayable(string levelId) => LevelAccess.NextPlayable(levelId, Progress, HasSceneOf);
+
+    private void OnLevelFinished(RunResult result)
+    {
+        Progress.Record(result);
+        ProgressStore.Save(ProgressPath, Progress);
+        Flow.SetNextLevelAvailable(NextPlayable(result.LevelId) is not null);
+    }
+
+    /// <summary>Back to the menu: the level is unloaded and nothing of the game keeps running.</summary>
+    public void ShowMenu()
+    {
+        Flow.ClearForMenu();
+        _runner.Unload();
+        SetPlaying(false);
+        Menu.Open();
+    }
+
+    public void StartLevel(string levelId)
+    {
+        Menu.Close();
+        _runner.LoadLevel(levelId);
+        BeginPlaying();
+    }
+
+    public void StartSandbox()
+    {
+        Menu.Close();
+        _runner.LoadSandbox();
+        BeginPlaying();
+    }
+
+    private void BeginPlaying()
+    {
+        SetPlaying(true);
+        Flow.StartLevel();
+        if (DisplayServer.GetName() != "headless")
+            Input.MouseMode = Input.MouseModeEnum.Captured;
+    }
+
+    /// <summary>The player, swaps, run flow and HUD only work while a level is on screen.</summary>
+    private void SetPlaying(bool playing)
+    {
+        var mode = playing ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+        Player.ProcessMode = mode;
+        Swaps.ProcessMode = mode;
+        Hud.ProcessMode = mode;
+        Hud.Visible = playing;
+        Flow.ProcessMode = playing ? ProcessModeEnum.Always : ProcessModeEnum.Disabled;
     }
 
     /// <summary>Builds a room and puts the player at its spawn (tests and screenshots).</summary>
@@ -116,6 +233,14 @@ public partial class Main : Node3D
         var smoke = new SmokeTest();
         AddChild(smoke);
         var code = await smoke.Run(levelId, _runner, this);
+        GetTree().Quit(code);
+    }
+
+    private async Task RunSmokeMenu()
+    {
+        var smoke = new SmokeTest();
+        AddChild(smoke);
+        var code = await smoke.RunMenu(this);
         GetTree().Quit(code);
     }
 

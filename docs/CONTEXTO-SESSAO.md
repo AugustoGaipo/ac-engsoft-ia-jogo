@@ -14,7 +14,7 @@ Quinta é para slides e ensaio, sem código novo.
 ## Em andamento: fatia 2 do `game` (spec `docs/specs/SPEC-game.md` "Slice 2", tarefas `tasks/game2/todo.md`)
 - 3 níveis: **1 Posição**, **2 Peso** (posição + peso, com 2 barreiras), **3 Energia** (as três), mais o
   **Mapa de teste** no menu (sandbox com as 3 trocas, fora do progresso).
-- **Feitas:** tarefa 12 (`LevelProgress`) e 13 (novo catálogo, `level_5.json` removido). 591 testes verdes.
+- **Feitas:** tarefa 12 (`LevelProgress`), 13 (novo catálogo) e 15 (menu, `LevelAccess`, progresso salvo, botões; 602 testes verdes). A 14 ainda falta.
 - **Próxima:** tarefa 14 — `PropertyKeys` (teclas 1/2/3; hoje `SwapChoice.Property` em
   `src/Swapping.GameLogic/SwapLogic.cs` pega sempre a primeira liberada), HUD mostra a troca escolhida,
   `SwapController` usa ela; roda do mouse gira o item segurado (15° por clique).

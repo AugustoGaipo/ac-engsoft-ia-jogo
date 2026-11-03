@@ -20,6 +20,7 @@ public partial class RunFlow : Node
     private Control _pauseMenu = null!;
     private Control _endScreen = null!;
     private Label _endText = null!;
+    private Button _nextButton = null!;
 
     public RunTracker Run { get; private set; } = new("none");
 
@@ -34,6 +35,18 @@ public partial class RunFlow : Node
 
     public string EndText => _endText.Text;
 
+    public Control PausePanel => _pauseMenu;
+
+    public Control EndPanel => _endScreen;
+
+    public bool NextButtonVisible => _nextButton.Visible;
+
+    /// <summary>The player chose "Menu" (pause or end screen).</summary>
+    public event Action? MenuRequested;
+
+    /// <summary>The player chose "Próximo nível" on the end screen.</summary>
+    public event Action? NextLevelRequested;
+
     /// <summary>What a finished run hands to <c>sync</c> (later).</summary>
     public event Action<RunResult>? LevelFinished;
 
@@ -43,6 +56,20 @@ public partial class RunFlow : Node
         _player = player;
         ProcessMode = ProcessModeEnum.Always; // the pause menu must work while the tree is paused
         BuildOverlay();
+    }
+
+    /// <summary>Shows or hides "Próximo nível" on the end screen (the caller knows the progress).</summary>
+    public void SetNextLevelAvailable(bool available) => _nextButton.Visible = available;
+
+    /// <summary>Back to a clean state before the menu: no pause, no end screen, no fade.</summary>
+    public void ClearForMenu()
+    {
+        SetPaused(false);
+        Result = null;
+        IsDying = false;
+        _endScreen.Visible = false;
+        _nextButton.Visible = false;
+        _fade.Color = _fade.Color with { A = 0 };
     }
 
     // ---- Rooms ----
@@ -96,6 +123,8 @@ public partial class RunFlow : Node
         var tween = CreateTween();
         tween.TweenProperty(_fade, "color:a", 1f, FadeSeconds / 2);
         await ToSignal(tween, Tween.SignalName.Finished);
+        if (!IsDying || _runner.Room is null) // went to the menu during the fade
+            return;
         RestartRoom(death: true);
         tween = CreateTween();
         tween.TweenProperty(_fade, "color:a", 0f, FadeSeconds / 2);
@@ -163,7 +192,7 @@ public partial class RunFlow : Node
         Result = Run.Finish(DateTimeOffset.UtcNow);
         _endText.Text =
             $"{_runner.Level.Name}: concluído!\n\nTempo  {RunClock.Format(Result.TimeMs)}\nTrocas  {Result.Swaps}\n" +
-            $"Mortes  {Result.Deaths}   ·   Reinícios  {Result.RoomRestarts}\n\nR: jogar de novo   ·   Esc: sair";
+            $"Mortes  {Result.Deaths}   ·   Reinícios  {Result.RoomRestarts}\n\nR: jogar de novo   ·   Esc: menu";
         _endScreen.Visible = true;
         GD.Print($"[game] level finished: {Result}");
         LevelFinished?.Invoke(Result);
@@ -178,7 +207,7 @@ public partial class RunFlow : Node
             if (@event.IsActionPressed(Controls.Name(GameAction.RestartRoom)))
                 RestartLevel();
             else if (@event.IsActionPressed(Controls.Name(GameAction.Pause)))
-                GetTree().Quit();
+                MenuRequested?.Invoke();
             return;
         }
         if (@event.IsActionPressed(Controls.Name(GameAction.Pause)))
@@ -215,13 +244,18 @@ public partial class RunFlow : Node
         AddButton(buttons, "Continuar", () => SetPaused(false));
         AddButton(buttons, "Reiniciar sala", () => { SetPaused(false); RestartRoom(death: false); });
         AddButton(buttons, "Reiniciar nível", RestartLevel);
+        AddButton(buttons, "Menu", () => MenuRequested?.Invoke());
         AddButton(buttons, "Sair", () => GetTree().Quit());
         layer.AddChild(_pauseMenu);
 
         _endScreen = Panel("");
         _endText = new Label { HorizontalAlignment = HorizontalAlignment.Center };
         _endText.AddThemeFontSizeOverride("font_size", 28);
-        _endScreen.GetNode<VBoxContainer>("Box").AddChild(_endText);
+        var endBox = _endScreen.GetNode<VBoxContainer>("Box");
+        endBox.AddChild(_endText);
+        _nextButton = AddButton(endBox, "Próximo nível", () => NextLevelRequested?.Invoke());
+        _nextButton.Visible = false;
+        AddButton(endBox, "Menu", () => MenuRequested?.Invoke());
         layer.AddChild(_endScreen);
     }
 
@@ -247,11 +281,12 @@ public partial class RunFlow : Node
         return dim;
     }
 
-    private static void AddButton(VBoxContainer box, string text, Action onPressed)
+    private static Button AddButton(VBoxContainer box, string text, Action onPressed)
     {
         var button = new Button { Text = text, CustomMinimumSize = new Vector2(260, 48) };
         button.AddThemeFontSizeOverride("font_size", 24);
         button.Pressed += onPressed;
         box.AddChild(button);
+        return button;
     }
 }

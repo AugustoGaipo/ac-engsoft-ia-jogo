@@ -1702,3 +1702,22 @@ câmera acompanha o olho. São 69 no total.
   removido. Os objetos de peso e de energia ganharam `accepts`, e os testes de desenho agora verificam que
   nenhum objeto dessas salas aceita uma troca que pule a lição. A API foi ajustada só nos testes que
   contavam os níveis. 591 testes verdes.
+
+### Game — tarefa 15: menu, escolha de nível, progresso salvo, botões de fim e pausa ✅
+- **Regra pura (`Swapping.GameLogic.LevelAccess`):** cada cartão é `Available`, `Locked` (falta terminar o
+  nível anterior) ou `UnderConstruction` (a cena `level_N.tscn` não existe). "Em construção" vence o
+  cadeado. Também decide o "Jogar" (primeiro nível jogável não concluído; senão o último jogável) e o
+  "Próximo nível" (só se o próximo for jogável). 9 testes; mutações pegas: tirar a prioridade de "em
+  construção" (5 falhas) e escolher o "continuar" ignorando as cenas que faltam (2 falhas).
+- **Godot:** `Menu.cs` (título, Jogar, Níveis, Mapa de teste, Controles, Sair; cartões com cadeado
+  desenhado ou triângulo de aviso, melhor tempo e menos trocas), `ProgressStore.cs` (`user://progress.json`;
+  arquivo ruim vira `progress.corrupt.json`), `Main.cs` (sem argumentos abre o menu; `--level <id>` abre
+  direto; `--sandbox` igual; o jogador, as trocas, o HUD e o fluxo ficam parados enquanto o menu está
+  aberto), `RunFlow.cs` (fim: Próximo nível e Menu; pausa: Menu; Esc no fim volta ao menu).
+- **Teste sem janela:** `--smoke-menu` (27 verificações: menu abre sem nada carregado, os dois cadeados,
+  cartão trancado e em construção não iniciam, pausa → Menu, Jogar, Mapa de teste, progresso gravado e
+  lido, arquivo ruim guardado) e, no `--smoke-test level-1`, o nível 1 concluído grava o arquivo e abre o
+  nível 2. As rodadas de teste usam `progress.smoke.json`, nunca o progresso de verdade.
+- **Pendência:** a tela Controles ainda não lista as teclas 1/2/3 e a roda do mouse (tarefa 14, não feita);
+  acrescentar quando ela entrar. Hoje os níveis 2 e 3 aparecem "Em construção" até as tarefas 16 e 17.
+- 602 testes verdes.

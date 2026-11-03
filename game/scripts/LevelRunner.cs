@@ -86,6 +86,20 @@ public partial class LevelRunner : Node3D
         AddChild(_scenery);
     }
 
+    /// <summary>Frees the scenery and every piece: no level loaded (back at the menu).</summary>
+    public void Unload()
+    {
+        foreach (var child in _pieces.GetChildren())
+        {
+            _pieces.RemoveChild(child);
+            child.QueueFree();
+        }
+        _scenery?.QueueFree();
+        _scenery = null;
+        Room = null!;
+        World = null!;
+    }
+
     /// <summary>Frees the current pieces and builds the room again from the file, with a new world.</summary>
     public void BuildRoom(string roomId)
     {
