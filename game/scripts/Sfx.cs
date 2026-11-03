@@ -31,6 +31,18 @@ public static class Sfx
     /// <summary>The throw bar is full: a bright 1320 Hz ring, 0.35 s.</summary>
     public static readonly AudioStreamWav Full = Sweep(1320, 1320, 0.35, noise: 0);
 
+    /// <summary>The swap "zap": 300 → 1400 Hz in 0.22 s, a bit of noise (pitch per property: Feedback.SwapPitch).</summary>
+    public static readonly AudioStreamWav Swap = Sweep(300, 1400, 0.22, noise: 0.1);
+
+    /// <summary>A refused swap (or nothing aimed): a low double "bip" feel, 180 → 140 Hz in 0.18 s.</summary>
+    public static readonly AudioStreamWav Refused = Sweep(180, 140, 0.18, noise: 0.05);
+
+    /// <summary>Picking a body up: 380 → 620 Hz in 0.08 s.</summary>
+    public static readonly AudioStreamWav Grab = Sweep(380, 620, 0.08, noise: 0.15);
+
+    /// <summary>Letting a body go: 560 → 330 Hz in 0.08 s.</summary>
+    public static readonly AudioStreamWav Release = Sweep(560, 330, 0.08, noise: 0.15);
+
     /// <summary>A positional player for one sound, child of a 3D node (it sounds from there).</summary>
     public static AudioStreamPlayer3D Player3D(Node3D owner, AudioStreamWav stream, string name)
     {

@@ -680,15 +680,21 @@ public partial class SmokeTest : Node
         var crate = main.Runner.Bodies.Single(b => b.ContainerId == "crate-2-3");
         var ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-2-3");
         await LookAt(player, crate.GlobalPosition);
+        var (tooHeavy, holdSounds, swapSounds, refused) = (player.TooHeavySounds, player.HoldSounds, swaps.SwapSounds, swaps.RefusedSounds);
         player.ToggleHold();
-        Check("level 2, 2.3 (HoldLoad): the 300 kg crate is too heavy to hold", player.Held is null, $"held {player.Held?.Name}");
+        Check("level 2, 2.3 (HoldLoad): the 300 kg crate is too heavy to hold, with the failure sound",
+            player.Held is null && player.TooHeavySounds == tooHeavy + 1, $"held {player.Held?.Name}, sounds {player.TooHeavySounds - tooHeavy}");
         PressKey(swaps, Key.Key2);
         Check("level 2, 2.3: take the crate's mass", swaps.TrySwap() is { IsApplied: true } && Mathf.IsEqualApprox((float)player.MassKg, 300f),
             $"{swaps.Crosshair}, mass {player.MassKg}");
+        Check("sounds: the swap zaps", swaps.SwapSounds == swapSounds + 1 && swaps.RefusedSounds == refused, $"zaps {swaps.SwapSounds - swapSounds}");
+        Check("sounds: a swap during the cooldown is refused with the failure sound",
+            swaps.TrySwap() is { IsApplied: false } && swaps.RefusedSounds == refused + 1, $"refused {swaps.RefusedSounds - refused}");
         await PhysicsFrames(70);
         await LookAt(player, crate.GlobalPosition);
         player.ToggleHold();
-        Check("level 2, 2.3: now 300 kg, the player holds the 70 kg crate", player.Held == crate, $"held {player.Held?.Name}");
+        Check("level 2, 2.3: now 300 kg, the player holds the 70 kg crate, with the grab sound",
+            player.Held == crate && player.HoldSounds == holdSounds + 1, $"held {player.Held?.Name}, sounds {player.HoldSounds - holdSounds}");
         await WalkTo(player, 29.65f, 5);
         player.Look(-90, -0.35f);
         await PhysicsFrames(30);

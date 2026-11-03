@@ -33,6 +33,9 @@ public partial class Player : CharacterBody3D, IHasWeight
     private AudioStreamPlayer _throwSound = null!;
     private AudioStreamPlayer _tickSound = null!;
     private AudioStreamPlayer _fullSound = null!;
+    private AudioStreamPlayer _grabSound = null!;
+    private AudioStreamPlayer _releaseSound = null!;
+    private AudioStreamPlayer _tooHeavySound = null!;
     private readonly RandomNumberGenerator _shakeRandom = new();
 
     /// <summary>Camera shake 0–1 from the last heavy landing (Feedback.LandingShake); fades in 0.4 s.</summary>
@@ -80,6 +83,9 @@ public partial class Player : CharacterBody3D, IHasWeight
         player._throwSound = Sfx.Player(player, Sfx.Throw, "ThrowSound");
         player._tickSound = Sfx.Player(player, Sfx.Tick, "TickSound");
         player._fullSound = Sfx.Player(player, Sfx.Full, "FullSound");
+        player._grabSound = Sfx.Player(player, Sfx.Grab, "GrabSound");
+        player._releaseSound = Sfx.Player(player, Sfx.Release, "ReleaseSound");
+        player._tooHeavySound = Sfx.Player(player, Sfx.Refused, "TooHeavySound");
         return player;
     }
 
@@ -238,18 +244,36 @@ public partial class Player : CharacterBody3D, IHasWeight
     /// <summary><c>E</c>: hold the aimed movable body within reach, or drop the held one.</summary>
     public void ToggleHold()
     {
-        if (Held is not null)
+        if (Held is { } held)
         {
+            PlayHoldSound(_releaseSound, held.Mass);
             Drop();
             return;
         }
-        if (Aim(HoldReach) is Body body && HoldLoad.CanHold(body.Mass, MassKg))
+        if (Aim(HoldReach) is not Body body)
+            return;
+        if (!HoldLoad.CanHold(body.Mass, MassKg))
         {
-            Held = body;
-            // A carried box never collides with its carrier: looking down, the hold point is inside the
-            // player, and the box squeezed the player through a wall (user's play test).
-            body.IgnoreWhileHeld(this);
+            _tooHeavySound.Play();                  // too heavy (> 2.5 × your mass): the failure sound
+            TooHeavySounds++;
+            return;
         }
+        Held = body;
+        PlayHoldSound(_grabSound, body.Mass);
+        // A carried box never collides with its carrier: looking down, the hold point is inside the
+        // player, and the box squeezed the player through a wall (user's play test).
+        body.IgnoreWhileHeld(this);
+    }
+
+    /// <summary>Grab/release and "too heavy" sounds played so far (headless checks).</summary>
+    public int HoldSounds { get; private set; }
+    public int TooHeavySounds { get; private set; }
+
+    private void PlayHoldSound(AudioStreamPlayer sound, float massKg)
+    {
+        sound.PitchScale = (float)Feedback.ImpactPitch(massKg);   // heavier: lower
+        sound.Play();
+        HoldSounds++;
     }
 
     /// <summary>Holding the rotate button: the mouse turns the held body (left/right around the vertical, up/down around the view's right axis).</summary>

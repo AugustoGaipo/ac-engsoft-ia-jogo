@@ -1917,3 +1917,13 @@ câmera acompanha o olho. São 69 no total.
   49,7 %, a marca de 50 % fica no limite) e nenhum plim, o arremesso faz o vush, a caixa bate ao cair, a
   barra cheia toca o plim uma vez. Mutações pegas: barra cheia como tic (1 falha) e batida sem limite de
   velocidade (1 falha). Suíte toda verde (689).
+
+### 11-03 — Sons de troca, troca recusada e segurar (usuário: "não estão funcionando")
+- **O que houve:** esses sons não existiam ainda (estavam na "parte 2" da proposta). Feitos agora.
+- **Feito:** `Feedback.SwapPitch`: "zap" com tom por propriedade (posição 1, peso 0,75, energia 1,35).
+  `SwapController.TrySwap`: zap na troca aplicada; som de falha na recusada (alcance, visada, barreira,
+  recarga, trava) e quando não há alvo. `Player.ToggleHold`: som de pegar e de soltar (mais grave quanto
+  mais pesado) e o som de falha ao tentar segurar algo acima de 2,5 × o seu peso.
+- **Testes:** 1 caso novo em `FeedbackTests`; sem janela na sala 2.3: falha ao segurar a caixa de 300 kg,
+  zap na troca, falha numa troca durante a recarga, som ao pegar a caixa. Mutação pega: peso com o mesmo
+  tom da posição (1 falha). Suíte toda verde (690).

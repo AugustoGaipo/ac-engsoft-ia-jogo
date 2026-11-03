@@ -71,4 +71,14 @@ public sealed class FeedbackTests
         Assert.True(Feedback.ThrowPitch(15) > Feedback.ThrowPitch(3));
         Assert.InRange(Feedback.ThrowPitch(100), 0.5, 2.5);
     }
+
+    [Fact]
+    public void Each_property_has_its_own_swap_tone()
+    {
+        var position = Feedback.SwapPitch(Rules.Model.PropertyKind.Position);
+        var mass = Feedback.SwapPitch(Rules.Model.PropertyKind.Mass);
+        var energy = Feedback.SwapPitch(Rules.Model.PropertyKind.KineticEnergy);
+        Assert.Equal(1.0, position, 3);
+        Assert.True(mass < position && energy > position, $"{mass} {position} {energy}");
+    }
 }

@@ -87,13 +87,38 @@ public partial class SwapController : Node
     public SwapResult? TrySwap()
     {
         if (Target is not { } target || !IsInstanceValid(target))
+        {
+            PlayRefused();                          // nothing aimed: the swap fails too
             return null;
+        }
         SyncWorld();
         var result = _swap.Apply(_runner.World, Request(target), _now);
         if (result.IsApplied)
+        {
             ApplyUpdates(result.Updates);
+            _swapSound.PitchScale = (float)Feedback.SwapPitch(Choice);
+            _swapSound.Play();
+            SwapSounds++;
+        }
+        else
+            PlayRefused();
         UpdateAim();
         return result;
+    }
+
+    /// <summary>Swap and refusal sounds played so far (headless checks).</summary>
+    public int SwapSounds { get; private set; }
+    public int RefusedSounds { get; private set; }
+
+    private AudioStreamPlayer? _swapSoundNode;
+    private AudioStreamPlayer? _refusedSoundNode;
+    private AudioStreamPlayer _swapSound => _swapSoundNode ??= Sfx.Player(this, Sfx.Swap, "SwapSound");
+    private AudioStreamPlayer _refusedSound => _refusedSoundNode ??= Sfx.Player(this, Sfx.Refused, "RefusedSound");
+
+    private void PlayRefused()
+    {
+        _refusedSound.Play();
+        RefusedSounds++;
     }
 
     /// <summary>The physics changes the value of the variable in use (rules model): position and velocity of every body.</summary>

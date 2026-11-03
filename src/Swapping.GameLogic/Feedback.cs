@@ -54,6 +54,10 @@ public static class Feedback
 
     /// <summary>The throw whoosh: higher the faster the body leaves the hand.</summary>
     public static double ThrowPitch(double speed) => Math.Clamp(0.6 + speed / 15 * 0.8, MinPitch, MaxPitch);
+
+    /// <summary>The swap "zap" tone per property: position 1, mass lower (heavy), kinetic energy higher (fast).</summary>
+    public static double SwapPitch(Rules.Model.IPropertyKind property) =>
+        property == Rules.Model.PropertyKind.Mass ? 0.75 : property == Rules.Model.PropertyKind.KineticEnergy ? 1.35 : 1.0;
 }
 
 public enum ChargeSound { None, Tick, Full }
