@@ -110,10 +110,14 @@ public partial class Body : RigidBody3D, IHasWeight
         ResetPhysicsInterpolation();
     }
 
-    /// <summary>Turns the body around the vertical axis at once (the wheel while it is held).</summary>
-    public void SpinYaw(double degrees)
+    /// <summary>
+    /// Turns the body at once while held: <paramref name="yawDegrees"/> around the vertical axis and
+    /// <paramref name="tiltDegrees"/> around the viewer's right axis (mouse left/right and up/down, any mix).
+    /// </summary>
+    public void Turn(double yawDegrees, double tiltDegrees, Vector3 viewRight)
     {
-        var transform = new Transform3D(GlobalBasis.Rotated(Vector3.Up, Mathf.DegToRad((float)degrees)), GlobalPosition);
+        var turn = new Basis(Vector3.Up, Mathf.DegToRad((float)yawDegrees)) * new Basis(viewRight.Normalized(), Mathf.DegToRad((float)tiltDegrees));
+        var transform = new Transform3D((turn * GlobalBasis).Orthonormalized(), GlobalPosition);
         PhysicsServer3D.BodySetState(GetRid(), PhysicsServer3D.BodyState.Transform, transform);
         GlobalTransform = transform;
         AngularVelocity = Vector3.Zero;

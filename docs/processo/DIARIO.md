@@ -1746,3 +1746,11 @@ câmera acompanha o olho. São 69 no total.
 - Sem janela: F + mouse gira a caixa e a câmera não gira; a roda vai posição → massa e dá a volta até energia.
 - **Lição:** um erro de sintaxe que o meu `sed` colocou no `Menu.cs` deixou o jogo sem compilar e os testes
   do Godot rodaram com o binário antigo (verdes sem valer). Passei a rodar `dotnet build game` antes do teste.
+
+### Game — girar o item em qualquer direção (relato do usuário)
+- **Relato:** com F + mouse só dava para girar a caixa para a esquerda e para a direita.
+- **Causa:** o giro era só em torno do eixo vertical (o movimento vertical do mouse era ignorado).
+- **Correção:** `HeldSpin.TiltDegrees` (mouse para cima/baixo) e `Body.Turn`: o movimento horizontal gira em
+  torno do eixo vertical e o vertical inclina em torno do eixo "direita" da câmera; diagonal combina os dois.
+  3 testes novos (mutação do sinal pega) e 3 verificações sem janela (inclinação de 14,3°, diagonal em
+  dois eixos, câmera parada). 164 verificações no roteiro do nível 1.

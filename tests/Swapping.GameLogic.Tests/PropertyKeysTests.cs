@@ -131,3 +131,24 @@ public sealed class HeldSpinTests
         Assert.Equal(0, HeldSpin.Degrees(0, 0.0025));
     }
 }
+
+public sealed class HeldTiltTests
+{
+    [Fact]
+    public void The_mouse_up_tilts_the_object_the_way_the_view_looks_up()
+    {
+        Assert.Equal(0.25 * 180 / Math.PI, HeldSpin.TiltDegrees(-100, 0.0025), 6);
+    }
+
+    [Fact]
+    public void The_mouse_down_tilts_it_the_other_way()
+    {
+        Assert.True(HeldSpin.TiltDegrees(40, 0.0025) < 0);
+    }
+
+    [Fact]
+    public void No_vertical_motion_no_tilt()
+    {
+        Assert.Equal(0, HeldSpin.TiltDegrees(0, 0.0025));
+    }
+}

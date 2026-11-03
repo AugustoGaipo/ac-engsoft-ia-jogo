@@ -84,7 +84,7 @@ public partial class Player : CharacterBody3D, IHasWeight
     {
         if (@event is InputEventMouseMotion spin && IsRotatingHeld)
         {
-            SpinHeld(HeldSpin.Degrees(spin.Relative.X, MouseSensitivity));
+            SpinHeld(HeldSpin.Degrees(spin.Relative.X, MouseSensitivity), HeldSpin.TiltDegrees(spin.Relative.Y, MouseSensitivity));
         }
         else if (@event is InputEventMouseMotion motion && Input.MouseMode == Input.MouseModeEnum.Captured)
         {
@@ -184,11 +184,11 @@ public partial class Player : CharacterBody3D, IHasWeight
         }
     }
 
-    /// <summary>The wheel: turns the held body around the vertical axis.</summary>
-    public void SpinHeld(double degrees)
+    /// <summary>Holding the rotate button: the mouse turns the held body (left/right around the vertical, up/down around the view's right axis).</summary>
+    public void SpinHeld(double yawDegrees, double tiltDegrees)
     {
         if (Held is { } body && IsInstanceValid(body))
-            body.SpinYaw(degrees);
+            body.Turn(yawDegrees, tiltDegrees, Eye.Basis.X);
     }
 
     /// <summary>Left button: throw the held body forward with a fixed energy (G4).</summary>

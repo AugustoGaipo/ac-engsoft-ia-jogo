@@ -491,6 +491,21 @@ public partial class SmokeTest : Node
         var expected = (float)HeldSpin.Degrees(-100, Player.MouseSensitivity);
         Check("full run 1.1: rotate button + mouse turns the held box", Mathf.Abs(turned - expected) < 0.5f && player.Held == box, $"turned {turned}°, expected {expected}°");
         Check("full run 1.1: the view does not turn while rotating the box", Mathf.IsEqualApprox(player.Rotation.Y, viewBefore), $"{player.Rotation.Y} vs {viewBefore}");
+        // Up/down and diagonals: the mouse up tilts the box about the view's right axis (the view still stays put).
+        var eyeBefore = player.Eye.Basis.Z;
+        var upBefore = box.GlobalBasis.Y;
+        Input.ActionPress(Controls.Name(GameAction.HoldToRotate));
+        player._UnhandledInput(new InputEventMouseMotion { Relative = new Vector2(0, -100) });
+        var tilted = Mathf.RadToDeg(upBefore.AngleTo(box.GlobalBasis.Y));
+        var expectedTilt = (float)HeldSpin.TiltDegrees(-100, Player.MouseSensitivity);
+        Check("full run 1.1: rotate button + mouse up/down tilts the held box", Mathf.Abs(tilted - expectedTilt) < 0.5f, $"tilted {tilted}°, expected {expectedTilt}°");
+        var beforeDiagonal = box.GlobalBasis;
+        player._UnhandledInput(new InputEventMouseMotion { Relative = new Vector2(-60, 60) });
+        Input.ActionRelease(Controls.Name(GameAction.HoldToRotate));
+        var diagonalYaw = Mathf.Abs(Mathf.RadToDeg(Mathf.AngleDifference(beforeDiagonal.GetEuler().Y, box.GlobalBasis.GetEuler().Y)));
+        var diagonalUp = Mathf.RadToDeg(beforeDiagonal.Y.AngleTo(box.GlobalBasis.Y));
+        Check("full run 1.1: a diagonal motion turns the box on both axes", diagonalYaw > 3 && diagonalUp > 3, $"yaw {diagonalYaw}°, up {diagonalUp}°");
+        Check("full run 1.1: the view still did not move", player.Eye.Basis.Z.DistanceTo(eyeBefore) < 0.001f, $"{player.Eye.Basis.Z} vs {eyeBefore}");
         await WalkTo(player, 6.3f, 5);
         player.Look(-90, -0.35f);                                // facing +X, a bit down: the box hangs over the button
         await PhysicsFrames(30);
