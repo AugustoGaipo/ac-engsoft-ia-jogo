@@ -1,4 +1,5 @@
 using Godot;
+using Swapping.Game.Pieces;
 using Swapping.Levels;
 
 namespace Swapping.Game;
@@ -8,24 +9,29 @@ namespace Swapping.Game;
 /// Prints one line per check and returns the exit code: 0 when every check passed, 1 at the first failure.
 /// Each Godot task adds its checks here.
 /// </summary>
-public sealed class SmokeTest(string levelId)
+public partial class SmokeTest : Node
 {
+    private const float Tolerance = 0.01f;
     private int _passed;
 
-    public int Run()
+    public async Task<int> Run(string levelId, LevelRunner runner)
     {
         try
         {
-            var directory = ProjectSettings.GlobalizePath("res://levels");
-            var catalog = LevelCatalog.Load(directory);
-            Check("catalog loads without errors",
-                catalog.Errors.Count == 0,
+            var catalog = LevelCatalog.Load(ProjectSettings.GlobalizePath("res://levels"));
+            Check("catalog loads without errors", catalog.Errors.Count == 0,
                 string.Join("; ", catalog.Errors.Select(e => $"{e.Path}: {e.Code} {e.Message}")));
+            Check($"level {levelId} is in the catalog", catalog.Levels.Any(l => l.Id == levelId),
+                $"ids: {string.Join(", ", catalog.Levels.Select(l => l.Id))}");
 
-            var level = catalog.Levels.FirstOrDefault(l => l.Id == levelId);
-            Check($"level {levelId} is in the catalog", level is not null, $"ids: {string.Join(", ", catalog.Levels.Select(l => l.Id))}");
-            Check($"level {levelId} has rooms", level!.Rooms.Count > 0, "no rooms");
-            GD.Print($"[smoke] info {levelId}: {level.Rooms.Count} rooms ({string.Join(", ", level.Rooms.Select(r => r.Id))})");
+            runner.LoadLevel(levelId);
+            Check("the scenery scene is loaded", runner.GetChildren().Any(c => c.Name == "Level1" || c.SceneFilePath == runner.Level.Scene),
+                runner.Level.Scene);
+
+            foreach (var room in runner.Level.Rooms)
+                await CheckRoomPieces(runner, room.Id);
+
+            await CheckRebuild(runner);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -40,6 +46,65 @@ public sealed class SmokeTest(string levelId)
             GD.PrintErr($"[smoke] FAIL unexpected {exception.GetType().Name}: {exception.Message}");
             return 1;
         }
+    }
+
+    // ---- Task 3 (SC 2): every object and kill zone at the file's position, and resting on the scenery ----
+
+    private async Task CheckRoomPieces(LevelRunner runner, string roomId)
+    {
+        runner.BuildRoom(roomId);
+        var room = runner.Room;
+
+        var bodies = runner.Bodies.ToDictionary(b => b.ContainerId);
+        Check($"room {roomId}: one body per object", bodies.Count == room.Objects.Count && room.Objects.All(o => bodies.ContainsKey(o.Id)),
+            $"{bodies.Count} bodies for {room.Objects.Count} objects");
+        foreach (var obj in room.Objects)
+        {
+            var body = bodies[obj.Id];
+            Check($"room {roomId}: {obj.Id} at the file position", body.Position.DistanceTo(obj.Position.ToGodot()) < Tolerance,
+                $"{body.Position} vs {obj.Position}");
+            Check($"room {roomId}: {obj.Id} mass, bounce and CCD",
+                Mathf.IsEqualApprox(body.Mass, (float)obj.MassKg) && Mathf.IsEqualApprox(body.PhysicsMaterialOverride.Bounce, (float)obj.Bounce) && body.ContinuousCd,
+                $"mass {body.Mass}, bounce {body.PhysicsMaterialOverride.Bounce}, ccd {body.ContinuousCd}");
+            Check($"room {roomId}: {obj.Id} is in the rules world", runner.World.Containers.Any(c => c.Id == obj.Id), "missing container");
+        }
+
+        var zones = runner.KillZones.ToDictionary(z => z.Def.Id);
+        Check($"room {roomId}: one kill zone per file entry", zones.Count == room.KillZones.Count, $"{zones.Count} for {room.KillZones.Count}");
+        foreach (var def in room.KillZones)
+        {
+            var shape = (BoxShape3D)zones[def.Id].GetChild<CollisionShape3D>(0).Shape;
+            Check($"room {roomId}: {def.Id} at the file box",
+                zones[def.Id].Position.DistanceTo(def.Box.Center()) < Tolerance && shape.Size.DistanceTo(def.Box.Size()) < Tolerance,
+                $"{zones[def.Id].Position} size {shape.Size}");
+        }
+
+        // One second of physics: objects that start at rest stay where the file put them (they stand on
+        // the floor or the ledge, so the scenery and the file agree).
+        await PhysicsFrames(60);
+        foreach (var obj in room.Objects.Where(o => o.Velocity == Swapping.Rules.Model.Vec3.Zero))
+        {
+            var body = bodies[obj.Id];
+            Check($"room {roomId}: {obj.Id} rests on the scenery", body.Position.DistanceTo(obj.Position.ToGodot()) < 0.05f,
+                $"moved to {body.Position}");
+        }
+    }
+
+    private async Task CheckRebuild(LevelRunner runner)
+    {
+        runner.BuildRoom("1.3");
+        var firstWorld = runner.World;
+        runner.BuildRoom("1.3");
+        await PhysicsFrames(1);
+        Check("building a room twice leaves one set of pieces", runner.PieceCount == runner.Room.Objects.Count + runner.Room.KillZones.Count,
+            $"{runner.PieceCount} pieces");
+        Check("building a room again makes a new world", !ReferenceEquals(firstWorld, runner.World), "same world");
+    }
+
+    private async Task PhysicsFrames(int count)
+    {
+        for (var i = 0; i < count; i++)
+            await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
     }
 
     private void Check(string name, bool ok, string detail)

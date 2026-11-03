@@ -1334,3 +1334,30 @@ o que segue para um possível lançamento são as regras de troca e as fases.
 - **Mutações (3 de 3 pegas):** sem a margem; reiniciar a sala perdendo as trocas; a pausa sem parar o tempo.
 - O usuário baixou o esforço para médio nas tarefas diretas (3 a 5).
 - 502 testes verdes (106 + 125 + 248 + 23), 0 avisos.
+
+### Game — tarefa 3: cenário do nível 1 e peças lidas do arquivo ✅
+- **`game/levels/level_1.tscn`** (o `scene` do arquivo): 28 caixas CSG com colisão, geradas a partir
+  de uma tabela:
+  - pisos, buracos de x 15–20 e x 40–45 com fundo em y = −3, e a plataforma de 2 m da sala 1.3;
+  - paredes de 0,3 m, com aberturas de z 4–6 entre as salas;
+  - **decisão do agente:** divisórias em x = 10 e x = 35, com abertura onde ficam as portas. Sem elas
+    dava para contornar a porta das salas 1.1 e 1.3.
+- **`LevelRunner`** carrega o nível pelo catálogo, mostra o cenário e monta a sala:
+  - caixas e bolas como `RigidBody3D` (massa, quique, atrito 0,6, CCD, camada `objects`, id do container);
+  - zonas de morte como `Area3D`;
+  - o `World` do `RulesMapping.BuildWorld`.
+  Montar de novo libera as peças antigas.
+- **`SmokeTest`** agora é um nó que espera passos de física de verdade. São 39 verificações:
+  - posição, massa, quique e CCD de cada objeto nas 4 salas;
+  - as zonas de morte;
+  - depois de 1 s de física, todo objeto continua onde o arquivo pôs (o cenário e o arquivo batem);
+  - montar a sala duas vezes deixa um conjunto de peças só e um `World` novo.
+- **`--screenshot <sala> <arquivo>`** fotografa o que se vê do ponto de entrada (`docs/evidencias/game/`).
+- **A captura achou um defeito que os testes não pegavam:** os pisos tinham 0,5 m de espessura, então o
+  buraco ficava aberto por baixo deles, aparecia céu embaixo do chão e um objeto caído escorregaria para
+  o vazio. Os pisos agora são blocos maciços até y = −3,5.
+- **Mutação:** o cenário fora da cena → 1 verificação caiu. Sem o cenário, as peças também cairiam no
+  teste de 1 s de física.
+- **Processo:** aqui a "fase vermelha" não foi rodada à parte. As verificações do `SmokeTest` foram
+  escritas junto com o `LevelRunner`, e a mutação fez o papel de prova de que elas pegam erro.
+- 502 testes verdes, 0 avisos; teste sem janela: 39 de 39.

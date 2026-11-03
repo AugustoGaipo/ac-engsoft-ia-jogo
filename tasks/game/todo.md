@@ -72,10 +72,10 @@ Architecture test: the library has no Godot reference.
 
 "Build room" frees the previous pieces first.
 **Acceptance criteria:**
-- [ ] SC 2: for each of the 4 rooms, the smoke test builds it and finds every object and kill zone at
+- [x] SC 2: for each of the 4 rooms, the smoke test builds it and finds every object and kill zone at
       the file's position and size (±0.01 m), with mass, bounce and CCD set.
-- [ ] Building a room twice leaves one set of pieces and a new `World` (no leftovers).
-- [ ] `--screenshot 1.2` saves a PNG that shows the pit and the box (opened and checked by the agent).
+- [x] Building a room twice leaves one set of pieces and a new `World` (no leftovers).
+- [x] `--screenshot 1.2` saves a PNG that shows the pit and the box (opened and checked by the agent).
 **Dependencies:** Task 2
 **Files:** `game/levels/level_1.tscn`, `game/scripts/LevelRunner.cs`, `game/scripts/Pieces/Body.cs`,
 `game/scripts/Pieces/KillZone.cs`, `game/scripts/SmokeTest.cs`
