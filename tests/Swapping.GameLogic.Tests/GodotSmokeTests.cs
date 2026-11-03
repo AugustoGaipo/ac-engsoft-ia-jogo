@@ -62,10 +62,10 @@ public sealed class GodotSmokeTests
         using var process = Process.Start(start)!;
         var output = process.StandardOutput.ReadToEndAsync();
         var errors = process.StandardError.ReadToEndAsync();
-        if (!process.WaitForExit(TimeSpan.FromMinutes(2)))
+        if (!process.WaitForExit(TimeSpan.FromMinutes(4)))
         {
             process.Kill(entireProcessTree: true);
-            throw new TimeoutException("The game did not quit within 2 minutes.");
+            throw new TimeoutException("The game did not quit within 4 minutes.");
         }
         return (process.ExitCode, output.Result + errors.Result);
     }

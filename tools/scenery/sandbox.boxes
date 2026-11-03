@@ -4,9 +4,14 @@ FloorB floor 16 -3.5 0 30 0 20
 PitBottom pit 12 -3.5 0 16 -3 20
 Ledge ledge 22 0 0 26 2 6
 WallSouth wall -0.3 -3.5 -0.3 30.3 6 0
-WallNorth wall -0.3 -3.5 20 30.3 6 20.3
-WallStart wall -0.3 -3.5 0 0 6 20
-WallEnd wall 30 -3.5 0 30.3 6 20
+WallNorth wall -0.3 -3.5 50 30.3 6 50.3
+WallStart wall -0.3 -3.5 0 0 6 50
+WallEnd wall 30 -3.5 0 30.3 6 50
 DoorWallLeft wall 28 0 0 28.3 6 9
 DoorWallRight wall 28 0 11 28.3 6 20
 DoorWallTop wall 28 3 9 28.3 6 11
+FloorC floor 0 -3.5 20 30 0 50
+Divider1 wall 5.85 0 20 6.15 6 50
+Divider2 wall 11.85 0 20 12.15 6 50
+Divider3 wall 17.85 0 20 18.15 6 50
+Divider4 wall 23.85 0 20 24.15 6 50

@@ -1797,3 +1797,20 @@ câmera acompanha o olho. São 69 no total.
   8,5 m/s). O usuário esclareceu que o corte é na velocidade, em 12 m/s; refiz testes e fórmula.
 - **Testes:** 3 grupos novos (abaixo do teto, acima do teto, continuidade); mutações pegas: não dividir o
   excedente (2 falhas) e subir o ponto de corte (1 falha). Tudo verde.
+
+### Game — sala de testes ampliada com as baias de barreiras (pedido do usuário)
+- **Pedido:** mais espaço na sala de testes e uma estação para cada tipo de barreira.
+- **Feito:** a sala foi de 30×20 m para 30×50 m (o que existia não mudou de lugar). Ao norte (z 20–50), cinco
+  baias separadas por paredes, cada uma com uma barreira atravessada em z = 35, uma caixa e uma bola do
+  lado de cá e uma caixa do lado de lá, com placas: 1 só objetos (azul), 2 só jogador (laranja), 3 os dois
+  (violeta), 4 só variáveis (verde), 5 grade de saída (azul). Cenário gerado por `tools/scenery/gen.sh`
+  (tabelas `sandbox.boxes` e `sandbox.signs`). A prévia do editor passou a usar a paleta das barreiras e a
+  câmera de `--preview-shot --sandbox` enxerga a sala toda.
+- **Verificação sem janela (20 checagens novas, 203 no total):** em cada baia, as camadas de colisão da
+  barreira, o jogador atravessa ou é barrado, a caixa lançada atravessa ou é barrada, e a troca com a caixa
+  do outro lado é recusada só onde a barreira bloqueia variáveis (baias 4 e 5).
+- **Tempo:** o roteiro sem janela subiu de ~70 s para ~90 s; o limite do teste xUnit passou de 2 para 4
+  minutos. Um teste de logins concorrentes da API falhou uma vez com a máquina carregada e passou 4 de 4
+  rodadas sozinho (instável sob carga, sem relação com esta mudança).
+- **Erro meu corrigido no teste:** o jogador andava na linha da caixa e a empurrava contra a barreira;
+  passei a andar numa faixa ao lado e a recarregar a sala antes de cada troca.

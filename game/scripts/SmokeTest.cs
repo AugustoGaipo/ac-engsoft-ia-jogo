@@ -43,6 +43,7 @@ public partial class SmokeTest : Node
             await CheckRunFlow(main);
             await CheckFullRun(main);
             await CheckSandbox(main);
+            await CheckBarrierBays(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -673,7 +674,7 @@ public partial class SmokeTest : Node
         // Diagnosis (user: "I just die, it does not even look for space"): swap with every object from a few spots.
         foreach (var from in new[] { new Vector3(2, 0, 10), new Vector3(8, 0, 2), new Vector3(8, 0, 17), new Vector3(20, 0, 9) })
         {
-            foreach (var id in main.Runner.Room.Objects.Select(o => o.Id))
+            foreach (var id in main.Runner.Room.Objects.Select(o => o.Id).Where(id => !id.StartsWith("bay")))
             {
                 main.ShowRoom("0.1");
                 await PhysicsFrames(3);
@@ -813,6 +814,55 @@ public partial class SmokeTest : Node
         var button = Menu.FindButton(root, text);
         Check($"button \"{text}\" exists", button is not null, "missing");
         button!.EmitSignal(BaseButton.SignalName.Pressed);
+    }
+
+    // ---- Barrier bays of the test map (z 20–50): one barrier type per bay ----
+
+    private async Task CheckBarrierBays(Main main)
+    {
+        // (bay, what the barrier blocks: objects, player, variables)
+        var bays = new (int Bay, bool Objects, bool Player, bool Variables)[]
+        {
+            (1, true, false, false), (2, false, true, false), (3, true, true, false), (4, false, false, true), (5, true, false, true),
+        };
+        foreach (var (bay, objects, player, variables) in bays)
+        {
+            main.ShowRoom("0.1");
+            await PhysicsFrames(5);
+            var barrier = main.Runner.Barriers.Single(b => b.Def.Id == $"bay{bay}-barrier");
+            var expectedLayer = (objects ? Layers.BarrierObjects : 0u) | (player ? Layers.BarrierPlayer : 0u);
+            Check($"bay {bay}: the barrier blocks objects={objects}, player={player} (collision layers)", barrier.CollisionLayer == expectedLayer,
+                $"layer {barrier.CollisionLayer}");
+            var cx = 3f + 6f * (bay - 1);
+
+            // The player walks from the near side to the far side: blocked only when the barrier blocks the player.
+            main.Player.GlobalPosition = new Vector3(cx + 1.5f, 0, 32.5f);   // a lane beside the box, so it is not pushed ahead
+            main.Player.ResetPhysicsInterpolation();
+            await PhysicsFrames(3);
+            await WalkTo(main.Player, cx + 1.5f, 40, maxFrames: 240);
+            var crossed = main.Player.GlobalPosition.Z > 36;
+            Check($"bay {bay}: the player {(player ? "is stopped by" : "walks through")} the barrier", crossed == !player,
+                $"player z {main.Player.GlobalPosition.Z}");
+
+            // The box is pushed fast to the barrier: blocked only when the barrier blocks objects.
+            var box = main.Runner.Bodies.Single(b => b.ContainerId == $"bay{bay}-box");
+            box.Teleport(new Vector3(cx, 0.5f, 33.5f), new Vector3(0, 0, 8));
+            await PhysicsFrames(45);
+            var boxCrossed = box.GlobalPosition.Z > 35.3f;
+            Check($"bay {bay}: the box {(objects ? "is stopped by" : "goes through")} the barrier", boxCrossed == !objects,
+                $"box z {box.GlobalPosition.Z}");
+
+            // Swap with the box on the far side, aiming from the near side: refused only when the barrier blocks variables.
+            main.ShowRoom("0.1");                                  // the pushed box now sits in the line of sight
+            main.Player.GlobalPosition = new Vector3(cx, 0, 31);
+            main.Player.ResetPhysicsInterpolation();
+            await PhysicsFrames(3);
+            var far = main.Runner.Bodies.Single(b => b.ContainerId == $"bay{bay}-far");
+            await LookAt(main.Player, far.GlobalPosition);
+            var refused = main.Swaps.Crosshair.Reason == "barreira no caminho";
+            Check($"bay {bay}: a swap through it is {(variables ? "refused" : "allowed")}", main.Swaps.Target == far && refused == variables,
+                $"{main.Swaps.Crosshair}");
+        }
     }
 
     /// <summary>Turns the player's view to a point and lets the aim update.</summary>

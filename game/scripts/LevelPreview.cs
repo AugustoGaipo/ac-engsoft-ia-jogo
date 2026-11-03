@@ -1,5 +1,6 @@
 using Godot;
 using Swapping.Game.Pieces;
+using Swapping.GameLogic;
 using Swapping.Levels;
 using Swapping.Levels.Model;
 
@@ -90,7 +91,8 @@ public partial class LevelPreview : Node3D
             }
             foreach (var barrier in room.Barriers)
             {
-                var color = barrier.IsExitGrid ? new Color(0.3f, 0.85f, 1f, 0.35f) : new Color(1f, 0.4f, 0.8f, 0.35f);
+                var (r, g, b) = BarrierPalette.For(barrier.Filter);
+                var color = new Color((float)r, (float)g, (float)b, 0.3f);
                 AddMesh(new BoxMesh { Size = barrier.Box.Size() }, barrier.Box.Center(), color);
             }
             foreach (var zone in room.KillZones)

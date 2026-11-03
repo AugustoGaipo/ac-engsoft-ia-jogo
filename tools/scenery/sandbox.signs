@@ -7,3 +7,9 @@ SignPit|18 1.8 10|Do outro lado do buraco
 SignBarrier|19.55 3.6 16.5|Barreira de variáveis
 SignLedge|24 3.4 3|Suba trocando com a bola
 SignButton|25 1.4 14|Botão: 5 kg ou mais (conta você)
+SignBay1|3 4.3 35|1 · só objetos (azul): jogador passa, caixa não
+SignBay2|9 4.3 35|2 · só jogador (laranja): caixa passa, você não
+SignBay3|15 4.3 35|3 · objetos e jogador (violeta): nada passa
+SignBay4|21 4.3 35|4 · só variáveis (verde): passa, mas troca é recusada
+SignBay5|27 4.3 35|5 · grade de saída (azul): você passa, caixa e troca não
+SignBays|15 3.0 21|Baias de barreiras: jogue a caixa e troque com a caixa do outro lado

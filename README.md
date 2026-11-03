@@ -83,6 +83,7 @@ Requer o **Godot 4.7.2 .NET** (o executável `…_mono_win64.exe`; o `…_consol
 ```
 Godot_v4.7.2-stable_mono_win64.exe --path game                  # joga o nível 1
 Godot_v4.7.2-stable_mono_win64.exe --path game -- --sandbox     # sala de testes (um posto por mecânica)
+# a sala de testes tem 5 baias ao norte (z 20–50), uma por tipo de barreira
 Godot_v4.7.2-stable_mono_win64.exe --editor --path game         # editor, com a prévia das peças nas cenas
 Godot_..._console.exe --headless --path game -- --smoke-test level-1   # teste sem janela (o dotnet test também roda)
 ```
