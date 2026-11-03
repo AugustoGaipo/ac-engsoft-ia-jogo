@@ -18,7 +18,8 @@ Quinta é para slides e ensaio, sem código novo.
 - **Feito em 11-03 (fora do todo, pedidos do usuário):** sala de testes refeita (corredor + 6 baias),
   barreira que restaura (`restoresVariables`, rosa), encostar numa barreira de variáveis barra a troca,
   peso volta a 70 kg ao morrer, barra de arremesso (3 s, 400 J, teto suave 15 m/s). Detalhes no diário.
-- **Próxima:** 16 cena do nível 2, 17 cena do nível 3 (o usuário descreve as fases; Claude monta pelo JSON e
+- **Feito em 11-03 (tarde):** `HoldLoad` (segurar depende do peso) e tarefa 16 (nível 2: 2.3 "Empréstimo", 2.4 "Pulo alto"; jogada sem janela). Falta o usuário jogar o nível 2.
+- **Próxima:** 17 cena do nível 3 (o usuário descreve as fases; Claude monta pelo JSON e
   pela tabela de `tools/scenery/`; `level_2.tscn` e `level_3.tscn` ainda não existem), 18 fechamento.
 - **Depois da entrega:** editor de fases no Godot (peças como nós + "Exportar fase" para JSON com o
   validador). Adiado: resta menos de 50 % do plano Pro normal até sexta.
