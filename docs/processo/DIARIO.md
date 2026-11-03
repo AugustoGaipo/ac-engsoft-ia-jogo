@@ -1752,5 +1752,8 @@ câmera acompanha o olho. São 69 no total.
 - **Causa:** o giro era só em torno do eixo vertical (o movimento vertical do mouse era ignorado).
 - **Correção:** `HeldSpin.TiltDegrees` (mouse para cima/baixo) e `Body.Turn`: o movimento horizontal gira em
   torno do eixo vertical e o vertical inclina em torno do eixo "direita" da câmera; diagonal combina os dois.
-  3 testes novos (mutação do sinal pega) e 3 verificações sem janela (inclinação de 14,3°, diagonal em
+  3 testes novos (mutação do sinal pega: 2 falhas) e 3 verificações sem janela (inclinação de 14,3°, diagonal em
   dois eixos, câmera parada). 164 verificações no roteiro do nível 1.
+- **Tropeço meu (corrigido):** um `sed` com número de linha vazio espalhou 66 linhas de comentário repetidas
+  em `PropertyKeys.cs` no commit anterior. Comentários não quebram a compilação, então os testes passaram.
+  A primeira mutação "pega" na verdade não tinha sido aplicada. Limpei o arquivo e refiz a mutação (2 falhas).
