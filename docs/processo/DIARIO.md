@@ -1541,3 +1541,10 @@ câmera acompanha o olho. São 69 no total.
   teste passou a usar x = 17.
 - **Mutação:** ignorar o ponto livre → os pés ficaram 0,4 m dentro do chão e o teste caiu.
 - 559 testes verdes (106 + 125 + 248 + 80), 0 avisos.
+- **Erro no log da sala de testes** (o usuário jogando): `NullReferenceException` no `MakeRoom.ForBody`.
+  - Causa: numa troca sem ponto livre para o jogador, a morte reiniciava a sala **no meio** da troca, e
+    o objeto da troca, já removido, ainda era ajustado.
+  - Correção: os objetos são ajustados primeiro, o jogador por último, e a morte só é tratada depois da
+    troca inteira.
+  - **Sem teste novo:** não consegui montar, sem gambiarra, uma troca legal que deixe o jogador sem
+    nenhum ponto livre; a linha de visão recusa os casos óbvios. Fica registrado.

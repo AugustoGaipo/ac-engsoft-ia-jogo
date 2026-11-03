@@ -119,7 +119,10 @@ public partial class SwapController : Node
     {
         var swapped = updates.Where(u => u.ContainerId != LevelValidator.PlayerId)
             .Select(u => _runner.Bodies.Single(b => b.ContainerId == u.ContainerId)).ToList();
-        foreach (var update in updates)
+        // Objects first, the player last, and a death only after the whole swap is written: a death rebuilds
+        // the room, which frees the swapped bodies (user's play test: an error in the log).
+        var died = false;
+        foreach (var update in updates.OrderBy(u => u.ContainerId == LevelValidator.PlayerId))
         {
             var center = update.Position.ToGodot();
             if (update.ContainerId == LevelValidator.PlayerId)
@@ -128,8 +131,7 @@ public partial class SwapController : Node
                 var spot = MakeRoom.ForPlayer(_player, center, swapped);
                 LastMakeRoom = spot.Outcome;
                 _player.PlaceAtCenter(spot.Point?.ToGodot() ?? center, update.Velocity.ToGodot(), update.MassKg);
-                if (spot.Outcome == MakeRoomOutcome.Death)
-                    PlayerDied?.Invoke();
+                died = spot.Outcome == MakeRoomOutcome.Death;
                 continue;
             }
             var body = swapped.Single(b => b.ContainerId == update.ContainerId);
@@ -141,6 +143,8 @@ public partial class SwapController : Node
             else
                 body.Teleport(room.Point!.Value.ToGodot(), update.Velocity.ToGodot());
         }
+        if (died)
+            PlayerDied?.Invoke();
     }
 
     /// <summary>What "make room" decided for the player in the last applied swap.</summary>
