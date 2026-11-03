@@ -1689,3 +1689,11 @@ câmera acompanha o olho. São 69 no total.
 - **C4:** o componente `game` deixou de ser "ainda não feito", e entrou o diagrama de Componentes do
   Game Client.
 - **README:** como jogar, os controles, a sala de testes, o editor e o teste sem janela.
+
+## 2026-11-03 (noite) — fatia 2 do `game`: menu, progresso local, níveis 2 e 3
+- **Pedido do usuário:** em vez dos níveis 2, 3 e 5 como estavam, cortar para 3 níveis (Posição, Peso com
+  as barreiras, Energia) e um **Mapa de teste** com as 3 trocas no menu. Teclas 1/2/3 escolhem a troca e
+  a roda do mouse gira o item segurado. Spec: `SPEC-game.md`, "Slice 2" (SC 13–18); tarefas em `tasks/game2/`.
+- **Tarefa 12 — `LevelProgress` ✅:** progresso local puro (abre em ordem, dois recordes separados,
+  "continuar", JSON com versão, arquivo ruim → progresso novo). 12 testes; mutações pegas: guardar só a
+  última contagem de trocas, e aceitar resultado de nível trancado.

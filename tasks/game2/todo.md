@@ -3,7 +3,7 @@
 Spec: `docs/specs/SPEC-game.md`, section "Slice 2" (SC 13–18). Made with `agent-skills:planning-and-task-breakdown`.
 Each task: red test → code → mutation → diary → tick → commit and push.
 
-- [ ] **Task 12 — `LevelProgress` (pure, S).** SC 13, 14. `src/Swapping.GameLogic/LevelProgress.cs` + tests.
+- [x] **Task 12 — `LevelProgress` (pure, S).** SC 13, 14. `src/Swapping.GameLogic/LevelProgress.cs` + tests.
 - [ ] **Task 13 — New catalog (M).** `levels/level_2.json` = Peso (2.1, 2.2, old 3.1/3.2 as 2.3/2.4),
       `level_3.json` = Energia (old 5.1/5.2), `level_5.json` removed, `accepts`; Levels design tests and
       API tests updated. SC 16.
