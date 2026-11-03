@@ -31,4 +31,44 @@ public sealed class FeedbackTests
     {
         Assert.Equal(text, Feedback.DeathText(cause));
     }
+
+    [Theory]
+    [InlineData(10, 0.8, null)]       // resting or sliding: silent
+    [InlineData(10, 5, -9.0)]         // a 10 kg box landing at 5 m/s
+    [InlineData(300, 3, 0.0)]         // heavy: loud, capped
+    [InlineData(2, 3, -21.0)]         // a light ball: soft
+    public void An_impact_sounds_louder_with_more_momentum(double massKg, double speed, double? volumeDb)
+    {
+        var volume = Feedback.ImpactVolumeDb(massKg, speed);
+        if (volumeDb is null) Assert.Null(volume);
+        else Assert.Equal(volumeDb.Value, volume!.Value, 0);
+    }
+
+    [Fact]
+    public void Heavier_objects_sound_lower()
+    {
+        Assert.Equal(1.0, Feedback.ImpactPitch(10), 3);
+        Assert.True(Feedback.ImpactPitch(300) < Feedback.ImpactPitch(10));
+        Assert.True(Feedback.ImpactPitch(2) > Feedback.ImpactPitch(10));
+    }
+
+    [Theory]
+    [InlineData(0.00, 0.05, ChargeSound.None)]
+    [InlineData(0.08, 0.11, ChargeSound.Tick)]   // crossed 10 %
+    [InlineData(0.55, 0.62, ChargeSound.Tick)]
+    [InlineData(0.98, 1.00, ChargeSound.Full)]   // reached the top: the "full" sound, not a tick
+    [InlineData(1.00, 1.00, ChargeSound.None)]   // stays full: once only
+    public void The_charge_bar_ticks_every_10_percent_and_rings_once_when_full(double before, double after, ChargeSound sound)
+    {
+        Assert.Equal(sound, Feedback.ChargeStep(before, after));
+    }
+
+    [Fact]
+    public void The_tick_rises_with_the_bar_and_the_throw_whoosh_with_the_speed()
+    {
+        Assert.Equal(1.0, Feedback.TickPitch(0), 3);
+        Assert.Equal(2.0, Feedback.TickPitch(1), 3);
+        Assert.True(Feedback.ThrowPitch(15) > Feedback.ThrowPitch(3));
+        Assert.InRange(Feedback.ThrowPitch(100), 0.5, 2.5);
+    }
 }

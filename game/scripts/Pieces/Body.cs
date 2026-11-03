@@ -58,6 +58,24 @@ public partial class Body : RigidBody3D, IHasWeight
 
     private bool _held;
 
+    private AudioStreamPlayer3D _impactSound = null!;
+    private float _speedBefore;
+    private double _quietLeft;
+
+    /// <summary>How many hits made a sound (headless checks).</summary>
+    public int Impacts { get; private set; }
+
+    private void OnHit(Node other)
+    {
+        if (_held || _quietLeft > 0 || Swapping.GameLogic.Feedback.ImpactVolumeDb(Mass, _speedBefore) is not { } volume)
+            return;
+        _impactSound.VolumeDb = (float)volume;
+        _impactSound.PitchScale = (float)Swapping.GameLogic.Feedback.ImpactPitch(Mass);
+        _impactSound.Play();
+        Impacts++;
+        _quietLeft = 0.1;                         // one knock per bounce, not one per contact point
+    }
+
     /// <summary>While carried: no collision with the carrier at all.</summary>
     public void IgnoreWhileHeld(PhysicsBody3D carrier)
     {
@@ -68,6 +86,8 @@ public partial class Body : RigidBody3D, IHasWeight
 
     public override void _PhysicsProcess(double delta)
     {
+        _speedBefore = LinearVelocity.Length();   // before this step's contacts: the speed of a hit
+        _quietLeft -= delta;
         if (_ignored is null || _held)
             return;
         _ignoreLeft -= delta;
@@ -167,6 +187,11 @@ public partial class Body : RigidBody3D, IHasWeight
         hull.Material = body._outlineMaterial;
         body._outline = new MeshInstance3D { Name = "Outline", Mesh = hull, Visible = false };
         body.AddChild(body._outline);
+        // Impact sounds (user's request): the body reports new contacts; OnHit decides by momentum (Feedback).
+        body.ContactMonitor = true;
+        body.MaxContactsReported = 4;
+        body._impactSound = Sfx.Player3D(body, Sfx.Impact, "ImpactSound");
+        body.BodyEntered += body.OnHit;
         return body;
     }
 

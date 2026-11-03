@@ -19,6 +19,26 @@ public static class Sfx
     /// <summary>A falling tone for the death: 520 → 70 Hz in 0.7 s.</summary>
     public static readonly AudioStreamWav Death = Sweep(520, 70, 0.7, noise: 0.15);
 
+    /// <summary>A throw "whoosh": mostly noise, 700 → 250 Hz in 0.25 s.</summary>
+    public static readonly AudioStreamWav Throw = Sweep(700, 250, 0.25, noise: 0.8);
+
+    /// <summary>A body hitting something: a short knock, 160 → 70 Hz in 0.16 s.</summary>
+    public static readonly AudioStreamWav Impact = Sweep(160, 70, 0.16, noise: 0.5);
+
+    /// <summary>One tick of the throw bar: 900 Hz, 30 ms.</summary>
+    public static readonly AudioStreamWav Tick = Sweep(900, 900, 0.03, noise: 0);
+
+    /// <summary>The throw bar is full: a bright 1320 Hz ring, 0.35 s.</summary>
+    public static readonly AudioStreamWav Full = Sweep(1320, 1320, 0.35, noise: 0);
+
+    /// <summary>A positional player for one sound, child of a 3D node (it sounds from there).</summary>
+    public static AudioStreamPlayer3D Player3D(Node3D owner, AudioStreamWav stream, string name)
+    {
+        var player = new AudioStreamPlayer3D { Name = name, Stream = stream, MaxPolyphony = 2, UnitSize = 4 };
+        owner.AddChild(player);
+        return player;
+    }
+
     /// <summary>A frequency sweep with an exponential fade, plus a bit of seeded noise.</summary>
     public static AudioStreamWav Sweep(double fromHz, double toHz, double seconds, double noise)
     {

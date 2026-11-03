@@ -1906,3 +1906,14 @@ câmera acompanha o olho. São 69 no total.
 - **Testes:** 9 casos em `FeedbackTests`; sem janela: tela de morte com a causa, câmera tombando, tudo
   limpo depois. Esperas fixas de 0,5 s do teste antigo viraram "até a morte acabar". Mutações pegas: limite
   do tremor 250 → 150 (3 falhas) e tom invertido (1 falha). Suíte toda verde (678).
+
+### 11-03 — Mais sons: arremesso, batida de objetos e barra de arremesso (pedido do usuário)
+- **Feito:** em `Feedback`: volume da batida pelo momento m·v em escala log (2 kg a 3 m/s ≈ −21 dB, 10 kg a
+  5 m/s ≈ −9 dB, teto 0 dB; abaixo de 1,5 m/s silêncio, para não tocar parado ou deslizando); tom da batida
+  mais grave quanto mais pesado (1 em 10 kg); barra: um tic a cada 10 % subindo uma oitava, e um "plim" uma
+  vez ao encher; "vush" do arremesso mais agudo quanto mais rápido. `Sfx`: 4 sons novos em código. `Body`:
+  som 3D (vem do lugar do objeto), pelos contatos novos (`ContactMonitor`), um por batida (0,1 s de pausa).
+- **Testes:** 11 casos novos em `FeedbackTests`; sem janela: meia barra dá 4–5 tics (90 frames chegam a
+  49,7 %, a marca de 50 % fica no limite) e nenhum plim, o arremesso faz o vush, a caixa bate ao cair, a
+  barra cheia toca o plim uma vez. Mutações pegas: barra cheia como tic (1 falha) e batida sem limite de
+  velocidade (1 falha). Suíte toda verde (689).

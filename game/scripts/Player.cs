@@ -30,6 +30,9 @@ public partial class Player : CharacterBody3D, IHasWeight
     private Camera3D _camera = null!;
     private AudioStreamPlayer _jumpSound = null!;
     private AudioStreamPlayer _landSound = null!;
+    private AudioStreamPlayer _throwSound = null!;
+    private AudioStreamPlayer _tickSound = null!;
+    private AudioStreamPlayer _fullSound = null!;
     private readonly RandomNumberGenerator _shakeRandom = new();
 
     /// <summary>Camera shake 0–1 from the last heavy landing (Feedback.LandingShake); fades in 0.4 s.</summary>
@@ -74,6 +77,9 @@ public partial class Player : CharacterBody3D, IHasWeight
         player.AddChild(player._camera);
         player._jumpSound = Sfx.Player(player, Sfx.Jump, "JumpSound");
         player._landSound = Sfx.Player(player, Sfx.Land, "LandSound");
+        player._throwSound = Sfx.Player(player, Sfx.Throw, "ThrowSound");
+        player._tickSound = Sfx.Player(player, Sfx.Tick, "TickSound");
+        player._fullSound = Sfx.Player(player, Sfx.Full, "FullSound");
         return player;
     }
 
@@ -175,7 +181,11 @@ public partial class Player : CharacterBody3D, IHasWeight
     public override void _PhysicsProcess(double delta)
     {
         if (ChargeSeconds is { } charging)
+        {
             ChargeSeconds = Held is null ? null : charging + delta;   // letting go of the body (E, a barrier) cancels the bar
+            if (ChargeSeconds is { } now)
+                PlayCharge(Feedback.ChargeStep(ThrowCharge.Fraction(charging), ThrowCharge.Fraction(now)), ThrowCharge.Fraction(now));
+        }
 
         var input = ScriptedMove ?? Input.GetVector(
             Controls.Name(GameAction.MoveLeft), Controls.Name(GameAction.MoveRight),
@@ -270,6 +280,29 @@ public partial class Player : CharacterBody3D, IHasWeight
         Drop();
         var speed = (float)Formulas.ThrowSpeed(energyJoules, body.Mass);
         body.LinearVelocity = -Eye.Basis.Z * speed;
+        _throwSound.PitchScale = (float)Feedback.ThrowPitch(speed);
+        _throwSound.Play();
+        Throws++;
+    }
+
+    /// <summary>Throws and charge-bar sounds played so far (headless checks).</summary>
+    public int Throws { get; private set; }
+    public int ChargeTicks { get; private set; }
+    public int ChargeRings { get; private set; }
+
+    private void PlayCharge(ChargeSound sound, double fraction)
+    {
+        if (sound == ChargeSound.Tick)
+        {
+            _tickSound.PitchScale = (float)Feedback.TickPitch(fraction);
+            _tickSound.Play();
+            ChargeTicks++;
+        }
+        else if (sound == ChargeSound.Full)
+        {
+            _fullSound.Play();
+            ChargeRings++;
+        }
     }
 
     /// <summary>Lets go of the held body. It keeps ignoring the player until they no longer overlap.</summary>
