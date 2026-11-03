@@ -1862,3 +1862,13 @@ câmera acompanha o olho. São 69 no total.
 - **Ajuste (pedido do usuário, "coloca mais forte"):** barra cheia de 120 J para 400 J (meia barra 200 J).
   Barra cheia: caixa de 10 kg 8,94 m/s, bola de 2 kg 17,5 m/s (bruto 20), 1 kg 21,1 m/s (bruto 28,3).
   Teste da barra e verificação sem janela atualizados. Tudo verde.
+
+### 11-03 — Segurar depende do peso (pedido do usuário, ao revisar a sala 2.3)
+- **Problema achado:** o `E` segurava qualquer massa com a mesma mola e não mudava nada na locomoção; uma
+  caixa de 300 kg ia na mão até o botão da sala 2.3 sem nenhuma troca.
+- **Regra (do usuário):** com M = sua massa e m = a segurada: até M/2 anda normal; acima, de 90 % até 5 %
+  da velocidade em 2,5·M (linear); acima de 2,5·M não segura (e solta, se uma troca deixar pesado demais).
+  O pulo leva as duas massas: mesmos 343 J para M + m (70 kg + 35 kg pulam 0,33 m em vez de 0,5 m).
+- **Feito:** `HoldLoad` (GameLogic) e o uso em `Player` (andar, pulo, `ToggleHold`, `FollowHeld`).
+- **Testes:** 10 casos em `HoldLoadTests`; suíte toda verde (669, com o teste sem janela do nível 1).
+  Mutações pegas: limite 2,5 → 3 (3 falhas) e pulo sem a massa segurada (1 falha).

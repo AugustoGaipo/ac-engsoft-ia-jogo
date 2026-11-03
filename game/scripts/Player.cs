@@ -162,7 +162,8 @@ public partial class Player : CharacterBody3D, IHasWeight
             direction = direction.Normalized();
 
         // While pushing, the player moves only as fast as the pushed body can (PushImpulse).
-        var speed = _pushSpeed is { } pushing ? Mathf.Min(WalkSpeed, pushing) : WalkSpeed;
+        var walk = WalkSpeed * (float)HoldLoad.SpeedFactor(HeldMassKg, MassKg);
+        var speed = _pushSpeed is { } pushing ? Mathf.Min(walk, pushing) : walk;
         var velocity = Velocity;
         velocity.X = direction.X * speed;
         velocity.Z = direction.Z * speed;
@@ -181,8 +182,11 @@ public partial class Player : CharacterBody3D, IHasWeight
     public void Jump()
     {
         if (IsOnFloor())
-            Velocity = Velocity with { Y = (float)Formulas.JumpTakeoffSpeed(MassKg) };
+            Velocity = Velocity with { Y = (float)HoldLoad.JumpTakeoffSpeed(HeldMassKg, MassKg) };
     }
+
+    /// <summary>The mass of the held body (0 when nothing is held): it slows the walk and the jump (HoldLoad).</summary>
+    public double HeldMassKg => Held is { } body && IsInstanceValid(body) ? body.Mass : 0;
 
     /// <summary><c>E</c>: hold the aimed movable body within reach, or drop the held one.</summary>
     public void ToggleHold()
@@ -192,7 +196,7 @@ public partial class Player : CharacterBody3D, IHasWeight
             Drop();
             return;
         }
-        if (Aim(HoldReach) is Body body)
+        if (Aim(HoldReach) is Body body && HoldLoad.CanHold(body.Mass, MassKg))
         {
             Held = body;
             // A carried box never collides with its carrier: looking down, the hold point is inside the
@@ -253,7 +257,8 @@ public partial class Player : CharacterBody3D, IHasWeight
     {
         if (Held is not { } body)
             return;
-        if (!IsInstanceValid(body) || !body.IsInsideTree())
+        // A mass swap can make the held body too heavy for you: it slips out of your hands.
+        if (!IsInstanceValid(body) || !body.IsInsideTree() || !HoldLoad.CanHold(body.Mass, MassKg))
         {
             Drop();
             return;
