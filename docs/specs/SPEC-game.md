@@ -218,3 +218,40 @@ public partial class SwapController : Node3D
 - **Mouse sensitivity**, field of view, head bob (none in the draft).
 - **Death and pop effects:** how much smoke, sound, screen fade (draft: 0.5 s fade to black)?
 - **HUD layout:** numbers next to the crosshair or in a corner?
+
+---
+
+# Slice 2: menu, local progress and levels 2, 3 and 5 (2026-11-03)
+
+Asked by the user on 2026-11-03: simple levels for the other skills, and a game menu. Levels 2
+(Barreiras), 3 (Peso) and 5 (Energia) already exist in `levels/` with their design tests; each level
+unlocks **one** property, so no property picker is needed.
+
+### What changes
+- **Main menu** (first screen): title, **Jogar** (continues: the first unlocked level not yet
+  finished, or the last level), **Níveis**, **Controles**, **Sair**.
+- **Level select:** one card per catalog level (1, 2, 3, 5), in catalog order. A locked card shows a
+  lock and cannot be chosen. A finished card shows the best time and the fewest swaps.
+- **Local progress** in `user://progress.json`: finished levels and the best time and best swaps per
+  level (two separate bests, like the API's two rankings). Level 1 is always unlocked; finishing a level
+  unlocks the next one in the catalog. An unreadable or unknown file → fresh progress (the old file is
+  kept as `progress.corrupt.json`). Unknown level ids in the file are ignored.
+- **End screen:** buttons **Próximo nível** (hidden on the last level) and **Menu**.
+- **Pause menu:** gains **Menu**.
+- **Levels 2, 3 and 5** get their Godot scenery (`level_N.tscn`), built the same way as level 1.
+  Barriers are seen-through colored walls: objects barrier, player barrier, no-swap zone (three colors).
+- `--level <id>` starts that level directly (tests and screenshots); with no arguments the menu opens.
+  The smoke test takes the level id as before.
+
+### Not in this slice
+`sync` with the API, level 4, the charge bar of the throw, sound.
+
+### Success criteria (slice 2)
+13. `LevelProgress` (in `Swapping.GameLogic`, no Godot) unlocks in catalog order, keeps the two bests
+    independently, ignores unknown ids, and round-trips to JSON; a corrupt text gives fresh progress.
+14. "Continue" picks the first unlocked level not finished; when all are finished, the last level.
+15. The headless menu check: the menu opens with no arguments; a locked card can't be started; finishing
+    level 1 in the smoke run unlocks level 2 and writes the progress file.
+16. Headless scripted runs of levels 2, 3 and 5 finish each level (exit code 0), each room solved the
+    planned way.
+17. Line coverage of `Swapping.GameLogic` stays ≥ 90 %; zero warnings; all tests green.
