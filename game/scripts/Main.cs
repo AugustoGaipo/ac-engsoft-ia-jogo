@@ -5,10 +5,12 @@ using Swapping.GameLogic;
 namespace Swapping.Game;
 
 /// <summary>
-/// Entry scene. Reads the user arguments (after <c>--</c>):
+/// Entry scene: builds the player, the swap controller, the run flow and the HUD, then reads the user
+/// arguments (after <c>--</c>):
 /// <c>--smoke-test &lt;levelId&gt;</c> runs the scripted checks and quits with 0 or 1;
-/// <c>--screenshot &lt;room&gt; &lt;file.png&gt;</c> builds a room of level 1, saves what the spawn sees and quits.
-/// Without arguments the game starts in room 1.1.
+/// <c>--screenshot &lt;room&gt; &lt;file.png&gt;</c> saves what a room's spawn sees and quits;
+/// <c>--preview-shot &lt;file.png&gt;</c> saves the editor preview seen from above;
+/// <c>--sandbox</c> plays the test room instead of level 1.
 /// </summary>
 public partial class Main : Node3D
 {
@@ -17,6 +19,8 @@ public partial class Main : Node3D
     public Player Player { get; private set; } = null!;
 
     public SwapController Swaps { get; private set; } = null!;
+
+    public RunFlow Flow { get; private set; } = null!;
 
     public Hud Hud { get; private set; } = null!;
 
@@ -31,10 +35,13 @@ public partial class Main : Node3D
         Swaps = new SwapController { Name = "Swaps" };
         AddChild(Swaps);
         Swaps.Setup(_runner, Player);
-        Swaps.PlayerDied += () => ShowRoom(_runner.Room.Id); // until Task 8 adds the fade and the run totals
+        Flow = new RunFlow { Name = "Flow" };
+        AddChild(Flow);
+        Flow.Setup(_runner, Player);
+        Swaps.PlayerDied += () => Flow.Die("sem espaço depois da troca");
         Hud = new Hud { Name = "Hud" };
         AddChild(Hud);
-        Hud.Setup(Player, Swaps);
+        Hud.Setup(Player, Swaps, Flow);
 
         var args = OS.GetCmdlineUserArgs();
         var smoke = Array.IndexOf(args, "--smoke-test");
@@ -44,15 +51,11 @@ public partial class Main : Node3D
             return;
         }
 
-        // --preview-shot <file.png>: the scenery with the editor preview, seen from above, without the game pieces.
         var preview = Array.IndexOf(args, "--preview-shot");
         if (preview >= 0 && preview + 1 < args.Length)
         {
             LevelPreview.ShowInGame = true;
-            if (args.Contains("--sandbox"))
-                _runner.LoadSandbox();
-            else
-                _runner.LoadLevel("level-1");
+            LoadChosenLevel(args);
             Hud.Visible = false;
             var top = new Camera3D { Current = true, Fov = 70 };
             AddChild(top);
@@ -62,74 +65,26 @@ public partial class Main : Node3D
             return;
         }
 
-        // --sandbox: the test room instead of level 1.
-        if (args.Contains("--sandbox"))
-            _runner.LoadSandbox();
-        else
-            _runner.LoadLevel("level-1");
+        LoadChosenLevel(args);
+        Flow.StartLevel();
         var shot = Array.IndexOf(args, "--screenshot");
         if (shot >= 0 && shot + 2 < args.Length)
         {
             ShowRoom(args[shot + 1]);
             _ = SaveScreenshot(args[shot + 2]);
-            return;
-        }
-
-        ShowRoom(_runner.Level.Rooms[0].Id);
-    }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed(Controls.Name(GameAction.RestartRoom)) && _runner.Room is not null)
-            ShowRoom(_runner.Room.Id);
-        else if (@event.IsActionPressed(Controls.Name(GameAction.Pause)))
-            Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured;
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        if (_runner.Room is null)
-            return;
-        // Provisional until Task 8 (deaths): falling into a pit restarts the room.
-        if (Player.GlobalPosition.Y < -2.5f && !OS.GetCmdlineUserArgs().Contains("--smoke-test"))
-        {
-            ShowRoom(_runner.Room.Id);
-            return;
-        }
-        // Crossing the room's exit builds the next room; the player keeps walking (part of Task 8).
-        if (_runner.Room.Exit.Contains(Player.Center.ToLevel()))
-            EnterNextRoom();
-    }
-
-    /// <summary>Raised when the exit of the last room is crossed.</summary>
-    public event Action? LevelFinished;
-
-    private void EnterNextRoom()
-    {
-        var rooms = _runner.Level.Rooms;
-        var index = rooms.ToList().FindIndex(r => r.Id == _runner.Room.Id);
-        if (index + 1 < rooms.Count)
-        {
-            _runner.BuildRoom(rooms[index + 1].Id);
-            GD.Print($"[game] entered room {_runner.Room.Id}");
-        }
-        else if (!_finished)
-        {
-            _finished = true;
-            GD.Print("[game] level finished");
-            LevelFinished?.Invoke();
         }
     }
 
-    private bool _finished;
-
-    /// <summary>Builds (or rebuilds) a room and puts the player at its spawn.</summary>
-    public void ShowRoom(string roomId)
+    private void LoadChosenLevel(string[] args)
     {
-        _finished = false;
-        _runner.BuildRoom(roomId);
-        Player.SpawnAt(_runner.Room.Spawn);
+        if (args.Contains("--sandbox"))
+            _runner.LoadSandbox();
+        else
+            _runner.LoadLevel("level-1");
     }
+
+    /// <summary>Builds a room and puts the player at its spawn (tests and screenshots).</summary>
+    public void ShowRoom(string roomId) => Flow.GoToRoom(roomId);
 
     /// <summary>Registers the G1 controls of <see cref="GameLogic.Controls"/> in the engine.</summary>
     private static void RegisterControls()

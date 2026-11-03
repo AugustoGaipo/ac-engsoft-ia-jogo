@@ -39,6 +39,7 @@ public partial class SmokeTest : Node
             await CheckButtonDoorAndExitGrid(runner);
             await CheckPlayer(main);
             await CheckSwap(main);
+            await CheckRunFlow(main);
             await CheckSandbox(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
@@ -309,6 +310,74 @@ public partial class SmokeTest : Node
     }
 
     private const Swapping.Rules.Operations.RejectReason RejectReasonLocked = Swapping.Rules.Operations.RejectReason.Locked;
+
+    // ---- Task 8 (SC 6, 7): deaths, restarts, pause, end of the run ----
+
+    private async Task CheckRunFlow(Main main)
+    {
+        var flow = main.Flow;
+        var player = main.Player;
+        flow.StartLevel();
+        await PhysicsFrames(5);
+        Check("run: a new run starts in room 1.1 at zero", main.Runner.Room.Id == "1.1" && flow.Run.Swaps == 0 && flow.Run.Deaths == 0,
+            $"room {main.Runner.Room.Id}, swaps {flow.Run.Swaps}");
+
+        // Room 1.2: one swap, then into the pit.
+        main.ShowRoom("1.2");
+        await PhysicsFrames(10);
+        var box = main.Runner.Bodies.Single();
+        await LookAt(player, box.GlobalPosition);
+        main.Swaps.TrySwap();
+        await PhysicsFrames(10);
+        var timeBefore = flow.Run.TimeMs;
+        player.GlobalPosition = new Vector3(17.5f, -1.5f, 5);   // inside the kill zone of the pit
+        player.ResetPhysicsInterpolation();
+        await PhysicsFrames(50);                                // fade 0.5 s
+        var spawn = main.Runner.Room.Spawn.Position.ToGodot();
+        box = main.Runner.Bodies.Single();
+        Check("run (SC 6): the pit kills; the room is rebuilt and the player is at the spawn",
+            !flow.IsDying && player.GlobalPosition.DistanceTo(spawn) < 0.1f && box.GlobalPosition.DistanceTo(box.Def.Position.ToGodot()) < 0.05f,
+            $"player {player.GlobalPosition}, box {box.GlobalPosition}");
+        Check("run (SC 6): time and swaps are kept, 1 death and 1 room restart",
+            flow.Run.Swaps == 1 && flow.Run.TimeMs > timeBefore && flow.Run.Deaths == 1 && flow.Run.RoomRestarts == 1,
+            $"swaps {flow.Run.Swaps}, time {flow.Run.TimeMs} (was {timeBefore}), deaths {flow.Run.Deaths}, restarts {flow.Run.RoomRestarts}");
+
+        // A 9 m fall (≈ 13 m/s on landing) kills; a jump does not.
+        player.GlobalPosition = new Vector3(13.5f, 9, 5);
+        player.ResetPhysicsInterpolation();
+        await PhysicsFrames(120);
+        Check("run (G3): landing after a 9 m fall kills", flow.Run.Deaths == 2, $"deaths {flow.Run.Deaths}");
+
+        // The pause stops the time (the physics stops with the tree).
+        flow.SetPaused(true);
+        var paused = flow.Run.TimeMs;
+        for (var i = 0; i < 20; i++)
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        Check("run: the time does not advance while the pause menu is open", flow.IsPaused && flow.Run.TimeMs == paused,
+            $"{paused} → {flow.Run.TimeMs}");
+        flow.SetPaused(false);
+
+        // SC 7: restart level from room 1.3.
+        main.ShowRoom("1.3");
+        await PhysicsFrames(5);
+        flow.RestartLevel();
+        await PhysicsFrames(2);
+        Check("run (SC 7): restart level → room 1.1 with time and swaps at zero",
+            main.Runner.Room.Id == "1.1" && flow.Run.Swaps == 0 && flow.Run.Deaths == 0 && flow.Run.TimeMs < 100,
+            $"room {main.Runner.Room.Id}, swaps {flow.Run.Swaps}, time {flow.Run.TimeMs}");
+
+        // The exit of the last room ends the run.
+        main.ShowRoom("1.4");
+        await PhysicsFrames(5);
+        player.GlobalPosition = new Vector3(47.7f, 0, 5);
+        player.ResetPhysicsInterpolation();
+        await PhysicsFrames(5);
+        Check("run: crossing the exit of 1.4 ends the run with the API fields and the end screen",
+            flow.Result is { LevelId: "level-1" } && flow.EndScreenVisible && flow.EndText.Contains("Trocas"),
+            $"result {flow.Result}, end screen {flow.EndScreenVisible}");
+        Check("run: the HUD shows time and swaps", main.Hud.RunText.Contains("Trocas") && main.Hud.RunText.Contains(':'), main.Hud.RunText);
+        flow.RestartLevel();
+    }
 
     // ---- The test room (sandbox) loads with the levels' validator and builds every station ----
 

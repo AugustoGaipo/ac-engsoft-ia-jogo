@@ -37,6 +37,9 @@ public partial class Player : CharacterBody3D, IHasWeight
 
     public Body? Held { get; private set; }
 
+    /// <summary>The downward speed of the step that touched the floor (null on any other step): the fall death check.</summary>
+    public float? LandingSpeed { get; private set; }
+
     /// <summary>Test hook: when set, replaces the keyboard (x = right, y = forward).</summary>
     public Vector2? ScriptedMove { get; set; }
 
@@ -142,7 +145,9 @@ public partial class Player : CharacterBody3D, IHasWeight
         if (!IsOnFloor())
             velocity.Y -= (float)(Formulas.Gravity * delta);
         Velocity = velocity;
+        var wasOnFloor = IsOnFloor();
         MoveAndSlide();
+        LandingSpeed = !wasOnFloor && IsOnFloor() ? -velocity.Y : null;
 
         PushBodies(direction);
         FollowHeld();

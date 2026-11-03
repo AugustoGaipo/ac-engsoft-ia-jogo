@@ -73,7 +73,7 @@ Godot project + level copy + headless smoke entry (Task 1)
 - [ ] Room 1.2 works by script (SC 3, 4) and **the user plays rooms 1.1–1.2** before Phase 4
 
 ### Phase 4: The level
-- [ ] Task 8: Deaths, restarts, exits, end of run and pause menu
+- [x] Task 8: Deaths, restarts, exits, end of run and pause menu
 - [ ] Task 9: HUD and outline
 - [ ] Task 10: Level 1 solved by script, end to end
 

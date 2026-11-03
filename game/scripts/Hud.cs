@@ -20,6 +20,8 @@ public partial class Hud : CanvasLayer
     private Label _reason = null!;
     private Label _mine = null!;
     private Label _target = null!;
+    private Label _run = null!;
+    private RunFlow? _flow;
 
     public string CrosshairText => _crosshair.Visible ? _crosshair.Text : "";
 
@@ -29,10 +31,13 @@ public partial class Hud : CanvasLayer
 
     public string TargetText => _target.Text;
 
-    public void Setup(Player player, SwapController swaps)
+    public string RunText => _run.Text;
+
+    public void Setup(Player player, SwapController swaps, RunFlow flow)
     {
         _player = player;
         _swaps = swaps;
+        _flow = flow;
         var root = new Control { MouseFilter = Control.MouseFilterEnum.Ignore };
         root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         AddChild(root);
@@ -44,6 +49,15 @@ public partial class Hud : CanvasLayer
         _mine.AddThemeFontSizeOverride("font_size", 20);
         Outline(_mine);
         root.AddChild(_mine);
+
+        // Time and swaps, always (top right).
+        _run = new Label { HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = Control.MouseFilterEnum.Ignore };
+        _run.SetAnchorsPreset(Control.LayoutPreset.TopRight);
+        _run.Size = new Vector2(320, 70);
+        _run.Position = new Vector2(-336, 12);
+        _run.AddThemeFontSizeOverride("font_size", 26);
+        Outline(_run);
+        root.AddChild(_run);
     }
 
     public override void _Process(double delta)
@@ -52,6 +66,8 @@ public partial class Hud : CanvasLayer
             return;
         var me = Readout.Of(_player.MassKg, _player.Velocity.ToLevel());
         _mine.Text = $"Você\n{me.Mass}\n{me.Speed}\n{me.Energy}";
+        if (_flow is not null)
+            _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}";
 
         var crosshair = _swaps.Crosshair;
         _crosshair.Visible = crosshair.Look != CrosshairLook.Hidden;

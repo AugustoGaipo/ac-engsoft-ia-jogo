@@ -1581,3 +1581,31 @@ câmera acompanha o olho. São 69 no total.
   - O gerador de cenário põe o nó de prévia nas duas cenas (`PREVIEW=…`).
   - **`--preview-shot`:** como eu não vejo o editor, uma captura de cima com a prévia mostrou que ela
     desenha certo (`docs/evidencias/game/previa-*.png`).
+
+### Game — tarefa 8: mortes, reinícios, saídas, fim da partida e pausa ✅
+- O usuário confirmou que a troca "deu certinho" e pediu para seguir.
+- **`FallDeath`** (puro): morte ao pousar acima de 12 m/s (~7,35 m de queda, G3). 6 testes, vermelhos antes.
+- **`RunFlow`** (Godot) tirou do `Main` toda a lógica da partida:
+  - **o `RunTracker` ligado ao jogo:** o tempo pelos passos de física, as trocas somando entre as
+    salas, as mortes e os reinícios;
+  - **morte** por zona de morte (o centro do jogador dentro da caixa da zona), por queda (o jogador
+    informa a velocidade com que pousou) e por troca sem espaço, com 0,5 s de escurecimento e reinício
+    da sala;
+  - **objeto que cai no buraco** volta ao início;
+  - **saídas:** a próxima sala; na última, `Finish` mostra a tela de fim (tempo, trocas, mortes,
+    reinícios) e dispara `LevelFinished` com o resultado, pronto para o `sync`;
+  - **menu de pausa** (`Esc`): continuar, reiniciar a sala, reiniciar o nível e sair. A árvore pausa e
+    o tempo para;
+  - `R` reinicia a sala; na tela de fim, `R` joga de novo.
+- **HUD:** tempo `mm:ss.d` e trocas no canto superior direito.
+- O reinício provisório "cair abaixo de −2,5" saiu; ficou só uma rede de segurança em −10.
+- **Teste sem janela** (121 verificações, todas de primeira):
+  - SC 6: morrer no buraco reconstrói a sala, põe o jogador na entrada e mantém o tempo e a troca, com
+    1 morte e 1 reinício;
+  - uma queda de 9 m mata (13,2 m/s);
+  - a pausa congela o tempo;
+  - SC 7: reiniciar o nível volta à 1.1 com tudo zerado;
+  - a saída da 1.4 encerra com os campos da API e a tela de fim;
+  - a HUD mostra o tempo e as trocas.
+- **Mutação:** sem a zona de morte → o teste do buraco caiu (o jogador ficou no fundo, em y = −3).
+- 567 testes verdes (106 + 125 + 248 + 88), 0 avisos.

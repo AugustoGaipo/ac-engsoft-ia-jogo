@@ -171,11 +171,11 @@ A popped object respawns at its start values.
 - Crossing a room's exit builds the next room. The exit of 1.4 ends the run and shows the time and swaps.
 - `RunTracker` is driven by all of this.
 **Acceptance criteria:**
-- [ ] Unit tests: `FallDeath` at 11.9 / 12.0 / 12.1 m/s.
-- [ ] SC 6: the player dropped into the pit of 1.2 → the room is rebuilt, the player at the spawn, time and
+- [x] Unit tests: `FallDeath` at 11.9 / 12.0 / 12.1 m/s.
+- [x] SC 6: the player dropped into the pit of 1.2 → the room is rebuilt, the player at the spawn, time and
       swaps kept, 1 death and 1 room restart.
-- [ ] SC 7: "restart level" from 1.3 → room 1.1, time and swaps zero.
-- [ ] The time does not advance while the pause menu is open; the exit of 1.4 shows the end screen.
+- [x] SC 7: "restart level" from 1.3 → room 1.1, time and swaps zero.
+- [x] The time does not advance while the pause menu is open; the exit of 1.4 shows the end screen.
 **Dependencies:** Task 7
 **Files:** `src/Swapping.GameLogic/FallDeath.cs`, `tests/.../FallDeathTests.cs`, `game/scripts/RunFlow.cs`,
 `game/scenes/pause_menu.tscn` + `PauseMenu.cs`, `game/scripts/SmokeTest.cs`
