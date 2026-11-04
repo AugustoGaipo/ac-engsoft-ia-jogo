@@ -1979,3 +1979,6 @@ câmera acompanha o olho. São 69 no total.
 - **Na jogada sem janela:** com 70 kg a energia da bola lança a 5,7 m/s e cai no buraco; leve e pulando, o
   teto segura e cai; leve e depois a energia: 21,4 m/s e chega à saída. A bola sai a 11 m/s e rola mais
   devagar (deslizar para rolar perde parte da velocidade). Catálogo: 11 salas. 270 verificações verdes.
+- **Correção do registro acima:** o commit da 3.3 saiu com 3 testes da API vermelhos (eu não tinha olhado a
+  saída da API antes do commit): eles contavam 2 salas no nível 3, e o piso de tempo plausível depende do
+  número de salas. Atualizados para 3 salas (piso de 3 000 ms). Agora a suíte toda está verde (698).

@@ -25,7 +25,7 @@ public class LevelsEndpointTests
         var levels = await Levels(client);
 
         Assert.Equal(new[] { 1, 2, 3 }, levels.Select(l => l.Number));
-        Assert.Equal(new[] { 4, 4, 2 }, levels.Select(l => l.Rooms));
+        Assert.Equal(new[] { 4, 4, 3 }, levels.Select(l => l.Rooms));
         Assert.Equal(new[] { "level-1", "level-2", "level-3" }, levels.Select(l => l.Id));
         Assert.All(levels, l => Assert.False(string.IsNullOrWhiteSpace(l.Name)));
     }
@@ -39,7 +39,7 @@ public class LevelsEndpointTests
 
         var levels = await Levels(client);
 
-        Assert.Equal(new[] { ("level-1", 1, "Test one", 4), ("level-2", 2, "Test two", 4), ("level-4", 4, "Test four", 2) }, levels);
+        Assert.Equal(new[] { ("level-1", 1, "Test one", 4), ("level-2", 2, "Test two", 4), ("level-4", 4, "Test four", 3) }, levels);
     }
 
     [Fact]

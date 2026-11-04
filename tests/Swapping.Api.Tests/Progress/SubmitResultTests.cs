@@ -264,8 +264,8 @@ public sealed class SubmitResultTests : IDisposable
         await Read(await Send(ana.Token, Result("level-1")));
         await Read(await Send(ana.Token, Result("level-2")));
 
-        // level-4 has 2 rooms: 2 000 ms is accepted although it would be too fast for level-1.
-        var answer = await Send(ana.Token, Result("level-4", timeMs: 2_000, swaps: 10_000));
+        // level-4 has 3 rooms: 3 000 ms is accepted although it would be too fast for level-1 (4 rooms).
+        var answer = await Send(ana.Token, Result("level-4", timeMs: 3_000, swaps: 10_000));
 
         Assert.Equal(HttpStatusCode.OK, answer.StatusCode);
     }
