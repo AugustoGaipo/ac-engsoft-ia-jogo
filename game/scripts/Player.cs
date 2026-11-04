@@ -101,6 +101,7 @@ public partial class Player : CharacterBody3D, IHasWeight
         MassKg = LevelFile.PlayerMassKg;
         Shake = 0;
         DeathFall = 0;
+        Launched = null;
         Look((float)spawn.YawDegrees, 0);
         ResetPhysicsInterpolation();
     }
@@ -155,8 +156,13 @@ public partial class Player : CharacterBody3D, IHasWeight
         GlobalPosition = center - RulesMapping.PlayerCenterAboveFeet.ToGodot();
         Velocity = velocity;
         MassKg = massKg;
+        var flat = velocity with { Y = 0 };
+        Launched = Launch.Starts(flat.Length(), WalkSpeed) ? flat : null;   // an energy swap faster than walking
         ResetPhysicsInterpolation();
     }
+
+    /// <summary>The horizontal velocity kept after an energy swap faster than walking (Launch); null when walking.</summary>
+    public Vector3? Launched { get; private set; }
 
     /// <summary>Turns the view: yaw in degrees (0 = looking along -Z), pitch in radians (negative = down).</summary>
     public void Look(float yawDegrees, float pitch)
@@ -204,13 +210,21 @@ public partial class Player : CharacterBody3D, IHasWeight
         var walk = WalkSpeed * (float)HoldLoad.SpeedFactor(HeldMassKg, MassKg);
         var speed = _pushSpeed is { } pushing ? Mathf.Min(walk, pushing) : walk;
         var velocity = Velocity;
-        velocity.X = direction.X * speed;
-        velocity.Z = direction.Z * speed;
+        // Launched: the received speed is kept (no walking control) and brakes by friction (Launch).
+        var flat = Launched ?? direction * speed;
+        velocity.X = flat.X;
+        velocity.Z = flat.Z;
         if (!IsOnFloor())
             velocity.Y -= (float)(Formulas.Gravity * delta);
         Velocity = velocity;
         var wasOnFloor = IsOnFloor();
         MoveAndSlide();
+        if (Launched is not null)
+        {
+            var after = Velocity with { Y = 0 };                    // a wall stops (or deflects) the launch
+            var left = Launch.Step(after.Length(), IsOnFloor(), delta);
+            Launched = Launch.Starts(left, WalkSpeed) ? after.Normalized() * (float)left : null;
+        }
         LandingSpeed = !wasOnFloor && IsOnFloor() ? -velocity.Y : null;
         if (LandingSpeed is > 2f and var landing)
         {

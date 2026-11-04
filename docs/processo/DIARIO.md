@@ -1934,3 +1934,14 @@ câmera acompanha o olho. São 69 no total.
   posição emprestada aparece numa linha "Posição ⇄ …". Sem troca (ou devolvido), nada é marcado.
 - **Testes:** 3 casos em `BorrowedTests`; sem janela na sala 2.3: marca depois de pegar o peso da caixa e
   nenhuma marca depois de devolver. Mutação pega: condição invertida (3 falhas). Suíte toda verde (693).
+
+### 11-03 — Tarefa 17, passo 1: o jogador "lançado" por uma troca de energia
+- **Problema achado (ao planejar o nível 3):** a troca de energia dava a velocidade ao jogador, mas no frame
+  seguinte o andar trocava a velocidade horizontal pela de caminhada; a energia recebida sumia na hora.
+- **Feito:** `Launch` (GameLogic): velocidade horizontal acima da de caminhada é mantida (sem controle do
+  andar) e freia pelo atrito, 4 m/s² no chão e 0,3 m/s² no ar, até voltar à caminhada; uma parede para o
+  lançamento. `Player.PlaceAtCenter` liga o estado quando a troca dá mais que 3 m/s; renascer desliga.
+  Frenagem no chão escolhida pelas contas da sala 3.1 (com 8 m/s² o jogador parava antes da beira).
+- **Testes:** 5 casos em `LaunchTests`. Mutação pega: frenagem 6 m/s² (2 falhas). Suíte toda verde (698).
+- **Pedido do usuário para a 3.1:** um canhão que lança a bola em loop por um buraco na parede. A regra
+  existente já faz isso: um objeto que sai da sala volta ao início com a velocidade inicial do arquivo.
