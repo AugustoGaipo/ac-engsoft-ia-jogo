@@ -64,6 +64,30 @@
         { "id": "channel-wall-north-3-2", "blocksObjects": true, "box": { "min": [12.3, 0.8, 8], "max": [22.5, 3, 8.3] } },
         { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 1], "max": [23.6, 3, 3] } }
       ]
+    },
+    {
+      "id": "3.3",
+      "teaches": "Catapulta: a mesma energia em menos massa vira mais velocidade (E = ½mv²). Ficar leve e depois pegar a energia da bola.",
+      "bounds": { "min": [24, -3, 0], "max": [36, 6, 10] },
+      "spawn": { "position": [25, 0, 2], "yawDegrees": -90 },
+      "exit": { "min": [35.5, -1.5, 1], "max": [36, 1.5, 6] },
+      // Scenery: floor at 0 (the player walks in from 3.2), a 5 m pit, the landing 1.5 m lower with the exit; a ceiling at 3 m (a light
+      // player's 7 m jump would clear the pit). A 20 kg ball fired at 11 m/s rolls at ≈ 7.9 m/s (≈ 620 J; sliding into rolling loses 2/7) on a raised lane behind a
+      // wall for the player and objects, and out through a hole: it loops like the cannon of 3.1.
+      // At 70 kg, 640 J give 4.3 m/s (≈ 2.4 m of flight: the pit). Take the 5 kg box's mass first: the same
+      // 640 J give 16 m/s and the player flies over the pit into the exit.
+      "objects": [
+        { "id": "ball-3-3", "kind": "ball", "position": [25.3, 0.3, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 20, "accepts": ["kineticEnergy"],
+          "velocity": [11, 0, 0], "bounce": 0.95 },
+        { "id": "light-box-3-3", "kind": "box", "position": [34.5, -1.25, 4], "size": [0.5, 0.5, 0.5], "massKg": 5, "accepts": ["mass"], "bounce": 0.1 }
+      ],
+      "barriers": [
+        { "id": "lane-wall-3-3", "blocksObjects": true, "blocksPlayer": true, "box": { "min": [24.3, 0, 7.4], "max": [36, 3, 7.5] } },
+        { "id": "exit-grid-3-3", "preset": "exitGrid", "box": { "min": [35.5, -1.5, 1], "max": [35.6, 1.5, 6] } }
+      ],
+      "killZones": [
+        { "id": "pit-3-3", "box": { "min": [28, -3, 0], "max": [33, -2, 7.4] } }
+      ]
     }
   ]
 }

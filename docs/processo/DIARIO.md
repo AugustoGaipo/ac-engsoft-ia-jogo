@@ -1964,3 +1964,18 @@ câmera acompanha o olho. São 69 no total.
   Correção: o canal passou para z 4–8 (caixa e botão em z = 7) e a barreira da mureta do lado do jogador
   barra também o jogador; do ponto mais perto a caixa fica a ~3 m, fora do alcance de segurar (2,5 m), e a
   troca (8 m) continua alcançando. Sem janela: "não dá para segurar a caixa" entrou na jogada (261 verdes).
+
+### 11-03 — Truque do usuário na 3.2 (segurar pela barreira) e sala 3.3 "Catapulta"
+- **Truque:** dar energia à caixa andando para trás a traz até a mureta do lado do jogador; dali dava para
+  segurá-la através da barreira de objetos, arrastar e arremessar no botão. **Regra nova (todo o jogo):**
+  não se segura um objeto através de uma barreira que barra objetos (`Player.HoldBlocked`, ligado pelo
+  `SwapController` com `BarrierGeometry.Crosses`): o "pegar" falha com o som de falha e um objeto puxado
+  contra uma dessas barreiras cai da mão. A 2.3 (grade que barra só o jogador) não muda.
+- **3.3 "Catapulta":** chão no nível da 3.2 (as salas são contínuas, o jogador entra andando: a primeira
+  versão começava numa plataforma de 1,5 m e o jogador ficava preso na parede), buraco de 5 m, pouso 1,5 m
+  mais baixo com a saída, teto a 3 m (com 5 kg o pulo iria a ~7 m e passaria o buraco). A bola de 20 kg
+  rola numa pista atrás de uma barreira para jogador e objetos e sai por um buraco na parede final (loop
+  como o canhão). Caixa de 5 kg (só peso) no pouso, alcançável da beira (≈ 7,7 m).
+- **Na jogada sem janela:** com 70 kg a energia da bola lança a 5,7 m/s e cai no buraco; leve e pulando, o
+  teto segura e cai; leve e depois a energia: 21,4 m/s e chega à saída. A bola sai a 11 m/s e rola mais
+  devagar (deslizar para rolar perde parte da velocidade). Catálogo: 11 salas. 270 verificações verdes.

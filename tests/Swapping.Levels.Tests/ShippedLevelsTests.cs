@@ -39,12 +39,12 @@ public class ShippedLevelsTests
 
     // SC 11
     [Fact]
-    public void Catalog_HasTheThreeLevelsOfSlice2_With10Rooms()
+    public void Catalog_HasTheThreeLevelsOfSlice2_With11Rooms()
     {
         var levels = Shipped.Load().Levels;
 
         Assert.Equal(new[] { "level-1", "level-2", "level-3" }, levels.Select(l => l.Id));
-        Assert.Equal(10, levels.Sum(l => l.Rooms.Count));
+        Assert.Equal(11, levels.Sum(l => l.Rooms.Count));   // 4 + 4 + 3 (3.3 "Catapulta" added with the user, 2026-11-03)
     }
 
     [Fact]

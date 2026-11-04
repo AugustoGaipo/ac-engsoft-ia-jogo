@@ -266,7 +266,7 @@ public partial class Player : CharacterBody3D, IHasWeight
         }
         if (Aim(HoldReach) is not Body body)
             return;
-        if (!HoldLoad.CanHold(body.Mass, MassKg))
+        if (!HoldLoad.CanHold(body.Mass, MassKg) || HoldBlocked(Eye.Origin, body.GlobalPosition))
         {
             _tooHeavySound.Play();                  // too heavy (> 2.5 × your mass): the failure sound
             TooHeavySounds++;
@@ -278,6 +278,9 @@ public partial class Player : CharacterBody3D, IHasWeight
         // player, and the box squeezed the player through a wall (user's play test).
         body.IgnoreWhileHeld(this);
     }
+
+    /// <summary>Whether a barrier that blocks objects lies between the eye and a body (set by the SwapController).</summary>
+    public Func<Vector3, Vector3, bool> HoldBlocked { get; set; } = (_, _) => false;
 
     /// <summary>Grab/release and "too heavy" sounds played so far (headless checks).</summary>
     public int HoldSounds { get; private set; }
@@ -366,7 +369,8 @@ public partial class Player : CharacterBody3D, IHasWeight
         if (Held is not { } body)
             return;
         // A mass swap can make the held body too heavy for you: it slips out of your hands.
-        if (!IsInstanceValid(body) || !body.IsInsideTree() || !HoldLoad.CanHold(body.Mass, MassKg))
+        if (!IsInstanceValid(body) || !body.IsInsideTree() || !HoldLoad.CanHold(body.Mass, MassKg)
+            || HoldBlocked(Eye.Origin, body.GlobalPosition))   // pulled into a wall for objects: it stays behind
         {
             Drop();
             return;

@@ -47,6 +47,10 @@ public partial class SwapController : Node
     {
         _runner = runner;
         _player = player;
+        // You cannot hold a body through a barrier that blocks objects (user found: pulling the 3.2 box out of
+        // its channel through the wall): the hold is refused, or dropped when the line crosses one.
+        player.HoldBlocked = (eye, body) => _runner.Barriers.Any(b =>
+            b.Def.Filter.BlocksObjects && BarrierGeometry.Crosses(eye.ToLevel(), body.ToLevel(), b.Def.Box));
     }
 
     public override void _UnhandledInput(InputEvent @event)

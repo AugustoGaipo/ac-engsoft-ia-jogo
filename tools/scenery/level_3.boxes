@@ -15,10 +15,13 @@ DoorWall22South wall 22.5 0 0 22.8 6 1
 DoorWall22North wall 22.5 0 3 22.8 6 10
 DoorWall22Top wall 22.5 3 1 22.8 6 3
 # Outer walls; the wall at x = 12 has the exit opening (z 1–3) and the ball's hole (z 7.9–9.1, y 1–2.4).
-WallSouth wall -0.3 -3.5 -0.3 24.3 6 0
-WallNorth wall -0.3 -3.5 10 24.3 6 10.3
+WallSouth wall -0.3 -3.5 -0.3 36.3 6 0
+WallNorth wall -0.3 -3.5 10 36.3 6 10.3
 WallStart wall -0.3 -3.5 0 0 6 10
-WallEnd wall 24 -3.5 0 24.3 6 10
+WallEnd wall 36 -3.5 0 36.3 6 7.9
+WallEndNorth wall 36 -3.5 9.1 36.3 6 10
+WallEndBelow wall 36 -3.5 7.9 36.3 0 9.1
+WallEndAbove wall 36 1.1 7.9 36.3 6 9.1
 Wall12South wall 12 -3.5 0 12.3 6 1
 Wall12Mid wall 12 -3.5 3 12.3 6 7.9
 Wall12North wall 12 -3.5 9.1 12.3 6 10
@@ -26,3 +29,14 @@ Wall12Top wall 12 3 1 12.3 6 3
 Wall12Below wall 12 -3.5 1 12.3 0 3
 Wall12HoleBelow wall 12 -3.5 7.9 12.3 1 9.1
 Wall12HoleAbove wall 12 2.4 7.9 12.3 6 9.1
+# Room 3.3 "Catapulta": floor, 5 m pit, landing 1.5 m lower; the ball lane (z 7.4–10); cannon; ceiling 3 m.
+PitBottom33 pit 28 -3.5 0 33 -3 7.4
+Floor33 floor 24.3 -3.5 0 28 0 7.4
+Landing33 floor 33 -3.5 0 36 -1.5 7.4
+Lane33 ledge 24.3 -3.5 7.4 36 0 10
+Cannon33 wall 24.3 0 7.9 24.9 1 9.1
+Ceiling33 wall 24.3 3 -0.3 36.3 3.3 10.3
+Wall24South wall 24 -3.5 0 24.3 6 1
+Wall24Mid wall 24 -3.5 3 24.3 6 10
+Wall24Top wall 24 3 1 24.3 6 3
+Wall24Below wall 24 -3.5 1 24.3 0 3

@@ -844,6 +844,18 @@ public partial class SmokeTest : Node
             $"held {player.Held?.Name}, player {player.GlobalPosition}, box {box.GlobalPosition}");
         if (player.Held is not null)
             player.Drop();
+        // The user's trick: energy pulls the box against the wall on the player's side, then hold it through
+        // the wall and throw it. A barrier that blocks objects also blocks holding through it.
+        box.Teleport(new Vector3(17.4f, 0.5f, 4.55f), Vector3.Zero);
+        await PhysicsFrames(5);
+        await LookAt(player, box.GlobalPosition);
+        player.ToggleHold();
+        Check("level 3, 3.2 (user's trick): the box against the wall can't be held through the wall for objects", player.Held is null,
+            $"held {player.Held?.Name}, box {box.GlobalPosition}");
+        if (player.Held is not null)
+            player.Drop();
+        box.Teleport(box.Def.Position.ToGodot(), Vector3.Zero);
+        await PhysicsFrames(5);
         await WalkTo(player, 13.5f, 2);
         PressKey(swaps, Key.Key3);
         var given = false;
@@ -863,7 +875,68 @@ public partial class SmokeTest : Node
         await PhysicsFrames(120);
         Check("level 3, 3.2: the box slides onto the button and the door opens", main.Runner.Doors.Single().IsOpen, $"box {box.GlobalPosition}");
         await WalkTo(player, 24.6f, 2);
-        Check("level 3: the exit of 3.2 ends the level", flow.Result is { LevelId: "level-3" } && flow.EndScreenVisible,
+        Check("level 3, 3.2: into room 3.3", main.Runner.Room.Id == "3.3", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 3.3 "Catapulta" — the same 640 J: too slow at 70 kg, fast enough at 5 kg.
+        async Task<bool> TakeBallEnergy()
+        {
+            var rolling = main.Runner.Bodies.Single(b => b.ContainerId == "ball-3-3");
+            PressKey(swaps, Key.Key3);
+            for (var i = 0; i < 300; i++)
+            {
+                var to = rolling.GlobalPosition - player.Eye.Origin;
+                player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
+                await PhysicsFrames(1);
+                if (rolling.GlobalPosition.X is > 25.5f and < 30f && rolling.LinearVelocity.X > 6 && swaps.TrySwap() is { IsApplied: true })
+                    return true;
+            }
+            return false;
+        }
+        async Task WaitDeath()
+        {
+            for (var i = 0; i < 300 && !flow.IsDying; i++)
+                await PhysicsFrames(1);
+            var died = flow.IsDying;
+            for (var i = 0; i < 300 && flow.IsDying; i++)
+                await PhysicsFrames(1);
+            Check("level 3, 3.3: that try falls into the pit", died, $"at {player.GlobalPosition}");
+        }
+        async Task BecomeLight()
+        {
+            var light = main.Runner.Bodies.Single(b => b.ContainerId == "light-box-3-3");
+            PressKey(swaps, Key.Key2);
+            await LookAt(player, light.GlobalPosition);
+            Check("level 3, 3.3: take the 5 kg box's mass from the platform edge", swaps.TrySwap() is { IsApplied: true } && player.MassKg <= 5.01,
+                $"{swaps.Crosshair}, mass {player.MassKg}");
+            await PhysicsFrames(70);
+        }
+
+        await WalkTo(player, 27.4f, 2);
+        var probe = main.Runner.Bodies.Single(b => b.ContainerId == "ball-3-3");
+        Check("level 3, 3.3: at 70 kg, the ball's energy is taken", await TakeBallEnergy(), $"no swap; ball {probe.GlobalPosition} v {probe.LinearVelocity}, {swaps.Crosshair}; eye {player.Eye.Origin}, aim hits {player.Aim(60)?.Name}");
+        GD.Print($"[smoke] info level 3, 3.3: at 70 kg launched at {player.Velocity.Length():0.0} m/s");
+        await WaitDeath();
+
+        await WalkTo(player, 27.4f, 2);
+        await BecomeLight();
+        player.Look(-90, 0);
+        player.ScriptedMove = new Vector2(0, 1);
+        player.Jump();
+        await PhysicsFrames(2);
+        player.ScriptedMove = null;
+        player.ScriptedMove = new Vector2(0, 1);
+        await WaitDeath();                                          // the 4.5 m ceiling stops a light player's 7 m jump
+        player.ScriptedMove = null;
+
+        await WalkTo(player, 27.4f, 2);
+        await BecomeLight();
+        Check("level 3, 3.3: light, the ball's energy is taken", await TakeBallEnergy(), "no swap");
+        var launched = player.Velocity.Length();
+        GD.Print($"[smoke] info level 3, 3.3: at 5 kg launched at {launched:0.0} m/s");
+        Check("level 3, 3.3: the same energy in 5 kg is much faster", launched > 12, $"{launched} m/s");
+        for (var i = 0; i < 180 && flow.Result is null; i++)
+            await PhysicsFrames(1);
+        Check("level 3: flying over the pit into the exit of 3.3 ends the level", flow.Result is { LevelId: "level-3" } && flow.EndScreenVisible,
             $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
         GD.Print($"[smoke] info full run of level 3: {flow.Result}");
     }
