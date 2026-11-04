@@ -19,6 +19,7 @@ public sealed class ControlsTests
     [InlineData(GameAction.PropertyPrevious, InputKind.MouseButton, "WheelUp")]
     [InlineData(GameAction.PropertyNext, InputKind.MouseButton, "WheelDown")]
     [InlineData(GameAction.HoldToRotate, InputKind.Key, "F")]
+    [InlineData(GameAction.Sprint, InputKind.Key, "Shift")]
     public void Every_control_of_G1_has_its_binding(GameAction action, InputKind kind, string code)
     {
         Assert.Contains(new InputBinding(action, kind, code), Controls.Bindings);

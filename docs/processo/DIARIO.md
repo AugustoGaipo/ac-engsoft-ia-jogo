@@ -1990,3 +1990,10 @@ câmera acompanha o olho. São 69 no total.
 - `LabBackdrop`: parede de painéis brancos, faixas de risco preto/amarelo, plaquinhas e o emblema das três propriedades.
 - Tela de controles virou tabela de teclas; fim de nível ganhou o título "Relatório do teste".
 - Só visual: smoke 270 checks passando. Conferência visual fica com o usuário (sem captura de tela nesta sessão).
+
+## 2026-11-04 — Correr (Shift) e a sala 3.1 refeita
+
+- Pedido do usuário: poder correr. `Sprint.Speed` = 1,4 × a caminhada (depois da lentidão de segurar peso); tecla Shift (`GameAction.Sprint`). Teste vermelho antes (binding + `SprintTests`).
+- Efeito colateral avisado pelo usuário e pego pelo smoke: correndo e pulando se atravessava o fosso de 3,5 m da 3.1 sem usar a troca.
+- Correção: plataforma x 0–5, fosso de 5,5 m (x 5–10,5), bola do canhão 40 kg (≈ 5 360 J → jogador lançado a ≈ 11,7 m/s). O smoke agora pula correndo na 3.1 e na 3.3 e exige a morte nos dois.
+- Verificação: 701 testes + smoke 271 checks verdes.

@@ -19,14 +19,14 @@
       "bounds": { "min": [0, -3, 0], "max": [12, 6, 10] },
       "spawn": { "position": [1, 1.5, 2], "yawDegrees": -90 },
       "exit": { "min": [11.5, 0, 1], "max": [12, 3, 3] },
-      // Scenery (user's idea, 2026-11-03): a 1.5 m start platform, a 3.5 m pit, the landing floor with the exit
-      // in line. A cannon at x = 0 fires the 20 kg ball in a short arc (16 m/s, apex ≈ 2.1 m at x ≈ 6.7) over a
+      // Scenery (user's idea, 2026-11-03): a 1.5 m start platform (x 0–5), a 5.5 m pit (wider since running, 2026-11-04), the landing floor with the exit
+      // in line. A cannon at x = 0 fires the 40 kg ball in a short arc (16 m/s, apex ≈ 2.1 m at x ≈ 6.7) over a
       // deep lane along z = 8.5 and out through a hole in the far wall; out of the room it pops back to the
-      // cannon with its starting velocity, so it fires again and again. Swap energy near the edge: ≈ 2 680 J
-      // give the 70 kg player ≈ 8.7 m/s over the pit. The ball gets your 0 J and drops into the lane: it pops
-      // back too. Walking and jumping off the platform reaches ≈ 3.2 m, short of the 3.5 m pit.
+      // cannon with its starting velocity, so it fires again and again. Swap energy near the edge: ≈ 5 360 J
+      // give the 70 kg player ≈ 12 m/s over the pit. The ball gets your 0 J and drops into the lane: it pops
+      // back too. A running jump (Shift) cleared the old 3.5 m pit; it falls short of 5.5 m.
       "objects": [
-        { "id": "ball-3-1", "kind": "ball", "position": [1.0, 1.5, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 20, "accepts": ["kineticEnergy"],
+        { "id": "ball-3-1", "kind": "ball", "position": [1.0, 1.5, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 40, "accepts": ["kineticEnergy"],
           "velocity": [16, 3.5, 0], "bounce": 0.95 }
       ],
       "barriers": [
@@ -35,7 +35,7 @@
         { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 1], "max": [11.6, 3, 3] } }
       ],
       "killZones": [
-        { "id": "pit-3-1", "box": { "min": [6, -3, 0], "max": [9.5, -1, 7] } },
+        { "id": "pit-3-1", "box": { "min": [5, -3, 0], "max": [10.5, -1, 7] } },
         { "id": "lane-3-1", "box": { "min": [0, -3, 7], "max": [12, -1, 10] } }
       ]
     },

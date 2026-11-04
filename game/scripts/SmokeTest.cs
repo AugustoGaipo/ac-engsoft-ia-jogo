@@ -798,23 +798,25 @@ public partial class SmokeTest : Node
         Check("level 3, 3.1: the cannon loop — the ball crosses the room, leaves by the hole and is fired again",
             maxX > 11 && popped, $"max x {maxX:0.0}, popped {popped}");
 
-        // No shortcut: a running jump off the platform falls short of the 3.5 m pit.
-        await WalkTo(player, 5.0f, 2);
+        // No shortcut: a running jump (Shift) off the platform falls short of the 5.5 m pit (the old 3.5 m one was cleared by running, user 2026-11-04).
+        await WalkTo(player, 4.0f, 2);
         player.Look(-90, 0);
+        player.ScriptedSprint = true;
         player.ScriptedMove = new Vector2(0, 1);
-        for (var i = 0; i < 60 && player.GlobalPosition.X < 5.95f; i++)
+        for (var i = 0; i < 60 && player.GlobalPosition.X < 4.95f; i++)
             await PhysicsFrames(1);
         player.Jump();
         for (var i = 0; i < 240 && !flow.IsDying; i++)
             await PhysicsFrames(1);
         player.ScriptedMove = null;
-        Check("level 3, 3.1: a running jump does not clear the pit (no shortcut)", flow.IsDying, $"at {player.GlobalPosition}");
+        player.ScriptedSprint = null;
+        Check("level 3, 3.1: a sprinting jump does not clear the pit (no shortcut)", flow.IsDying, $"at {player.GlobalPosition}");
         for (var i = 0; i < 300 && flow.IsDying; i++)
             await PhysicsFrames(1);
         var deathsBefore = flow.Run.Deaths;
         ball = main.Runner.Bodies.Single();                     // the room was rebuilt after the death
 
-        await WalkTo(player, 5.4f, 2);
+        await WalkTo(player, 4.6f, 2);
         PressKey(swaps, Key.Key3);
         float? at = null;
         for (var i = 0; i < 300 && at is null; i++)
@@ -829,7 +831,7 @@ public partial class SmokeTest : Node
         GD.Print($"[smoke] info level 3, 3.1: launched at {at:0.0} m/s");
         Check("level 3, 3.1 (Launch): the player keeps the received speed", player.Launched is not null, $"velocity {player.Velocity}");
         await PhysicsFrames(90);
-        Check("level 3, 3.1: launched over the pit, alive on the landing", player.GlobalPosition.X > 9.6f && player.GlobalPosition.Y > -0.5f && flow.Run.Deaths == deathsBefore,
+        Check("level 3, 3.1: launched over the pit, alive on the landing", player.GlobalPosition.X > 10.6f && player.GlobalPosition.Y > -0.5f && flow.Run.Deaths == deathsBefore,
             $"at {player.GlobalPosition}, deaths {flow.Run.Deaths}");
         await WalkTo(player, 12.6f, 2);
         Check("level 3, 3.1: into room 3.2", main.Runner.Room.Id == "3.2", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
@@ -911,8 +913,20 @@ public partial class SmokeTest : Node
             await PhysicsFrames(70);
         }
 
+        // No shortcut: a sprinting jump off the floor edge (x = 28) falls short of the 5 m pit.
+        await WalkTo(player, 26.5f, 2);
+        player.Look(-90, 0);
+        player.ScriptedSprint = true;
+        player.ScriptedMove = new Vector2(0, 1);
+        for (var i = 0; i < 90 && player.GlobalPosition.X < 27.95f; i++)
+            await PhysicsFrames(1);
+        player.Jump();
+        await WaitDeath();
+        player.ScriptedMove = null;
+        player.ScriptedSprint = null;
+
         await WalkTo(player, 27.4f, 2);
-        var probe = main.Runner.Bodies.Single(b => b.ContainerId == "ball-3-3");
+        var probe =main.Runner.Bodies.Single(b => b.ContainerId == "ball-3-3");
         Check("level 3, 3.3: at 70 kg, the ball's energy is taken", await TakeBallEnergy(), $"no swap; ball {probe.GlobalPosition} v {probe.LinearVelocity}, {swaps.Crosshair}; eye {player.Eye.Origin}, aim hits {player.Aim(60)?.Name}");
         GD.Print($"[smoke] info level 3, 3.3: at 70 kg launched at {player.Velocity.Length():0.0} m/s");
         await WaitDeath();

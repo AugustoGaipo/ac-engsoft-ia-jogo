@@ -63,6 +63,11 @@ public partial class Player : CharacterBody3D, IHasWeight
     /// <summary>Test hook: when set, replaces the keyboard (x = right, y = forward).</summary>
     public Vector2? ScriptedMove { get; set; }
 
+    /// <summary>Scripted runs: forces running on/off; null reads Shift.</summary>
+    public bool? ScriptedSprint { get; set; }
+
+    public bool IsSprinting => ScriptedSprint ?? Input.IsActionPressed(Controls.Name(GameAction.Sprint));
+
     public static Player Create()
     {
         var player = new Player
@@ -207,7 +212,7 @@ public partial class Player : CharacterBody3D, IHasWeight
             direction = direction.Normalized();
 
         // While pushing, the player moves only as fast as the pushed body can (PushImpulse).
-        var walk = WalkSpeed * (float)HoldLoad.SpeedFactor(HeldMassKg, MassKg);
+        var walk = (float)Sprint.Speed(WalkSpeed * HoldLoad.SpeedFactor(HeldMassKg, MassKg), IsSprinting);
         var speed = _pushSpeed is { } pushing ? Mathf.Min(walk, pushing) : walk;
         var velocity = Velocity;
         // Launched: the received speed is kept (no walking control) and brakes by friction (Launch).
@@ -223,7 +228,7 @@ public partial class Player : CharacterBody3D, IHasWeight
         {
             var after = Velocity with { Y = 0 };                    // a wall stops (or deflects) the launch
             var left = Launch.Step(after.Length(), IsOnFloor(), delta);
-            Launched = Launch.Starts(left, WalkSpeed) ? after.Normalized() * (float)left : null;
+            Launched = Launch.Starts(left, Math.Max(WalkSpeed, speed)) ? after.Normalized() * (float)left : null;
         }
         LandingSpeed = !wasOnFloor && IsOnFloor() ? -velocity.Y : null;
         if (LandingSpeed is > 2f and var landing)
