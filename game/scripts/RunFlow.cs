@@ -298,7 +298,7 @@ public partial class RunFlow : Node
         _deathSound = Sfx.Player(this, Sfx.Death, "DeathSound");
 
         _pauseMenu = Panel("Pausa");
-        var buttons = _pauseMenu.GetNode<VBoxContainer>("Box");
+        var buttons = BoxOf(_pauseMenu);
         AddButton(buttons, "Continuar", () => SetPaused(false));
         AddButton(buttons, "Reiniciar sala", () => { SetPaused(false); RestartRoom(death: false); });
         AddButton(buttons, "Reiniciar nível", RestartLevel);
@@ -306,10 +306,10 @@ public partial class RunFlow : Node
         AddButton(buttons, "Sair", () => GetTree().Quit());
         layer.AddChild(_pauseMenu);
 
-        _endScreen = Panel("");
+        _endScreen = Panel("Relatório do teste");
         _endText = new Label { HorizontalAlignment = HorizontalAlignment.Center };
         _endText.AddThemeFontSizeOverride("font_size", 28);
-        var endBox = _endScreen.GetNode<VBoxContainer>("Box");
+        var endBox = BoxOf(_endScreen);
         endBox.AddChild(_endText);
         _nextButton = AddButton(endBox, "Próximo nível", () => NextLevelRequested?.Invoke());
         _nextButton.Visible = false;
@@ -319,25 +319,18 @@ public partial class RunFlow : Node
 
     private static Control Panel(string title)
     {
-        var dim = new ColorRect { Color = new Color(0, 0, 0, 0.6f), Visible = false };
+        var dim = new ColorRect { Color = new Color(0.04f, 0.06f, 0.09f, 0.7f), Visible = false, Theme = LabTheme.Get() };
         dim.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        var box = new VBoxContainer
-        {
-            Name = "Box",
-            GrowHorizontal = Control.GrowDirection.Both,
-            GrowVertical = Control.GrowDirection.Both,
-        };
-        box.SetAnchorsPreset(Control.LayoutPreset.Center);
+        var box = new VBoxContainer { Name = "Box" };
         box.AddThemeConstantOverride("separation", 12);
-        dim.AddChild(box);
-        if (title.Length > 0)
-        {
-            var label = new Label { Text = title, HorizontalAlignment = HorizontalAlignment.Center };
-            label.AddThemeFontSizeOverride("font_size", 40);
-            box.AddChild(label);
-        }
+        box.AddChild(LabTheme.Sign(title, 36));
+        var holder = LabTheme.Sheet(box);
+        holder.Name = "Holder";
+        dim.AddChild(holder);
         return dim;
     }
+
+    private static VBoxContainer BoxOf(Control panel) => panel.GetNode<VBoxContainer>("Holder/Sheet/Box");
 
     private static Button AddButton(VBoxContainer box, string text, Action onPressed)
     {

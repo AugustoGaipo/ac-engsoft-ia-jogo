@@ -1982,3 +1982,11 @@ câmera acompanha o olho. São 69 no total.
 - **Correção do registro acima:** o commit da 3.3 saiu com 3 testes da API vermelhos (eu não tinha olhado a
   saída da API antes do commit): eles contavam 2 salas no nível 3, e o piso de tempo plausível depende do
   número de salas. Atualizados para 3 salas (piso de 3 000 ms). Agora a suíte toda está verde (698).
+
+## 2026-11-04 — Visual das telas: "instalação de testes"
+
+- Pedido do usuário: menus com cara de laboratório / área de teste.
+- `LabTheme.cs`: um `Theme` único (fonte Bahnschrift, botões brancos com borda ciano, placas de título escuras com faixa amarela, folha branca com sombra) usado no menu, na pausa e no fim de nível.
+- `LabBackdrop`: parede de painéis brancos, faixas de risco preto/amarelo, plaquinhas e o emblema das três propriedades.
+- Tela de controles virou tabela de teclas; fim de nível ganhou o título "Relatório do teste".
+- Só visual: smoke 270 checks passando. Conferência visual fica com o usuário (sem captura de tela nesta sessão).

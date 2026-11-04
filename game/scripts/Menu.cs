@@ -37,9 +37,10 @@ public partial class Menu : CanvasLayer
         _progress = progress;
         _hasScene = hasScene;
         Layer = 20;
-        _root = new ColorRect { Color = new Color(0.07f, 0.08f, 0.11f), Visible = false };
+        _root = new ColorRect { Color = LabTheme.Wall, Visible = false, Theme = LabTheme.Get() };
         _root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         AddChild(_root);
+        _root.AddChild(new LabBackdrop());
 
         _main = NewScreen("Swapping");
         _play = AddButton(_main, "Jogar", Play);
@@ -50,13 +51,21 @@ public partial class Menu : CanvasLayer
 
         _levelsScreen = NewScreen("Níveis");
         _controlsScreen = NewScreen("Controles");
-        var controls = new Label
+        var controls = new GridContainer { Columns = 2 };
+        controls.AddThemeConstantOverride("h_separation", 18);
+        controls.AddThemeConstantOverride("v_separation", 8);
+        (string Key, string Action)[] keys =
+        [
+            ("W A S D", "andar"), ("Espaço", "pular"), ("Mouse", "olhar"), ("E", "segurar / soltar"),
+            ("Botão esquerdo", "segurar: carregar e arremessar · toque: solta"), ("Botão direito", "trocar"),
+            ("1  2  3", "escolher a troca (posição, massa, energia)"), ("Roda do mouse", "trocar a propriedade"),
+            ("F + mouse", "girar o item segurado"), ("R", "reiniciar a sala"), ("Esc", "pausa"),
+        ];
+        foreach (var (key, action) in keys)
         {
-            HorizontalAlignment = HorizontalAlignment.Center,
-            Text = "W A S D  andar        Espaço  pular\nMouse  olhar        E  segurar / soltar\n" +
-                   "Segurar botão esquerdo  carregar e arremessar (toque solta)        Botão direito  trocar\n1 2 3  escolher a troca (posição, massa, energia)\nRoda do mouse  trocar a propriedade\nSegurar F + mover o mouse  girar o item segurado\nR  reiniciar a sala        Esc  pausa",
-        };
-        controls.AddThemeFontSizeOverride("font_size", 22);
+            controls.AddChild(KeyChip(key));
+            controls.AddChild(new Label { Text = action, VerticalAlignment = VerticalAlignment.Center });
+        }
         _controlsScreen.AddChild(controls);
         AddButton(_controlsScreen, "Voltar", () => Show("main"));
     }
@@ -78,9 +87,9 @@ public partial class Menu : CanvasLayer
         if (screen == "levels")
             RebuildCards();
         _play.Disabled = LevelAccess.ContinueLevel(_progress, Ids(), _hasScene) is null;
-        _main.Visible = screen == "main";
-        _levelsScreen.Visible = screen == "levels";
-        _controlsScreen.Visible = screen == "controls";
+        Holder(_main).Visible = screen == "main";
+        Holder(_levelsScreen).Visible = screen == "levels";
+        Holder(_controlsScreen).Visible = screen == "controls";
     }
 
     public LevelStatus StatusOf(string levelId) => LevelAccess.StatusOf(levelId, _progress, _hasScene(levelId));
@@ -122,8 +131,10 @@ public partial class Menu : CanvasLayer
         };
         var card = new Button { Name = $"Card_{level.Id}", CustomMinimumSize = new Vector2(520, 84), Disabled = status != LevelStatus.Available };
         card.Pressed += () => OnCard(level.Id);
-        var label = new Label { Text = $"{level.Number} · {level.Name}\n{detail}", Position = new Vector2(16, 12), MouseFilter = Control.MouseFilterEnum.Ignore };
+        var label = new Label { Text = $"{level.Number} · {level.Name}\n{detail}", Position = new Vector2(26, 12), MouseFilter = Control.MouseFilterEnum.Ignore };
         label.AddThemeFontSizeOverride("font_size", 22);
+        if (status != LevelStatus.Available)
+            label.Modulate = new Color(1, 1, 1, 0.55f);
         card.AddChild(label);
         if (status != LevelStatus.Available)
             card.AddChild(new CardIcon { Kind = status, Position = new Vector2(450, 16), MouseFilter = Control.MouseFilterEnum.Ignore });
@@ -139,14 +150,29 @@ public partial class Menu : CanvasLayer
 
     private VBoxContainer NewScreen(string title)
     {
-        var box = new VBoxContainer { GrowHorizontal = Control.GrowDirection.Both, GrowVertical = Control.GrowDirection.Both, Visible = false };
-        box.SetAnchorsPreset(Control.LayoutPreset.Center);
+        var box = new VBoxContainer();
         box.AddThemeConstantOverride("separation", 14);
-        var label = new Label { Text = title, HorizontalAlignment = HorizontalAlignment.Center };
-        label.AddThemeFontSizeOverride("font_size", 56);
-        box.AddChild(label);
-        _root.AddChild(box);
+        box.AddChild(LabTheme.Sign(title, title == "Swapping" ? 60 : 40));
+        var holder = LabTheme.Sheet(box);
+        holder.Visible = false;
+        _root.AddChild(holder);
         return box;
+    }
+
+    /// <summary>The full-screen holder of a screen's sheet (what is shown and hidden).</summary>
+    private static Control Holder(VBoxContainer box) => (Control)box.GetParent().GetParent();
+
+    private static Label KeyChip(string key)
+    {
+        var chip = new Label { Text = key, HorizontalAlignment = HorizontalAlignment.Center };
+        chip.AddThemeColorOverride("font_color", Colors.White);
+        chip.AddThemeFontSizeOverride("font_size", 18);
+        var style = new StyleBoxFlat { BgColor = LabTheme.Ink, ContentMarginLeft = 12, ContentMarginRight = 12, ContentMarginTop = 4, ContentMarginBottom = 4 };
+        style.SetCornerRadiusAll(4);
+        style.BorderWidthBottom = 3;
+        style.BorderColor = LabTheme.Accent;
+        chip.AddThemeStyleboxOverride("normal", style);
+        return chip;
     }
 
     private static Button AddButton(VBoxContainer box, string text, Action onPressed)
@@ -170,10 +196,10 @@ public partial class CardIcon : Control
     {
         if (Kind == LevelStatus.Locked)
         {
-            var steel = new Color(0.72f, 0.78f, 0.9f);
+            var steel = LabTheme.Muted;
             DrawArc(new Vector2(26, 20), 11, Mathf.Pi, Mathf.Tau, 16, steel, 4);
             DrawRect(new Rect2(10, 20, 32, 26), steel);
-            DrawCircle(new Vector2(26, 33), 4, new Color(0.15f, 0.17f, 0.22f));
+            DrawCircle(new Vector2(26, 33), 4, LabTheme.Paper);
         }
         else
         {
