@@ -692,6 +692,9 @@ public partial class SmokeTest : Node
             swaps.TrySwap() is { IsApplied: false } && swaps.RefusedSounds == refused + 1, $"refused {swaps.RefusedSounds - refused}");
         await PhysicsFrames(70);
         await LookAt(player, crate.GlobalPosition);
+        Check("HUD (Borrowed): after the mass swap you see the crate's mass, the crate shows yours",
+            main.Hud.PlayerText.Contains("300 kg ⇄ da caixa") && main.Hud.TargetText.Contains("70 kg ⇄ seu"),
+            $"you: {main.Hud.PlayerText.Replace('\n', '|')}; target: {main.Hud.TargetText}");
         player.ToggleHold();
         Check("level 2, 2.3: now 300 kg, the player holds the 70 kg crate, with the grab sound",
             player.Held == crate && player.HoldSounds == holdSounds + 1, $"held {player.Held?.Name}, sounds {player.HoldSounds - holdSounds}");
@@ -707,6 +710,7 @@ public partial class SmokeTest : Node
         Check("level 2, 2.3: give the mass back through the grid", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
         await PhysicsFrames(60);
         Check("level 2, 2.3: the 300 kg crate presses the button and the door opens", main.Runner.Doors.Single().IsOpen, $"crate {crate.GlobalPosition}");
+        Check("HUD (Borrowed): the mass given back, nothing is marked", !main.Hud.PlayerText.Contains("⇄"), main.Hud.PlayerText.Replace('\n', '|'));
         PressKey(swaps, Key.Key1);
         await LookAt(player, ball.GlobalPosition);
         Check("level 2, 2.3: swap places with the ball past the grid", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");

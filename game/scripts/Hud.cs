@@ -78,7 +78,8 @@ public partial class Hud : CanvasLayer
         if (_player is null)
             return;
         var me = Readout.Of(_player.MassKg, _player.Velocity.ToLevel());
-        _mine.Text = $"Você\n{me.Mass}\n{me.Speed}\n{me.Energy}";
+        _mine.Text = $"Você\n{me.Mass}{Mark(PlayerId, Kinds.Mass)}\n{me.Speed}\n{me.Energy}{Mark(PlayerId, Kinds.KineticEnergy)}"
+            + (Mark(PlayerId, Kinds.Position) is { Length: > 0 } where ? $"\nPosição{where}" : "");
         if (_flow is not null)
             _run.Text = $"{RunClock.Format(_flow.Run.TimeMs)}\nTrocas {_flow.Run.Swaps}\nTroca por: {PropertyKeys.Label(_swaps.Choice)}";
 
@@ -97,11 +98,39 @@ public partial class Hud : CanvasLayer
         if (_swaps.Target is { } target && IsInstanceValid(target))
         {
             var it = Readout.Of(target.Mass, target.LinearVelocity.ToLevel());
-            _target.Text = $"{it.Mass} · {it.Speed} · {it.Energy}";
+            var id = target.ContainerId;
+            _target.Text = $"{it.Mass}{Mark(id, Kinds.Mass)} · {it.Speed} · {it.Energy}{Mark(id, Kinds.KineticEnergy)}"
+                + (Mark(id, Kinds.Position) is { Length: > 0 } itsPlace ? $"\nPosição{itsPlace}" : "");
         }
         else
         {
             _target.Text = "";
+        }
+    }
+
+    private const string PlayerId = Swapping.Levels.LevelValidator.PlayerId;
+
+    private static class Kinds
+    {
+        public static readonly Swapping.Rules.Model.IPropertyKind Position = Swapping.Rules.Model.PropertyKind.Position;
+        public static readonly Swapping.Rules.Model.IPropertyKind Mass = Swapping.Rules.Model.PropertyKind.Mass;
+        public static readonly Swapping.Rules.Model.IPropertyKind KineticEnergy = Swapping.Rules.Model.PropertyKind.KineticEnergy;
+    }
+
+    /// <summary>" ⇄ da caixa" / " ⇄ seu" when the body uses someone else's property (Borrowed), "" otherwise.</summary>
+    private string Mark(string containerId, Swapping.Rules.Model.IPropertyKind kind)
+    {
+        var runner = _swaps.Runner;
+        if (runner?.World is not { } world)
+            return "";
+        try
+        {
+            return Borrowed.Mark(world, containerId, kind, PlayerId, owner =>
+                runner.Bodies.FirstOrDefault(b => b.ContainerId == owner)?.Def.Kind == Swapping.Levels.Model.ObjectKind.Ball ? "bola" : "caixa");
+        }
+        catch (Exception)
+        {
+            return "";                              // a body of a room being rebuilt: no mark this frame
         }
     }
 

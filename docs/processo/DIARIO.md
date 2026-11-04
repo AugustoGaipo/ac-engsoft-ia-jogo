@@ -1927,3 +1927,10 @@ câmera acompanha o olho. São 69 no total.
 - **Testes:** 1 caso novo em `FeedbackTests`; sem janela na sala 2.3: falha ao segurar a caixa de 300 kg,
   zap na troca, falha numa troca durante a recarga, som ao pegar a caixa. Mutação pega: peso com o mesmo
   tom da posição (1 falha). Suíte toda verde (690).
+
+### 11-03 — HUD mostra o que é emprestado (pedido do usuário: "quando os atributos não são meus")
+- **Feito:** `Borrowed` (GameLogic) lê do mundo das regras de quem é cada variável que um corpo usa. O HUD
+  marca: "Você · 300 kg ⇄ da caixa" (ou "da bola"); na mira, o objeto com algo seu mostra "70 kg ⇄ seu";
+  posição emprestada aparece numa linha "Posição ⇄ …". Sem troca (ou devolvido), nada é marcado.
+- **Testes:** 3 casos em `BorrowedTests`; sem janela na sala 2.3: marca depois de pegar o peso da caixa e
+  nenhuma marca depois de devolver. Mutação pega: condição invertida (3 falhas). Suíte toda verde (693).

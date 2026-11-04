@@ -20,6 +20,9 @@ public partial class SwapController : Node
 
     private readonly SwapOperation _swap = new();
     private LevelRunner _runner = null!;
+
+    /// <summary>The level runner (the HUD reads the rules world and the bodies through it).</summary>
+    public LevelRunner Runner => _runner;
     private Player _player = null!;
     private double _now;
     private bool _swapRequested;
