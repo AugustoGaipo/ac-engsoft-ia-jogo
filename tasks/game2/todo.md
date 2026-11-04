@@ -12,7 +12,7 @@ Each task: red test → code → mutation → diary → tick → commit and push
 - [x] **Task 15 — Menu, level select, test map, end and pause buttons (M).** `Menu.cs`, `Main.cs`,
       `RunFlow.cs`, progress file, headless menu checks. SC 17.
 - [x] **Task 16 — Level 2 scene and barrier looks (M).** `level_2.tscn`, scripted run. SC 17.
-- [ ] **Task 17 — Level 3 scene (M).** `level_3.tscn`, scripted run. SC 17.
+- [x] **Task 17 — Level 3 scene (M).** `level_3.tscn`, scripted run. SC 17.
 - [ ] **Task 18 — Close (S).** Coverage, play-test sheet, report, README, C4, diary. SC 18.
 
 Checkpoint after Task 15: the user plays the menu and level 1. After Task 17: the user plays everything.

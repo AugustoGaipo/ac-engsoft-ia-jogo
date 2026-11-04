@@ -19,8 +19,8 @@ Quinta é para slides e ensaio, sem código novo.
   barreira que restaura (`restoresVariables`, rosa), encostar numa barreira de variáveis barra a troca,
   peso volta a 70 kg ao morrer, barra de arremesso (3 s, 400 J, teto suave 15 m/s). Detalhes no diário.
 - **Feito em 11-03 (tarde):** `HoldLoad` (segurar depende do peso) e tarefa 16 (nível 2: 2.3 "Empréstimo", 2.4 "Pulo alto"; jogada sem janela). Falta o usuário jogar o nível 2.
-- **Próxima:** 17 cena do nível 3 (o usuário descreve as fases; Claude monta pelo JSON e
-  pela tabela de `tools/scenery/`; `level_3.tscn` ainda não existe), 18 fechamento.
+- **Feito em 11-03 (noite):** sons (pulo, queda, troca, segurar, barra, batidas), tela de morte, HUD de emprestado (⇄), jogador lançado (`Launch`), não se segura através de barreira de objetos, tarefa 17 (nível 3: 3.1 Canhão, 3.2, 3.3 Catapulta). Falta o usuário jogar os níveis 2 e 3.
+- **Próxima:** 18 fechamento (cobertura, ficha de playtest, relatório, README, C4, diário).
 - **Depois da entrega:** editor de fases no Godot (peças como nós + "Exportar fase" para JSON com o
   validador). Adiado: resta menos de 50 % do plano Pro normal até sexta.
 - Sempre `dotnet build game/Swapping.Game.csproj` antes do `dotnet test` (senão o teste sem janela roda o jogo velho).
