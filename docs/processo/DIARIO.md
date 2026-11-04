@@ -1960,3 +1960,7 @@ câmera acompanha o olho. São 69 no total.
 - **Ajuste (pedido do usuário, "paredes do objeto não poder sair"):** barreiras só de objetos ao longo da
   canaleta da 3.1 (a bola não escapa para a plataforma; jogador e trocas passam) e por cima das muretas do
   canal da 3.2 (até 3 m). Jogada sem janela continua verde (260).
+- **Atalho achado pelo usuário na 3.2:** segurar a caixa por cima da mureta e levá-la ao botão, sem troca.
+  Correção: o canal passou para z 4–8 (caixa e botão em z = 7) e a barreira da mureta do lado do jogador
+  barra também o jogador; do ponto mais perto a caixa fica a ~3 m, fora do alcance de segurar (2,5 m), e a
+  troca (8 m) continua alcançando. Sem janela: "não dá para segurar a caixa" entrou na jogada (261 verdes).

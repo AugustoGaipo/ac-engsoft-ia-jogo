@@ -45,21 +45,23 @@
       "bounds": { "min": [12, -3, 0], "max": [24, 6, 10] },
       "spawn": { "position": [13, 0, 2], "yawDegrees": -90 },
       "exit": { "min": [23.5, 0, 1], "max": [24, 3, 3] },
-      // Scenery: the box sits in a low closed channel (z 4–6, walls 0.8 m) that the player can't enter, aimed
+      // Scenery: the box sits in a low closed channel (z 4–8, walls 0.8 m) that the player can't enter, aimed
       // at the button. Run along +X and give it your energy: 70 kg at 3 m/s = 315 J → the 10 kg box at ≈ 7.9 m/s.
       "objects": [
-        { "id": "box-3-2", "kind": "box", "position": [17.4, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "accepts": ["kineticEnergy"], "bounce": 0.1 }
+        { "id": "box-3-2", "kind": "box", "position": [17.4, 0.5, 7], "size": [1, 1, 1], "massKg": 10, "accepts": ["kineticEnergy"], "bounce": 0.1 }
       ],
       "buttons": [
-        { "id": "button-3-2", "position": [21, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
+        { "id": "button-3-2", "position": [21, 0, 7], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
       ],
       "doors": [
         { "id": "door-3-2", "box": { "min": [22.5, 0, 1], "max": [22.8, 3, 3] }, "opensWith": ["button-3-2"] }
       ],
       "barriers": [
         // Walls for objects only on top of the channel walls (user's request): the box stays in its channel.
-        { "id": "channel-wall-south-3-2", "blocksObjects": true, "box": { "min": [12.3, 0.8, 3.7], "max": [22.5, 3, 4] } },
-        { "id": "channel-wall-north-3-2", "blocksObjects": true, "box": { "min": [12.3, 0.8, 6], "max": [22.5, 3, 6.3] } },
+        // South side also blocks the player: the box (z = 7) stays ≥ 3 m from where the player can stand, out of
+        // the 2.5 m hold reach (user found: holding the box over the wall skipped the energy swap).
+        { "id": "channel-wall-south-3-2", "blocksObjects": true, "blocksPlayer": true, "box": { "min": [12.3, 0.8, 3.7], "max": [22.5, 3, 4] } },
+        { "id": "channel-wall-north-3-2", "blocksObjects": true, "box": { "min": [12.3, 0.8, 8], "max": [22.5, 3, 8.3] } },
         { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 1], "max": [23.6, 3, 3] } }
       ]
     }

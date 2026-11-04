@@ -835,8 +835,16 @@ public partial class SmokeTest : Node
         Check("level 3, 3.1: into room 3.2", main.Runner.Room.Id == "3.2", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
 
         // 3.2 — run along +X and give the box your energy.
-        await WalkTo(player, 13.5f, 2);
         var box = main.Runner.Bodies.Single();
+        // No shortcut (user found it): from the closest spot the box is out of the hold reach.
+        await WalkTo(player, 17.4f, 3.3f);
+        await LookAt(player, box.GlobalPosition);
+        player.ToggleHold();
+        Check("level 3, 3.2: the box can't be held from the player's side (no shortcut)", player.Held is null,
+            $"held {player.Held?.Name}, player {player.GlobalPosition}, box {box.GlobalPosition}");
+        if (player.Held is not null)
+            player.Drop();
+        await WalkTo(player, 13.5f, 2);
         PressKey(swaps, Key.Key3);
         var given = false;
         for (var i = 0; i < 200 && !given; i++)

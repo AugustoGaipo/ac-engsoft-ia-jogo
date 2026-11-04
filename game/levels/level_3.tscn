@@ -272,7 +272,7 @@ mesh = SubResource("mesh_ChannelSouth32")
 shape = SubResource("shape_ChannelSouth32")
 
 [node name="ChannelNorth32" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4, 0.4, 6.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4, 0.4, 8.15)
 
 [node name="Mesh" type="MeshInstance3D" parent="ChannelNorth32"]
 mesh = SubResource("mesh_ChannelNorth32")
@@ -432,7 +432,7 @@ outline_size = 12
 text = "Troque a energia (3) perto da beira"
 
 [node name="SignBox32" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4, 1.6, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4, 1.6, 7)
 billboard = 1
 pixel_size = 0.006
 font_size = 48
