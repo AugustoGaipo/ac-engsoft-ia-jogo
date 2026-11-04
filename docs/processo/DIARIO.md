@@ -1957,3 +1957,6 @@ câmera acompanha o olho. São 69 no total.
 - **Cenário:** `tools/scenery/level_3.boxes` e `.signs` → `game/levels/level_3.tscn`.
 - **Testes:** sem janela: o loop do canhão; pular andando da plataforma não passa o buraco (sem atalho);
   troca no ar lança e o jogador pousa vivo; a caixa chega ao botão; fim do nível. 260 verificações verdes.
+- **Ajuste (pedido do usuário, "paredes do objeto não poder sair"):** barreiras só de objetos ao longo da
+  canaleta da 3.1 (a bola não escapa para a plataforma; jogador e trocas passam) e por cima das muretas do
+  canal da 3.2 (até 3 m). Jogada sem janela continua verde (260).
