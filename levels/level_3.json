@@ -15,21 +15,26 @@
   "rooms": [
     {
       "id": "3.1",
-      "teaches": "Receber energia de uma bola em movimento e ser lançado na direção dela.",
+      "teaches": "Canhão: receber a energia de uma bola em voo e ser lançado por cima do buraco.",
       "bounds": { "min": [0, -3, 0], "max": [12, 6, 10] },
-      "spawn": { "position": [1, 0, 3], "yawDegrees": -90 },
+      "spawn": { "position": [1, 1.5, 2], "yawDegrees": -90 },
       "exit": { "min": [11.5, 0, 1], "max": [12, 3, 3] },
-      // Scenery: the ball rolls back and forth in a channel along z = 8.5 (walls at both ends).
-      // Swap while it rolls toward +X to be thrown across the pit; swapping while it rolls back throws you back.
+      // Scenery (user's idea, 2026-11-03): a 1.5 m start platform, a 3.5 m pit, the landing floor with the exit
+      // in line. A cannon at x = 0 fires the 20 kg ball in a short arc (16 m/s, apex ≈ 2.1 m at x ≈ 6.7) over a
+      // deep lane along z = 8.5 and out through a hole in the far wall; out of the room it pops back to the
+      // cannon with its starting velocity, so it fires again and again. Swap energy near the edge: ≈ 2 680 J
+      // give the 70 kg player ≈ 8.7 m/s over the pit. The ball gets your 0 J and drops into the lane: it pops
+      // back too. Walking and jumping off the platform reaches ≈ 3.2 m, short of the 3.5 m pit.
       "objects": [
-        { "id": "ball-3-1", "kind": "ball", "position": [3, 0.3, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 20, "accepts": ["kineticEnergy"],
-          "velocity": [8, 0, 0], "bounce": 0.95 }
+        { "id": "ball-3-1", "kind": "ball", "position": [1.0, 1.5, 8.5], "size": [0.6, 0.6, 0.6], "massKg": 20, "accepts": ["kineticEnergy"],
+          "velocity": [16, 3.5, 0], "bounce": 0.95 }
       ],
       "barriers": [
         { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 1], "max": [11.6, 3, 3] } }
       ],
       "killZones": [
-        { "id": "pit-3-1", "box": { "min": [6, -3, 0], "max": [9, -1, 6] } }
+        { "id": "pit-3-1", "box": { "min": [6, -3, 0], "max": [9.5, -1, 7] } },
+        { "id": "lane-3-1", "box": { "min": [0, -3, 7], "max": [12, -1, 10] } }
       ]
     },
     {
@@ -38,10 +43,10 @@
       "bounds": { "min": [12, -3, 0], "max": [24, 6, 10] },
       "spawn": { "position": [13, 0, 2], "yawDegrees": -90 },
       "exit": { "min": [23.5, 0, 1], "max": [24, 3, 3] },
-      // Scenery: the box sits in a closed channel (z 4–6) that the player can't enter, aimed at the button.
-      // The only way to move it is to run along +X and give it your energy.
+      // Scenery: the box sits in a low closed channel (z 4–6, walls 0.8 m) that the player can't enter, aimed
+      // at the button. Run along +X and give it your energy: 70 kg at 3 m/s = 315 J → the 10 kg box at ≈ 7.9 m/s.
       "objects": [
-        { "id": "box-3-2", "kind": "box", "position": [15, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "accepts": ["kineticEnergy"], "bounce": 0.1 }
+        { "id": "box-3-2", "kind": "box", "position": [17.4, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "accepts": ["kineticEnergy"], "bounce": 0.1 }
       ],
       "buttons": [
         { "id": "button-3-2", "position": [21, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }

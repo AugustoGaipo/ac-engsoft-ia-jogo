@@ -45,6 +45,7 @@ public partial class SmokeTest : Node
             await CheckSandbox(main);
             await CheckBarrierBays(main);
             await CheckFullRunLevel2(main);
+            await CheckFullRunLevel3(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -770,6 +771,93 @@ public partial class SmokeTest : Node
         Check("level 2: the exit of 2.4 ends the level", flow.Result is { LevelId: "level-2" } && flow.EndScreenVisible,
             $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
         GD.Print($"[smoke] info full run of level 2: {flow.Result}");
+    }
+
+    // ---- Task 17: level 3 played through (3.1 "Canhão" from the user's idea, 3.2 give energy) ----
+
+    private async Task CheckFullRunLevel3(Main main)
+    {
+        var flow = main.Flow;
+        var player = main.Player;
+        var swaps = main.Swaps;
+        main.StartLevel("level-3");
+        await PhysicsFrames(10);
+        Check("level 3: the scene loads and the run starts in room 3.1", main.Runner.Room!.Id == "3.1", $"room {main.Runner.Room.Id}");
+
+        // 3.1 — the cannon fires the ball again and again (out of the room → back to the cannon).
+        var ball = main.Runner.Bodies.Single();
+        var maxX = 0f;
+        var popped = false;
+        for (var i = 0; i < 150; i++)
+        {
+            await PhysicsFrames(1);
+            if (ball.GlobalPosition.X < maxX - 5)
+                popped = true;
+            maxX = Mathf.Max(maxX, ball.GlobalPosition.X);
+        }
+        Check("level 3, 3.1: the cannon loop — the ball crosses the room, leaves by the hole and is fired again",
+            maxX > 11 && popped, $"max x {maxX:0.0}, popped {popped}");
+
+        // No shortcut: a running jump off the platform falls short of the 3.5 m pit.
+        await WalkTo(player, 5.0f, 2);
+        player.Look(-90, 0);
+        player.ScriptedMove = new Vector2(0, 1);
+        for (var i = 0; i < 60 && player.GlobalPosition.X < 5.95f; i++)
+            await PhysicsFrames(1);
+        player.Jump();
+        for (var i = 0; i < 240 && !flow.IsDying; i++)
+            await PhysicsFrames(1);
+        player.ScriptedMove = null;
+        Check("level 3, 3.1: a running jump does not clear the pit (no shortcut)", flow.IsDying, $"at {player.GlobalPosition}");
+        for (var i = 0; i < 300 && flow.IsDying; i++)
+            await PhysicsFrames(1);
+        var deathsBefore = flow.Run.Deaths;
+        ball = main.Runner.Bodies.Single();                     // the room was rebuilt after the death
+
+        await WalkTo(player, 5.4f, 2);
+        PressKey(swaps, Key.Key3);
+        float? at = null;
+        for (var i = 0; i < 300 && at is null; i++)
+        {
+            var to = ball.GlobalPosition - player.Eye.Origin;
+            player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
+            await PhysicsFrames(1);
+            if (ball.GlobalPosition.X is > 6f and < 7.5f && ball.LinearVelocity.X > 10 && swaps.TrySwap() is { IsApplied: true })
+                at = player.Velocity.Length();
+        }
+        Check("level 3, 3.1: swap energy with the ball in flight near the top of its arc", at is not null, $"ball {ball.GlobalPosition}");
+        GD.Print($"[smoke] info level 3, 3.1: launched at {at:0.0} m/s");
+        Check("level 3, 3.1 (Launch): the player keeps the received speed", player.Launched is not null, $"velocity {player.Velocity}");
+        await PhysicsFrames(90);
+        Check("level 3, 3.1: launched over the pit, alive on the landing", player.GlobalPosition.X > 9.6f && player.GlobalPosition.Y > -0.5f && flow.Run.Deaths == deathsBefore,
+            $"at {player.GlobalPosition}, deaths {flow.Run.Deaths}");
+        await WalkTo(player, 12.6f, 2);
+        Check("level 3, 3.1: into room 3.2", main.Runner.Room.Id == "3.2", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // 3.2 — run along +X and give the box your energy.
+        await WalkTo(player, 13.5f, 2);
+        var box = main.Runner.Bodies.Single();
+        PressKey(swaps, Key.Key3);
+        var given = false;
+        for (var i = 0; i < 200 && !given; i++)
+        {
+            var to = box.GlobalPosition - player.Eye.Origin;
+            player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
+            var right = player.GlobalBasis.X with { Y = 0 };
+            var forward = -player.GlobalBasis.Z with { Y = 0 };
+            player.ScriptedMove = new Vector2(right.Dot(Vector3.Right), forward.Dot(Vector3.Right));   // run +X while aiming at the box
+            await PhysicsFrames(1);
+            if (player.GlobalPosition.X > 15f && player.Velocity.X > 2.9f)
+                given = swaps.TrySwap() is { IsApplied: true };
+        }
+        player.ScriptedMove = null;
+        Check("level 3, 3.2: running, give the box your energy", given, $"at {player.GlobalPosition}, v {player.Velocity}");
+        await PhysicsFrames(120);
+        Check("level 3, 3.2: the box slides onto the button and the door opens", main.Runner.Doors.Single().IsOpen, $"box {box.GlobalPosition}");
+        await WalkTo(player, 24.6f, 2);
+        Check("level 3: the exit of 3.2 ends the level", flow.Result is { LevelId: "level-3" } && flow.EndScreenVisible,
+            $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+        GD.Print($"[smoke] info full run of level 3: {flow.Result}");
     }
 
     private static void PressKey(SwapController swaps, Key key) =>

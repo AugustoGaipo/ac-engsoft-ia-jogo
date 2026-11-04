@@ -1945,3 +1945,15 @@ câmera acompanha o olho. São 69 no total.
 - **Testes:** 5 casos em `LaunchTests`. Mutação pega: frenagem 6 m/s² (2 falhas). Suíte toda verde (698).
 - **Pedido do usuário para a 3.1:** um canhão que lança a bola em loop por um buraco na parede. A regra
   existente já faz isso: um objeto que sai da sala volta ao início com a velocidade inicial do arquivo.
+
+### 11-03 — Tarefa 17, passo 2: salas 3.1 "Canhão" e 3.2 (a 3.3 vem depois)
+- **3.1 "Canhão"** (ideia do usuário): plataforma de 1,5 m, buraco de 3,5 m, chão de pouso com a saída na
+  linha. Um canhão em x = 0 dispara a bola de 20 kg num arco curto (16 m/s, topo ≈ 2,1 m) sobre uma canaleta
+  funda e para fora por um buraco na parede; fora da sala ela volta ao canhão com a velocidade inicial (regra
+  que já existia), então dispara sem parar. Trocar a energia perto da beira: ≈ 2 680 J dão ao jogador ≈ 8,3
+  m/s (na jogada) por cima do buraco. A bola fica com os 0 J do jogador, cai na canaleta e volta também.
+- **3.2:** caixa de 10 kg num canal baixo (paredes de 0,8 m, para dar visada); correr em +X e dar a energia.
+  A caixa parou em x = 19,7 na primeira jogada (o atrito freia mais que a conta): adiantada para x = 17,4.
+- **Cenário:** `tools/scenery/level_3.boxes` e `.signs` → `game/levels/level_3.tscn`.
+- **Testes:** sem janela: o loop do canhão; pular andando da plataforma não passa o buraco (sem atalho);
+  troca no ar lança e o jogador pousa vivo; a caixa chega ao botão; fim do nível. 260 verificações verdes.

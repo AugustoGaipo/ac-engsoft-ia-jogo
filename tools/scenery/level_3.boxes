@@ -1,0 +1,28 @@
+# name material minX minY minZ maxX maxY maxZ   (level space, meters, Y up)
+# Room 3.1 "Canhão": start platform, pit, landing; the ball lane (z 7–10) is a deep gutter; cannon at x = 0.
+Platform31 ledge 0 -3.5 0 6 1.5 7
+PitBottom31 pit 6 -3.5 0 9.5 -3 7
+Landing31 floor 9.5 -3.5 0 12 0 7
+LaneBottom31 pit 0 -3.5 7 12 -3 10
+Cannon31 wall 0 1 7.9 0.6 2 9.1
+CannonPost31 wall 0 -3 8.2 0.4 1 8.8
+# Room 3.2: floor, a low channel for the box (z 4–6), the door wall at x = 22.5.
+Floor32 floor 12 -3.5 0 24 0 10
+ChannelSouth32 ledge 12.3 0 3.7 22.5 0.8 4
+ChannelNorth32 ledge 12.3 0 6 22.5 0.8 6.3
+HolePlug32 wall 12.6 0 7.6 13.1 2.8 9.4
+DoorWall22South wall 22.5 0 0 22.8 6 1
+DoorWall22North wall 22.5 0 3 22.8 6 10
+DoorWall22Top wall 22.5 3 1 22.8 6 3
+# Outer walls; the wall at x = 12 has the exit opening (z 1–3) and the ball's hole (z 7.9–9.1, y 1–2.4).
+WallSouth wall -0.3 -3.5 -0.3 24.3 6 0
+WallNorth wall -0.3 -3.5 10 24.3 6 10.3
+WallStart wall -0.3 -3.5 0 0 6 10
+WallEnd wall 24 -3.5 0 24.3 6 10
+Wall12South wall 12 -3.5 0 12.3 6 1
+Wall12Mid wall 12 -3.5 3 12.3 6 7.9
+Wall12North wall 12 -3.5 9.1 12.3 6 10
+Wall12Top wall 12 3 1 12.3 6 3
+Wall12Below wall 12 -3.5 1 12.3 0 3
+Wall12HoleBelow wall 12 -3.5 7.9 12.3 1 9.1
+Wall12HoleAbove wall 12 2.4 7.9 12.3 6 9.1
