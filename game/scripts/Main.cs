@@ -146,6 +146,12 @@ public partial class Main : Node3D
         Menu = new Menu { Name = "Menu" };
         AddChild(Menu);
         Menu.Setup(_catalogLevels, Progress, HasSceneOf);
+        // Online (user, 2026-11-05): the smoke test uses its own account file, started empty.
+        var accountPath = ProgressPath == SmokeProgressPath ? "user://account.smoke.json" : "user://account.json";
+        if (ProgressPath == SmokeProgressPath)
+            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(accountPath));
+        Online = new Online(accountPath);
+        Menu.Online = Online;
         Menu.LevelRequested += StartLevel;
         Menu.SandboxRequested += StartSandbox;
         Flow.MenuRequested += ShowMenu;
@@ -167,6 +173,18 @@ public partial class Main : Node3D
         Progress.Record(result);
         ProgressStore.Save(ProgressPath, Progress);
         Flow.SetNextLevelAvailable(NextPlayable(result.LevelId) is not null);
+        _ = SendResult(result);
+    }
+
+    public Online Online { get; private set; } = null!;
+
+    /// <summary>The finished level goes to the ranking when logged in; the end screen says how it went.</summary>
+    private async Task SendResult(RunResult result)
+    {
+        Flow.SetOnlineLine("Enviando ao ranking...");
+        var line = await Online.SendAsync(result);
+        if (Flow.Result == result)
+            Flow.SetOnlineLine(line);
     }
 
     /// <summary>Back to the menu: the level is unloaded and nothing of the game keeps running.</summary>

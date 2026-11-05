@@ -2061,3 +2061,13 @@ câmera acompanha o olho. São 69 no total.
 - `Body`: dois cascos de contorno (6 cm e 1,5 cm). `CrosshairRing` no HUD: partes coloridas, centro na cor escolhida, X vermelho, arco branco fino de recarga por fora.
 - Smoke: anel de 1 parte e centro na 1.2; contorno grosso ao alcance (1.1), fino do outro lado do fosso (1.2). Capturas conferidas (3.2: anel rosa + X; 1.1: sem trocas, X, contorno fino). 717 testes + smoke 283.
 - Deslize: na mutação, `git checkout` não desfaz arquivo ainda não versionado; desfeito à mão antes de rodar a suíte.
+
+## 2026-11-05 — Conta com código gerado na hora e ranking por fase no jogo
+
+- Pedido do usuário: o ranking por fase no jogo e a criação de conta com uma senha gerada na hora. A API já tinha tudo (o servidor gera o código de acesso, guarda só o hash); faltava o jogo conversar com ela. A `SPEC-sync` (fila offline etc.) continua rascunho: fizemos a versão mínima, sem fila.
+- `GameLogic/Online/GameApi.cs`: criar conta (pega um ícone de `/icons`), entrar, enviar resultado, ranking (top por tempo) e "minha posição". Sem resposta → status 0 "Offline". `OnlineText`: mensagens curtas em português.
+- Testes vermelhos antes: contrato do cliente do jogo contra a API real em memória (`Api.Tests/GameClient`, 4 testes: código no formato XXXX-XXXX-XXXX-XXXX que entra; código errado e nome repetido; ranking com a minha posição; sem resultado) e 10 de mensagens.
+- Jogo: `Online.cs` (sessão em `user://account.json`, só nome + token, nunca o código), menu › **Conta** (criar → mostra o código uma vez com "Copiar código"; entrar com nome + código; sair) e menu › **Ranking** (abas por nível, top 10 e "Você: Nº de M"). Ao terminar uma fase, envia e a tela de fim diz "Enviado ao ranking", o erro, ou como entrar numa conta.
+- Smoke: sem conta, a tela de fim aponta para menu › Conta. Com `SWAPPING_ONLINE_SMOKE=1` e a API rodando, o Godot cria conta, entra, envia e se vê no ranking — rodado de verdade: 288 checks.
+- Limpeza: `swapping.db-shm/-wal` estavam versionados por engano; agora ignorados. O banco de desenvolvimento tem perfis de teste (TesteE2E, smoke…): apagar `src/Swapping.Api/swapping.db*` antes da demo para começar limpo.
+- 733 testes verdes.

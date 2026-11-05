@@ -47,6 +47,8 @@ public partial class Menu : CanvasLayer
         AddButton(_main, "Níveis", () => Show("levels"));
         AddButton(_main, "Mapa de teste", () => SandboxRequested?.Invoke());
         AddButton(_main, "Controles", () => Show("controls"));
+        AddButton(_main, "Conta", () => Show("account"));
+        AddButton(_main, "Ranking", () => Show("ranking"));
         AddButton(_main, "Sair", () => GetTree().Quit());
 
         _levelsScreen = NewScreen("Níveis");
@@ -68,6 +70,7 @@ public partial class Menu : CanvasLayer
         }
         _controlsScreen.AddChild(controls);
         AddButton(_controlsScreen, "Voltar", () => Show("main"));
+        BuildOnline();
     }
 
     /// <summary>Opens the menu on its first screen (progress may have changed since the last time).</summary>
@@ -90,6 +93,7 @@ public partial class Menu : CanvasLayer
         Holder(_main).Visible = screen == "main";
         Holder(_levelsScreen).Visible = screen == "levels";
         Holder(_controlsScreen).Visible = screen == "controls";
+        ShowOnline(screen);
     }
 
     public LevelStatus StatusOf(string levelId) => LevelAccess.StatusOf(levelId, _progress, _hasScene(levelId));

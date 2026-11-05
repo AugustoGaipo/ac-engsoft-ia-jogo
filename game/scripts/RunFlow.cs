@@ -73,6 +73,14 @@ public partial class RunFlow : Node
     /// <summary>Shows or hides "Próximo nível" on the end screen (the caller knows the progress).</summary>
     public void SetNextLevelAvailable(bool available) => _nextButton.Visible = available;
 
+    /// <summary>The ranking line under the results (sent, not logged in, server down).</summary>
+    public void SetOnlineLine(string line)
+    {
+        var text = _endText.Text;
+        var cut = text.IndexOf("\n\n[", StringComparison.Ordinal);
+        _endText.Text = (cut >= 0 ? text[..cut] : text) + $"\n\n[{line}]";
+    }
+
     /// <summary>Back to a clean state before the menu: no pause, no end screen, no fade.</summary>
     public void ClearForMenu()
     {

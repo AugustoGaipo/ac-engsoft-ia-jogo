@@ -46,6 +46,8 @@ public partial class SmokeTest : Node
             await CheckBarrierBays(main);
             await CheckFullRunLevel2(main);
             await CheckFullRunLevel3(main);
+            if (System.Environment.GetEnvironmentVariable("SWAPPING_ONLINE_SMOKE") == "1")
+                await CheckOnline(main);
 
             GD.Print($"[smoke] PASSED {_passed} checks");
             return 0;
@@ -481,6 +483,11 @@ public partial class SmokeTest : Node
             flow.Result is { LevelId: "level-1" } && flow.EndScreenVisible && flow.EndText.Contains("Trocas"),
             $"result {flow.Result}, end screen {flow.EndScreenVisible}");
         Check("run: the HUD shows time and swaps", main.Hud.RunText.Contains("Trocas") && main.Hud.RunText.Contains(':'), main.Hud.RunText);
+        // Online (user, 2026-11-05): with no account, the end screen says how to get into the ranking (no network).
+        for (var i = 0; i < 30 && !flow.EndText.Contains("Entre numa conta"); i++)
+            await PhysicsFrames(1);
+        Check("online: without an account, the end screen points to menu › Conta for the ranking",
+            flow.EndText.Contains("Entre numa conta") && main.Online.Session is null, flow.EndText.Replace('\n', '|'));
         flow.RestartLevel();
 
         // The user's log (2026-11-03): in room 1.3, a swap with the ball in the air at the ledge edge, then
@@ -823,6 +830,22 @@ public partial class SmokeTest : Node
         GD.Print($"[smoke] info full run of level 2: {flow.Result}");
     }
 
+
+    // ---- Online (user, 2026-11-05), only with SWAPPING_ONLINE_SMOKE=1 and the API running ----
+    private async Task CheckOnline(Main main)
+    {
+        var name = $"smoke{System.DateTime.UtcNow:HHmmss}";
+        var created = await main.Online.CreateAsync(name);
+        Check("online: the game creates an account and gets the generated code", created.Value is { AccessCode.Length: 19 } && main.Online.Session?.Name == name,
+            $"{created.Status} {created.Code}");
+        var login = await main.Online.LoginAsync(name, created.Value?.AccessCode ?? "");
+        Check("online: the game logs in with name + code", login.Ok, $"{login.Status} {login.Code}");
+        var line = await main.Online.SendAsync(new Swapping.GameLogic.RunResult("level-1", 120_000, 5, 0, 0, System.DateTimeOffset.UtcNow));
+        Check("online: a finished level is sent to the ranking", line == "Enviado ao ranking.", line);
+        var ranking = await main.Online.Api.RankingAsync("level-1", 100);
+        Check("online: the ranking lists it", ranking.Value?.Any(l => l.Name == name) == true, $"{ranking.Status} {ranking.Code}");
+        main.Online.Logout();
+    }
     // ---- Task 17: level 3 played through (3.1 "Canhão" from the user's idea, 3.2 give energy) ----
 
     private async Task CheckFullRunLevel3(Main main)

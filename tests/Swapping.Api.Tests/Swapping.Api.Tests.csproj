@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Swapping.Api\Swapping.Api.csproj" />
+    <ProjectReference Include="..\..\src\Swapping.GameLogic\Swapping.GameLogic.csproj" />
   </ItemGroup>
 
 </Project>

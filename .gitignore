@@ -14,3 +14,5 @@ TestResults/
 
 # Level files copied into the game at build time (G6); the source is levels/
 game/levels/*.json
+*.db-shm
+*.db-wal

@@ -1449,6 +1449,13 @@
           "Swapping.Levels": "[1.0.0, )"
         }
       },
+      "swapping.gamelogic": {
+        "type": "Project",
+        "dependencies": {
+          "Swapping.Levels": "[1.0.0, )",
+          "Swapping.Rules": "[1.0.0, )"
+        }
+      },
       "swapping.levels": {
         "type": "Project",
         "dependencies": {
