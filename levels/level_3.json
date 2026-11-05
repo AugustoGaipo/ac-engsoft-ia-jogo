@@ -32,7 +32,7 @@
       "barriers": [
         // Walls for objects only (user's request): the ball never leaves its lane; the player and the swaps pass.
         { "id": "lane-wall-3-1", "blocksObjects": true, "box": { "min": [0.6, -3, 6.9], "max": [12, 6, 7] } },
-        { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 1], "max": [11.6, 3, 3] } }
+        { "id": "exit-grid-3-1", "preset": "exitGrid", "box": { "min": [11.8, 0, 1], "max": [11.9, 3, 3] } }
       ],
       "killZones": [
         { "id": "pit-3-1", "box": { "min": [5, -3, 0], "max": [10.5, -1, 7] } },
@@ -54,7 +54,7 @@
         { "id": "button-3-2", "position": [21, 0, 7], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
       ],
       "doors": [
-        { "id": "door-3-2", "box": { "min": [22.5, 0, 1], "max": [22.8, 3, 3] }, "opensWith": ["button-3-2"] }
+        { "id": "door-3-2", "box": { "min": [23.7, 0, 1], "max": [24, 3, 3] }, "opensWith": ["button-3-2"] }
       ],
       "barriers": [
         // Walls for objects only on top of the channel walls (user's request): the box stays in its channel.
@@ -62,7 +62,7 @@
         // the 2.5 m hold reach (user found: holding the box over the wall skipped the energy swap).
         { "id": "channel-wall-south-3-2", "blocksObjects": true, "blocksPlayer": true, "box": { "min": [12.3, 0.8, 3.7], "max": [22.5, 3, 4] } },
         { "id": "channel-wall-north-3-2", "blocksObjects": true, "box": { "min": [12.3, 0.8, 8], "max": [22.5, 3, 8.3] } },
-        { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 1], "max": [23.6, 3, 3] } }
+        { "id": "exit-grid-3-2", "preset": "exitGrid", "box": { "min": [23.9, 0, 1], "max": [24, 3, 3] } }
       ]
     },
     {
@@ -83,7 +83,7 @@
       ],
       "barriers": [
         { "id": "lane-wall-3-3", "blocksObjects": true, "blocksPlayer": true, "box": { "min": [24.3, 0, 7.4], "max": [36, 3, 7.5] } },
-        { "id": "exit-grid-3-3", "preset": "exitGrid", "box": { "min": [35.5, -1.5, 1], "max": [35.6, 1.5, 6] } }
+        { "id": "exit-grid-3-3", "preset": "exitGrid", "box": { "min": [35.8, -1.5, 1], "max": [35.9, 1.5, 6] } }
       ],
       "killZones": [
         { "id": "pit-3-3", "box": { "min": [28, -3, 0], "max": [33, -2, 7.4] } }

@@ -202,16 +202,27 @@ public partial class SmokeTest : Node
         await PhysicsFrames(60);
         Check("player: E again drops it to the floor", player.Held is null && Mathf.Abs(box.GlobalPosition.Y - 0.5f) < 0.05f, $"box {box.GlobalPosition}");
 
-        // The exit grid of room 1.1 lets the player through (it blocks objects only).
-        player.GlobalPosition = new Vector3(11, 0, 5);
+        // The exit of 1.1 sits in its door (user, 2026-11-04): the box on the button opens it, then the player crosses.
+        box.Teleport(main.Runner.Buttons.Single().Position + new Vector3(0, 0.6f, 0), Vector3.Zero);
+        await PhysicsFrames(40);
+        player.GlobalPosition = new Vector3(10.4f, 0, 5);
+        player.ResetPhysicsInterpolation();
+        player.Look(-90, 0);
+        player.ScriptedMove = new Vector2(0, 1);
+        for (var i = 0; i < 90 && main.Runner.Room.Id == "1.1"; i++)
+            await PhysicsFrames(1);
+        player.ScriptedMove = null;
+
+        Check("exit: crossing the exit of 1.1 builds room 1.2 with its box",
+            main.Runner.Room.Id == "1.2" && main.Runner.Bodies.Any(b => b.ContainerId == "box-1-2"),
+            $"room {main.Runner.Room.Id}, bodies {string.Join(",", main.Runner.Bodies.Select(b => b.ContainerId))}");
+        // The exit grid of room 1.2 (no door) lets the player through (it blocks objects only).
+        player.GlobalPosition = new Vector3(22.8f, 0, 5);
         player.Look(-90, 0);                         // facing +X
         player.ScriptedMove = new Vector2(0, 1);
         await PhysicsFrames(60);
         player.ScriptedMove = null;
-        Check("player: walks through the exit grid", player.GlobalPosition.X > 12.3f, $"x {player.GlobalPosition.X}");
-        Check("exit: crossing the exit of 1.1 builds room 1.2 with its box",
-            main.Runner.Room.Id == "1.2" && main.Runner.Bodies.Any(b => b.ContainerId == "box-1-2"),
-            $"room {main.Runner.Room.Id}, bodies {string.Join(",", main.Runner.Bodies.Select(b => b.ContainerId))}");
+        Check("player: walks through the exit grid", player.GlobalPosition.X > 24.2f, $"x {player.GlobalPosition.X}");
 
         // Play test 2026-11-03: the player's weight counts on the buttons of level 1 ("detects": "any").
         main.ShowRoom("1.1");

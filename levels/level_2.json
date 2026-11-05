@@ -27,11 +27,11 @@
         { "id": "button-2-1", "position": [8.5, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "objects" }
       ],
       "doors": [
-        { "id": "door-2-1", "box": { "min": [10, 0, 4], "max": [10.3, 3, 6] }, "opensWith": ["button-2-1"] }
+        { "id": "door-2-1", "box": { "min": [11.7, 0, 4], "max": [12, 3, 6] }, "opensWith": ["button-2-1"] }
       ],
       "barriers": [
         { "id": "no-objects-2-1", "blocksObjects": true, "box": { "min": [6, 0, 0], "max": [6.2, 6, 10] } },
-        { "id": "exit-grid-2-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 4], "max": [11.6, 3, 6] } }
+        { "id": "exit-grid-2-1", "preset": "exitGrid", "box": { "min": [11.9, 0, 4], "max": [12, 3, 6] } }
       ]
     },
     {
@@ -45,7 +45,7 @@
       ],
       "barriers": [
         { "id": "no-player-2-2", "blocksPlayer": true, "box": { "min": [17, 0, 0], "max": [17.2, 6, 10] } },
-        { "id": "exit-grid-2-2", "preset": "exitGrid", "box": { "min": [23.5, 0, 4], "max": [23.6, 3, 6] } }
+        { "id": "exit-grid-2-2", "preset": "exitGrid", "box": { "min": [23.8, 0, 4], "max": [23.9, 3, 6] } }
       ]
     },
     {
@@ -65,12 +65,12 @@
         { "id": "heavy-button-2-3", "position": [31.45, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 200, "detects": "objects" }
       ],
       "doors": [
-        { "id": "door-2-3", "box": { "min": [34, 0, 4], "max": [34.3, 3, 6] }, "opensWith": ["heavy-button-2-3"] }
+        { "id": "door-2-3", "box": { "min": [35.7, 0, 4], "max": [36, 3, 6] }, "opensWith": ["heavy-button-2-3"] }
       ],
       "barriers": [
         { "id": "no-player-2-3", "blocksPlayer": true, "box": { "min": [30, 0, 0], "max": [30.2, 6, 10] } },
         { "id": "cage-2-3", "blocksPlayer": true, "box": { "min": [30.2, 0, 3.5], "max": [32.7, 3, 6.5] } },
-        { "id": "exit-grid-2-3", "preset": "exitGrid", "box": { "min": [35.5, 0, 4], "max": [35.6, 3, 6] } }
+        { "id": "exit-grid-2-3", "preset": "exitGrid", "box": { "min": [35.9, 0, 4], "max": [36, 3, 6] } }
       ]
     },
     {
@@ -88,7 +88,7 @@
         { "id": "block-2-4", "kind": "box", "position": [45.5, 0.5, 5], "size": [1, 1, 1], "massKg": 10, "accepts": ["position"], "bounce": 0.05 }
       ],
       "barriers": [
-        { "id": "exit-grid-2-4", "preset": "exitGrid", "box": { "min": [47.5, 0, 4], "max": [47.6, 3, 6] } }
+        { "id": "exit-grid-2-4", "preset": "exitGrid", "box": { "min": [47.8, 0, 4], "max": [47.9, 3, 6] } }
       ]
     }
   ]

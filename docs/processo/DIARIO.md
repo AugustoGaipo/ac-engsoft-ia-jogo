@@ -2011,3 +2011,9 @@ câmera acompanha o olho. São 69 no total.
 - Reiniciar a sala / morrer reconstrói só a sala atual; reiniciar o nível reconstrói todas.
 - Layout: com porta, a grade fica colada na face de saída da porta (saída logo depois); sem porta, encaixada no vão da parede; as paredes do fim ganharam vão para a grade da última sala.
 - Smoke: novas verificações (todas as salas montadas; a caixa da 1.1 continua no botão depois de entrar na 1.2; não é alvo de troca da 1.2). 701 testes + smoke 274 checks.
+
+## 2026-11-05 — Porta e parede da sala viram uma coisa só
+
+- O usuário mostrou em captura: a porta numa parede e a grade noutra (0,5–2 m adiante) pareciam bugadas. "Coloca os dois juntos."
+- Removidas as paredes extras de porta (e o corredor da 1.1, que só as ligava). A porta agora fica no vão da parede da sala, com a grade dentro dela (face de saída); sem porta, a grade fica no meio do vão. Paredes de divisa em [limite − 0,3, limite].
+- Smoke: o teste que atravessava a grade da 1.1 agora abre a porta (caixa no botão); o "atravessa a grade" usa a da 1.2. Captura com `--screenshot` confere o vão. 274 checks.
