@@ -31,6 +31,25 @@ public static class Restoration
         return affected.Select(world.BodyUpdateFor).ToArray();
     }
 
+    /// <summary>
+    /// Crossing a room's exit door (user, 2026-11-05): the container and every holder get their own variables
+    /// back, but nobody moves — each position and velocity is set again from <paramref name="physics"/>, so
+    /// only the masses (and the energies they mean at the same speed) change. Empty when nothing was borrowed.
+    /// </summary>
+    public static IReadOnlyList<BodyUpdate> ReturnAllInPlace(World world, string containerId, Func<string, (Vec3 Position, Vec3 Velocity)> physics)
+    {
+        var updates = RestoreAll(world, containerId);
+        if (updates.Count < 2)
+            return Array.Empty<BodyUpdate>();
+        var affected = updates.Select(u => u.ContainerId).ToList();
+        foreach (var id in affected)
+        {
+            var (position, velocity) = physics(id);
+            world.SyncFromPhysics(id, position, velocity);
+        }
+        return affected.Select(world.BodyUpdateFor).ToArray();
+    }
+
     /// <summary>Restores one property. Returns the former holder, or null if it already had its own.</summary>
     public static string? Restore(World world, string containerId, IPropertyKind kind)
     {

@@ -2035,3 +2035,11 @@ câmera acompanha o olho. São 69 no total.
 - Pedido do usuário (referência visual de outro jogo, "não igual"): a grade de saída virou um painel de vidro fosco com faixas verticais coloridas que tremulam devagar, um batente fino dourado e uma luz pálida no chão (`Pieces/ExitPortal.cs`). Só o visual: continua barrando objetos e trocas e deixando o jogador passar.
 - Conferido com `--screenshot` de perto e de longe. Smoke verde.
 - Erro de processo: o commit `4b7b3f7` saiu com o smoke vermelho (a verificação de listras ainda exigia o material antigo na grade; o comando encadeou o commit sem olhar o resultado). Corrigido no commit seguinte: a grade de saída agora é verificada como vidro + batente. Smoke 276.
+
+## 2026-11-05 — A porta faz só o que o usuário pediu
+
+- Usuário: voltando para a sala anterior não dava mais para trocar nem aparecia o contorno; e os atributos deviam voltar sempre que se passa pela porta, não só na primeira vez. "Coloca essa porta para fazer só o que eu tinha pedido: salvar o novo spawn, reverter os atributos e não permitir a passagem de objetos."
+- A sala ativa agora é a sala onde o jogador está (passada a grade, já é a sala seguinte), nos dois sentidos. Cruzar uma porta: novo spawn (a sala ativa), atributos devolvidos e objetos continuam barrados pela grade.
+- Regras: `Restoration.ReturnAllInPlace` — cada um pega suas variáveis de volta, mas posição e velocidade voltam a ser as da física (a restauração comum teletransportaria o jogador até quem tinha a posição dele). Teste vermelho antes; mutação (sem reaplicar a física) → falha.
+- `RunTracker`: com salas vivas, voltar a uma sala contava as trocas dela de novo. Agora cada mundo conta uma vez; um mundo reconstruído guarda as trocas que já tinha. Testes vermelhos antes.
+- Smoke: cruzar para a 1.3 devolve a posição sem mover; voltar para a 1.2 deixa mirar a caixa; atributos todos próprios; ir de novo para a 1.3. O "HUD mostra Massa" esperava só 2 passos de física e o HUD redesenha por quadro: agora espera até 30. 705 testes + smoke 280.

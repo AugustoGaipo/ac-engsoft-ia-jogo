@@ -180,4 +180,31 @@ public sealed class RunTrackerTests
     {
         Assert.Equal(text, RunClock.Format(timeMs));
     }
+
+    [Fact]
+    public void Going_back_to_a_room_already_counted_does_not_count_its_swaps_twice()
+    {
+        // All rooms stay alive (user, 2026-11-05): the player walks back into a room it already left.
+        var first = WorldWithSwaps(2);
+        var second = WorldWithSwaps(1);
+        var run = new RunTracker("level-1");
+        run.EnterRoom(first);
+        run.EnterRoom(second);
+        run.EnterRoom(first);
+        run.EnterRoom(second);
+
+        Assert.Equal(3, run.Swaps);
+    }
+
+    [Fact]
+    public void A_restarted_room_keeps_the_swaps_of_its_old_world()
+    {
+        var first = WorldWithSwaps(2);
+        var run = new RunTracker("level-1");
+        run.EnterRoom(first);
+        run.RestartRoom(WorldWithSwaps(1));
+
+        Assert.Equal(3, run.Swaps);
+        Assert.Equal(1, run.RoomRestarts);
+    }
 }

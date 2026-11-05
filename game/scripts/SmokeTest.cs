@@ -620,8 +620,24 @@ public partial class SmokeTest : Node
         await LookAt(player, box.GlobalPosition);
         Check("full run 1.2: the swap across the pit", swaps.TrySwap() is { IsApplied: true }, $"{swaps.Crosshair}");
         await PhysicsFrames(20);
+        var box12 = box;
+        var returnedBefore = swaps.ReturnedAtDoor;
         await WalkTo(player, 24.6f, 5);
         Check("full run 1.2: into room 1.3", main.Runner.Room.Id == "1.3", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
+
+        // The door (user, 2026-11-05): crossing it gives the borrowed position back, where everyone stands.
+        Check("door: crossing into 1.3 gives the borrowed position back, without moving the player",
+            swaps.ReturnedAtDoor == returnedBefore + 1 && player.GlobalPosition.X is > 24f and < 25.5f, $"returned {swaps.ReturnedAtDoor - returnedBefore}, at {player.GlobalPosition}");
+        // Back into 1.2: it is the live room again — its box can be aimed at (outline) and swapped with.
+        await WalkTo(player, 22.5f, 5);
+        await LookAt(player, box12.GlobalPosition);
+        await PhysicsFrames(2);
+        Check("door: back in 1.2, the room is live again and its box can be aimed at", main.Runner.Room.Id == "1.2" && swaps.Target == box12,
+            $"room {main.Runner.Room.Id}, target {swaps.Target?.Name}");
+        Check("door: every attribute is the player's own after coming back",
+            Swapping.Rules.Model.PropertyKind.All.All(k => main.Runner.World.VariableUsedBy(Swapping.Levels.LevelValidator.PlayerId, k).Owner == Swapping.Levels.LevelValidator.PlayerId), "borrowed");
+        await WalkTo(player, 24.6f, 5);
+        Check("door: forward again into 1.3", main.Runner.Room.Id == "1.3", $"room {main.Runner.Room.Id}");
 
         // 1.3 (SC 8) — swap with the ball (up the ledge), stand on the button, swap with the box below.
         await WalkTo(player, 25.2f, 5);
@@ -1072,7 +1088,8 @@ public partial class SmokeTest : Node
         Check("keys: the sandbox starts on position", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Position, $"{main.Swaps.Choice.Name}");
         PressKey(main.Swaps, Key.Key2);
         Check("keys: 2 chooses mass", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.Mass, $"{main.Swaps.Choice.Name}");
-        await PhysicsFrames(2);
+        for (var i = 0; i < 30 && !main.Hud.RunText.Contains("Massa"); i++)   // the HUD redraws per frame, not per physics step
+            await PhysicsFrames(1);
         Check("keys: the HUD shows Massa", main.Hud.RunText.Contains("Massa"), main.Hud.RunText);
         PressKey(main.Swaps, Key.Key3);
         Check("keys: 3 chooses energy", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.KineticEnergy, $"{main.Swaps.Choice.Name}");

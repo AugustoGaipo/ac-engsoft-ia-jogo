@@ -212,27 +212,47 @@ public partial class RunFlow : Node
             if (room.KillZones.Any(z => z.Box.Contains(at)) || !InsideMap(room.Bounds, at))
                 body.Teleport(body.Def.Position.ToGodot(), body.Def.Velocity.ToGodot());
         }
-        if (_runner.Room.Exit.Contains(center))
-            NextRoom();
+        // The room the player is in is the live one (user, 2026-11-05): walking back works too. Crossing a
+        // door (an exit grid) either way moves the spawn there and gives every borrowed attribute back.
+        if (RoomAt(center) is { } here && here.Id != _runner.Room.Id)
+            CrossInto(here.Id);
+        if (_runner.Room.Id == _runner.Level.Rooms[^1].Id && _runner.Room.Exit.Contains(center))
+            Finish();
     }
+
+    /// <summary>
+    /// The room holding <paramref name="p"/>; past a room's exit grid (its door) it is already the next room.
+    /// Rooms run side by side along +X and every door is a thin wall across X.
+    /// </summary>
+    private Swapping.Levels.Model.RoomDef? RoomAt(Swapping.Rules.Model.Vec3 p)
+    {
+        var rooms = _runner.Level.Rooms;
+        for (var i = 0; i < rooms.Count; i++)
+        {
+            if (!InsideMap(rooms[i].Bounds, p))
+                continue;
+            var door = rooms[i].Barriers.FirstOrDefault(b => b.IsExitGrid);
+            return i + 1 < rooms.Count && door is not null && p.X > (door.Box.Min.X + door.Box.Max.X) / 2 ? rooms[i + 1] : rooms[i];
+        }
+        return null;
+    }
+
+    /// <summary>What a door does, and only that: new spawn, attributes back, objects stay (the grid blocks them).</summary>
+    private void CrossInto(string roomId)
+    {
+        ReturnAttributes?.Invoke();                 // in the room being left
+        _runner.EnterRoom(roomId);
+        ReturnAttributes?.Invoke();                 // and in the room entered, in case it still held some
+        Run.EnterRoom(_runner.World);
+        GD.Print($"[game] entered room {_runner.Room.Id}");
+    }
+
+    /// <summary>Set by the game: every borrowed variable goes back to its owner in the current room, nobody moves.</summary>
+    public Action? ReturnAttributes { get; set; }
 
     /// <summary>Inside the room's bounds by the sides and from below; above is fine (no ceiling, gravity brings it back).</summary>
     private static bool InsideMap(Swapping.Levels.Model.Box bounds, Swapping.Rules.Model.Vec3 p) =>
         p.X >= bounds.Min.X && p.X <= bounds.Max.X && p.Z >= bounds.Min.Z && p.Z <= bounds.Max.Z && p.Y >= bounds.Min.Y;
-
-    private void NextRoom()
-    {
-        var rooms = _runner.Level.Rooms;
-        var index = rooms.ToList().FindIndex(r => r.Id == _runner.Room.Id);
-        if (index + 1 < rooms.Count)
-        {
-            _runner.EnterRoom(rooms[index + 1].Id);   // the next room is already alive; only the checkpoint moves
-            Run.EnterRoom(_runner.World);
-            GD.Print($"[game] entered room {_runner.Room.Id}");
-            return;
-        }
-        Finish();
-    }
 
     private void Finish()
     {

@@ -42,6 +42,7 @@ public partial class Main : Node3D
         AddChild(Flow);
         Flow.Setup(_runner, Player);
         Swaps.PlayerDied += () => Flow.Die("sem espaço depois da troca");
+        Flow.ReturnAttributes = Swaps.ReturnAttributes;
         Hud = new Hud { Name = "Hud" };
         AddChild(Hud);
         Hud.Setup(Player, Swaps, Flow);

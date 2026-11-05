@@ -234,6 +234,34 @@ public partial class SwapController : Node
         }
     }
 
+    /// <summary>
+    /// A door was crossed (user, 2026-11-05): in the current room, the player and every holder get their own
+    /// variables back where they are (rules <see cref="Restoration.ReturnAllInPlace"/>); only masses change.
+    /// </summary>
+    public void ReturnAttributes()
+    {
+        if (_runner?.Room is null)
+            return;
+        var bodies = _runner.Bodies.Where(IsInstanceValid).ToDictionary(b => b.ContainerId);
+        var updates = Restoration.ReturnAllInPlace(_runner.World, LevelValidator.PlayerId, id =>
+            id == LevelValidator.PlayerId
+                ? (_player.Center.ToLevel(), _player.Velocity.ToLevel())
+                : (bodies[id].GlobalPosition.ToLevel(), bodies[id].LinearVelocity.ToLevel()));
+        foreach (var update in updates)
+        {
+            if (update.ContainerId == LevelValidator.PlayerId)
+                _player.MassKg = update.MassKg;
+            else
+                bodies[update.ContainerId].Mass = (float)update.MassKg;
+        }
+        if (updates.Count > 0)
+            GD.Print($"[game] door: attributes back from {string.Join(",", updates.Skip(1).Select(u => u.ContainerId))}");
+        ReturnedAtDoor += updates.Count > 0 ? 1 : 0;
+    }
+
+    /// <summary>How many door crossings gave attributes back (the smoke test reads it).</summary>
+    public int ReturnedAtDoor { get; private set; }
+
     /// <summary>The container restored last by a restoring barrier (the smoke test reads it).</summary>
     public string? LastRestored { get; private set; }
 

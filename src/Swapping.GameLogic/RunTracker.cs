@@ -15,7 +15,8 @@ public sealed record RunResult(string LevelId, int TimeMs, int Swaps, int Deaths
 public sealed class RunTracker(string levelId)
 {
     private double _seconds;
-    private int _swapsOfPastRooms;
+    private int _swapsOfRetiredWorlds;
+    private readonly List<World> _live = [];
     private World? _room;
 
     public string LevelId { get; } = levelId;
@@ -23,8 +24,8 @@ public sealed class RunTracker(string levelId)
     /// <summary>Whole milliseconds, capped at <see cref="int.MaxValue"/> (about 24 days).</summary>
     public int TimeMs => (int)Math.Min(Math.Floor(_seconds * 1000 + 1e-6), int.MaxValue);
 
-    /// <summary>The swaps of the rooms already left plus the live count of the current room.</summary>
-    public int Swaps => _swapsOfPastRooms + (_room?.MoveCount ?? 0);
+    /// <summary>The swaps of every room world of the run, each counted once, plus those of worlds rebuilt since.</summary>
+    public int Swaps => _swapsOfRetiredWorlds + _live.Sum(w => w.MoveCount);
 
     public int Deaths { get; private set; }
 
@@ -46,16 +47,19 @@ public sealed class RunTracker(string levelId)
 
     public void Resume() => IsPaused = false;
 
-    /// <summary>A room was built (the first one, or the next one after an exit).</summary>
+    /// <summary>The player is now in this room (first time, or back in it: all rooms stay alive). Counted once.</summary>
     public void EnterRoom(World world)
     {
-        _swapsOfPastRooms += _room?.MoveCount ?? 0;
+        if (!_live.Contains(world))
+            _live.Add(world);
         _room = world;
     }
 
     /// <summary>The room was built again (death or menu): the totals stay.</summary>
     public void RestartRoom(World rebuilt)
     {
+        if (_room is not null && _live.Remove(_room))
+            _swapsOfRetiredWorlds += _room.MoveCount;
         EnterRoom(rebuilt);
         RoomRestarts++;
     }
@@ -66,7 +70,9 @@ public sealed class RunTracker(string levelId)
     public void RestartLevel(World firstRoom)
     {
         _seconds = 0;
-        _swapsOfPastRooms = 0;
+        _swapsOfRetiredWorlds = 0;
+        _live.Clear();
+        _live.Add(firstRoom);
         _room = firstRoom;
         Deaths = 0;
         RoomRestarts = 0;
