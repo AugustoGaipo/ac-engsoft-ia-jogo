@@ -2,24 +2,54 @@
 
 [ext_resource type="Script" path="res://scripts/LevelPreview.cs" id="preview"]
 
-[sub_resource type="StandardMaterial3D" id="floor"]
-albedo_color = Color(0.78, 0.8, 0.82, 1)
+[ext_resource type="Shader" path="res://shaders/lab_panel.gdshader" id="panel"]
 
-[sub_resource type="StandardMaterial3D" id="wall"]
-albedo_color = Color(0.42, 0.5, 0.62, 1)
+[sub_resource type="ShaderMaterial" id="floor"]
+shader = ExtResource("panel")
+shader_parameter/base_color = Color(0.40, 0.42, 0.45, 1)
+shader_parameter/seam_color = Color(0.20, 0.21, 0.23, 1)
+shader_parameter/panel_size = 1.0
+shader_parameter/seam_width = 0.025
+shader_parameter/variation = 0.06
+shader_parameter/roughness_value = 0.7
 
-[sub_resource type="StandardMaterial3D" id="ledge"]
-albedo_color = Color(0.85, 0.6, 0.35, 1)
+[sub_resource type="ShaderMaterial" id="wall"]
+shader = ExtResource("panel")
+shader_parameter/base_color = Color(0.88, 0.89, 0.90, 1)
+shader_parameter/seam_color = Color(0.42, 0.45, 0.50, 1)
+shader_parameter/panel_size = 1.5
+shader_parameter/seam_width = 0.03
+shader_parameter/variation = 0.04
+shader_parameter/roughness_value = 0.5
 
-[sub_resource type="StandardMaterial3D" id="pit"]
-albedo_color = Color(0.18, 0.12, 0.16, 1)
+[sub_resource type="ShaderMaterial" id="ledge"]
+shader = ExtResource("panel")
+shader_parameter/base_color = Color(0.95, 0.74, 0.16, 1)
+shader_parameter/seam_color = Color(0.22, 0.18, 0.08, 1)
+shader_parameter/panel_size = 1.0
+shader_parameter/seam_width = 0.04
+shader_parameter/variation = 0.05
+shader_parameter/roughness_value = 0.6
+
+[sub_resource type="ShaderMaterial" id="pit"]
+shader = ExtResource("panel")
+shader_parameter/base_color = Color(0.07, 0.06, 0.07, 1)
+shader_parameter/seam_color = Color(0.75, 0.08, 0.06, 1)
+shader_parameter/panel_size = 1.0
+shader_parameter/seam_width = 0.05
+shader_parameter/variation = 0.0
+shader_parameter/roughness_value = 0.9
+shader_parameter/emission_color = Color(0.18, 0.01, 0.01, 1)
 
 [sub_resource type="Environment" id="env"]
 background_mode = 1
-background_color = Color(0.62, 0.78, 0.92, 1)
+background_color = Color(0.09, 0.11, 0.14, 1)
 ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.45
+ambient_light_color = Color(0.85, 0.9, 1, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 2
+glow_enabled = true
+ssao_enabled = true
 
 [sub_resource type="BoxMesh" id="mesh_Platform31"]
 material = SubResource("ledge")

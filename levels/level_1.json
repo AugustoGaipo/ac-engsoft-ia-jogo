@@ -27,7 +27,7 @@
         { "id": "button-1-1", "position": [8, 0, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "any" }
       ],
       "doors": [
-        { "id": "door-1-1", "box": { "min": [10, 0, 4], "max": [10.3, 3, 6] }, "opensWith": ["button-1-1"] }
+        { "id": "door-1-1", "box": { "min": [10.26, 0, 4], "max": [10.56, 3, 6] }, "opensWith": ["button-1-1"] }
       ],
       "barriers": [
         { "id": "exit-grid-1-1", "preset": "exitGrid", "box": { "min": [11.5, 0, 4], "max": [11.6, 3, 6] } }
@@ -67,7 +67,7 @@
         { "id": "button-1-3", "position": [32.75, 2, 5], "size": [1.5, 0.1, 1.5], "requiredMassKg": 5, "detects": "any" }
       ],
       "doors": [
-        { "id": "door-1-3", "box": { "min": [35, 0, 4], "max": [35.3, 3, 6] }, "opensWith": ["button-1-3"] }
+        { "id": "door-1-3", "box": { "min": [35.24, 0, 4], "max": [35.54, 3, 6] }, "opensWith": ["button-1-3"] }
       ],
       "barriers": [
         { "id": "exit-grid-1-3", "preset": "exitGrid", "box": { "min": [35.5, 0, 4], "max": [35.6, 3, 6] } }

@@ -464,10 +464,10 @@ public partial class SmokeTest : Node
         main.ShowRoom("1.3");
         await PhysicsFrames(5);
         var ball = main.Runner.Bodies.Single(b => b.ContainerId == "ball-1-3");
-        player.GlobalPosition = new Vector3(29.70f, 0, 3.96f);
+        player.GlobalPosition = new Vector3(29.33f, 0, 3.96f);
         player.ResetPhysicsInterpolation();
         await PhysicsFrames(5);
-        ball.Teleport(new Vector3(30.43f, 2.89f, 3.88f), Vector3.Zero);
+        ball.Teleport(new Vector3(30.06f, 2.89f, 3.88f), Vector3.Zero);
         await LookAt(player, ball.GlobalPosition);
         var deathsBefore = flow.Run.Deaths;
         var swap = main.Swaps.TrySwap();

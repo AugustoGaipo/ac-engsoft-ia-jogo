@@ -1997,3 +1997,9 @@ câmera acompanha o olho. São 69 no total.
 - Efeito colateral avisado pelo usuário e pego pelo smoke: correndo e pulando se atravessava o fosso de 3,5 m da 3.1 sem usar a troca.
 - Correção: plataforma x 0–5, fosso de 5,5 m (x 5–10,5), bola do canhão 40 kg (≈ 5 360 J → jogador lançado a ≈ 11,7 m/s). O smoke agora pula correndo na 3.1 e na 3.3 e exige a morte nos dois.
 - Verificação: 701 testes + smoke 271 checks verdes.
+
+## 2026-11-04 — Edições do usuário no editor viram colisão; visual de laboratório nas cenas
+
+- O usuário tinha mexido no `level_1.tscn` pelo editor (só a aparência). Passado para `level_1.boxes`: paredes de saída x 12/24/36 alinhadas às grades, paredes das portas x 10/35 deslocadas (portas junto no JSON), corredor na 1.1. A plataforma da 1.3 esticada até a parede bloqueava a solução; ficou o deslocamento em x e a largura antiga (pendente decisão do usuário).
+- `shaders/lab_panel.gdshader`: painéis em espaço de mundo com juntas. Paredes brancas, piso cinza em ladrilho, plataformas amarelas de segurança, fosso escuro com juntas vermelhas brilhando. Ambiente escuro, tonemap filmic, glow e SSAO. O gerador aplica a todos os níveis e ao mapa de teste.
+- Smoke 271 checks; o visual não é testado sem janela — conferência com o usuário.
