@@ -70,7 +70,7 @@ public partial class LevelRunner : Node3D
     /// <summary>Loads the level and its scenery. Throws with the catalog errors if the files are broken.</summary>
     public void LoadLevel(string levelId)
     {
-        var catalog = LevelCatalog.Load(ProjectSettings.GlobalizePath("res://levels"));
+        var catalog = LevelCatalog.Load(GameFiles.LevelsDirectory());
         if (catalog.Errors.Count > 0)
             throw new InvalidOperationException(string.Join("; ", catalog.Errors.Select(e => $"{e.Path}: {e.Code} {e.Message}")));
         Level = catalog.Levels.FirstOrDefault(l => l.Id == levelId)
@@ -88,7 +88,7 @@ public partial class LevelRunner : Node3D
     /// </summary>
     public void LoadSandbox()
     {
-        var (level, parseErrors) = LevelParser.Parse(System.IO.File.ReadAllText(ProjectSettings.GlobalizePath(SandboxFile)));
+        var (level, parseErrors) = LevelParser.Parse(GameFiles.ReadText(SandboxFile));
         var errors = parseErrors.Concat(level is null ? [] : LevelValidator.Validate(level))
             .Where(e => !(e.Path is "id" or "number" && e.Code is LevelErrorCode.BadId or LevelErrorCode.NumberOutOfRange))
             .ToList();

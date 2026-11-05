@@ -147,7 +147,7 @@ public partial class Main : Node3D
 
     private void SetupMenu()
     {
-        var catalog = LevelCatalog.Load(ProjectSettings.GlobalizePath("res://levels"));
+        var catalog = LevelCatalog.Load(GameFiles.LevelsDirectory());
         if (catalog.Errors.Count > 0)
             throw new InvalidOperationException(string.Join("; ", catalog.Errors.Select(e => $"{e.Path}: {e.Code} {e.Message}")));
         _catalogLevels = catalog.Levels;
