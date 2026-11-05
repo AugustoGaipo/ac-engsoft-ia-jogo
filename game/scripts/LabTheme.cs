@@ -109,7 +109,7 @@ public partial class LabBackdrop : Control
 
     public override void _Ready()
     {
-        SetAnchorsPreset(LayoutPreset.FullRect);
+        SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         MouseFilter = MouseFilterEnum.Ignore;
         Resized += QueueRedraw;
     }
@@ -134,12 +134,28 @@ public partial class LabBackdrop : Control
         HazardBand(0, size.X);
         HazardBand(size.Y - Band, size.X);
 
-        var font = GetThemeDefaultFont();
-        DrawString(font, new Vector2(24, Band + 40), "INSTALAÇÃO DE TESTES  ·  CÂMARA DE TROCA", fontSize: 20, modulate: LabTheme.Muted);
-        DrawString(font, new Vector2(24, Band + 66), "PROTOCOLO: POSIÇÃO / MASSA / ENERGIA CINÉTICA", fontSize: 16, modulate: LabTheme.Muted);
-        DrawString(font, new Vector2(size.X - 330, size.Y - Band - 24), "ÁREA RESTRITA · SOMENTE SUJEITOS DE TESTE", fontSize: 14, modulate: LabTheme.Muted);
+        // The menu sheet is centred and about SheetWidth wide: the wall texts only go in the free strip beside it.
+        var free = (size.X - SheetWidth) / 2 - 48;
+        Text(new Vector2(24, Band + 40), "INSTALAÇÃO DE TESTES", 20, free);
+        Text(new Vector2(24, Band + 66), "CÂMARA DE TROCA", 20, free);
+        Text(new Vector2(24, size.Y - Band - 48), "PROTOCOLO:", 16, free);
+        Text(new Vector2(24, size.Y - Band - 24), "POSIÇÃO / MASSA / ENERGIA CINÉTICA", 16, free);
+        var restricted = "ÁREA RESTRITA · SOMENTE SUJEITOS DE TESTE";
+        var width = GetThemeDefaultFont().GetStringSize(restricted, fontSize: 14).X;
+        Text(new Vector2(size.X - width - 24, size.Y - Band - 24), restricted, 14, free);
 
-        Emblem(new Vector2(size.X - 150, Band + 130), 70);
+        if (free >= 180)
+            Emblem(new Vector2(size.X - 24 - Mathf.Min(free, 300) / 2, Band + 130), 70);
+    }
+
+    private const float SheetWidth = 420;
+
+    /// <summary>Draws a wall text only if it fits in the free strip (so the menu sheet never covers it).</summary>
+    private void Text(Vector2 at, string text, int fontSize, float free)
+    {
+        var font = GetThemeDefaultFont();
+        if (font.GetStringSize(text, fontSize: fontSize).X <= free)
+            DrawString(font, at, text, fontSize: fontSize, modulate: LabTheme.Muted);
     }
 
     private void HazardBand(float top, float width)

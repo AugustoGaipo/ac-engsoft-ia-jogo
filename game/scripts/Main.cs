@@ -67,6 +67,15 @@ public partial class Main : Node3D
             return;
         }
 
+        // --menu-shot <file.png>: saves the main menu (with --resolution WxH to check other window sizes).
+        var menuShot = Array.IndexOf(args, "--menu-shot");
+        if (menuShot >= 0 && menuShot + 1 < args.Length)
+        {
+            ShowMenu();
+            _ = SaveScreenshot(args[menuShot + 1]);
+            return;
+        }
+
         var preview = Array.IndexOf(args, "--preview-shot");
         if (preview >= 0 && preview + 1 < args.Length)
         {
