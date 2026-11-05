@@ -2029,3 +2029,8 @@ câmera acompanha o olho. São 69 no total.
 - Usuário: na 3.3, andar (correndo) e trocar de massa com a caixa de 5 kg lançava o jogador por cima do fosso (a energia fica, a massa cai: ≈ 11–15 m/s). Regra nova `Launch.FromSwap`: só a troca de energia lança; depois de trocar massa, andar continua andar. Teste vermelho antes, mutação (sem a condição → falha). Smoke: correndo + troca de massa → sem lançamento, cai no fosso.
 - Uma falha do smoke ("HUD mostra Massa") apareceu uma vez e sumiu na rodada seguinte: instabilidade de tempo, sem mudança relacionada.
 - 703 testes + smoke 276.
+
+## 2026-11-05 — Grade de saída com cara de porta de vidro
+
+- Pedido do usuário (referência visual de outro jogo, "não igual"): a grade de saída virou um painel de vidro fosco com faixas verticais coloridas que tremulam devagar, um batente fino dourado e uma luz pálida no chão (`Pieces/ExitPortal.cs`). Só o visual: continua barrando objetos e trocas e deixando o jogador passar.
+- Conferido com `--screenshot` de perto e de longe. Smoke verde.

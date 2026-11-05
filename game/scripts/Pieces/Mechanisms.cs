@@ -157,14 +157,17 @@ void fragment() {
         };
         var (r, g, b) = BarrierPalette.For(def.Filter);
         var color = new Color((float)r, (float)g, (float)b, BaseAlpha);
-        barrier.AddChild(new MeshInstance3D
-        {
-            Mesh = new BoxMesh
+        if (def.IsExitGrid)
+            ExitPortal.Decorate(barrier, def.Box.Size());   // frosted pane with a frame (user, 2026-11-05)
+        else
+            barrier.AddChild(new MeshInstance3D
             {
-                Size = def.Box.Size(),
-                Material = StripeMaterial(color),
-            },
-        });
+                Mesh = new BoxMesh
+                {
+                    Size = def.Box.Size(),
+                    Material = StripeMaterial(color),
+                },
+            });
         barrier.AddChild(new CollisionShape3D { Shape = new BoxShape3D { Size = def.Box.Size() } });
         if (def.IsExitGrid)
         {
