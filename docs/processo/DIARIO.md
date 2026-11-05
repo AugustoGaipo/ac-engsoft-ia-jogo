@@ -2017,3 +2017,8 @@ câmera acompanha o olho. São 69 no total.
 - O usuário mostrou em captura: a porta numa parede e a grade noutra (0,5–2 m adiante) pareciam bugadas. "Coloca os dois juntos."
 - Removidas as paredes extras de porta (e o corredor da 1.1, que só as ligava). A porta agora fica no vão da parede da sala, com a grade dentro dela (face de saída); sem porta, a grade fica no meio do vão. Paredes de divisa em [limite − 0,3, limite].
 - Smoke: o teste que atravessava a grade da 1.1 agora abre a porta (caixa no botão); o "atravessa a grade" usa a da 1.2. Captura com `--screenshot` confere o vão. 274 checks.
+
+## 2026-11-05 — Sala 1.3: caixa de 200 kg
+
+- Atalho achado pelo usuário: a caixa de 10 kg era arremessada direto no botão alto, sem nenhuma troca.
+- Teste vermelho em `RoomDesignTests` (caixa > 2,5 × 70 kg; massa travada no nível 1), depois caixa de 200 kg: não dá para segurar nem arremessar, só sobe trocando de posição de cima do botão. Mutação: com 10 kg o teste falha (visto vermelho antes). Smoke 274.

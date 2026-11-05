@@ -54,6 +54,10 @@ public class RoomDesignTests
         Assert.True(button.Position.Y > room.Spawn.Position.Y + 1, "the button is high (on a ledge)");
         Assert.All(room.Objects.Where(o => o.Kind == ObjectKind.Ball), ball => Assert.True(ball.MassKg < button.RequiredMassKg));
         Assert.Contains(room.Objects, o => o.Kind == ObjectKind.Box && CanSwap(o, PropertyNames.Position));
+        // User play test 2026-11-05: a 10 kg box was just thrown onto the button, no swap needed. Too heavy to hold
+        // (HoldLoad: > 2.5 × 70 kg), it goes up only by a position swap; mass swaps are locked in level 1.
+        Assert.All(room.Objects.Where(o => o.Kind == ObjectKind.Box), box => Assert.True(box.MassKg > 2.5 * LevelFile.PlayerMassKg, "too heavy to hold and throw"));
+        Assert.DoesNotContain(PropertyNames.Mass, Unlocked("1.3"));
     }
 
     [Fact]
