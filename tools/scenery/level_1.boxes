@@ -11,7 +11,9 @@ Ledge13 ledge 29.63 0 0 33.63 2 6
 WallSouth wall -0.3 -3.5 -0.3 48.3 6 0
 WallNorth wall -0.3 -3.5 10 48.3 6 10.3
 WallStart wall -0.3 -3.5 0 0 6 10
-WallEnd wall 48 -3.5 0 48.3 6 10
+WallEndLeft wall 48 -3.5 0 48.3 6 4
+WallEndRight wall 48 -3.5 6 48.3 6 10
+WallEndTop wall 48 3 4 48.3 6 6
 Wall12Left wall 11.48 -3.5 0 11.78 6 4
 Wall12Right wall 11.48 -3.5 6 11.78 6 10
 Wall12Top wall 11.48 3 4 11.78 6 6

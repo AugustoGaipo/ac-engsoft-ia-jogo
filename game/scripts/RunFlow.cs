@@ -93,7 +93,9 @@ public partial class RunFlow : Node
         Result = null;
         _endScreen.Visible = false;
         Run = new RunTracker(_runner.Level.Id);
-        GoToRoom(_runner.Level.Rooms[0].Id);
+        _runner.BuildAll(_runner.Level.Rooms[0].Id);
+        _player.SpawnAt(_runner.Room.Spawn);
+        Run.EnterRoom(_runner.World);
     }
 
     /// <summary>Builds a room, puts the player at its spawn and counts it in the run.</summary>
@@ -121,7 +123,7 @@ public partial class RunFlow : Node
         SetPaused(false);
         Result = null;
         _endScreen.Visible = false;
-        _runner.BuildRoom(_runner.Level.Rooms[0].Id);
+        _runner.BuildAll(_runner.Level.Rooms[0].Id);
         _player.SpawnAt(_runner.Room.Spawn);
         Run.RestartLevel(_runner.World);
         Input.MouseMode = DisplayServer.GetName() == "headless" ? Input.MouseMode : Input.MouseModeEnum.Captured;
@@ -186,7 +188,7 @@ public partial class RunFlow : Node
             return;
 
         var center = _player.Center.ToLevel();
-        if (_runner.Room.KillZones.Any(z => z.Box.Contains(center)))
+        if (_runner.AllKillZones.Any(z => z.Box.Contains(center)))
         {
             Die("zona de morte");
             return;
@@ -203,11 +205,11 @@ public partial class RunFlow : Node
             Die($"queda a {landing:0.0} m/s");
             return;
         }
-        foreach (var body in _runner.Bodies)
+        foreach (var (body, room) in _runner.AllBodies)
         {
             // An object in a pit or out of its room (over a wall) pops back to its start (keeping its swapped mass variable).
             var at = body.GlobalPosition.ToLevel();
-            if (_runner.Room.KillZones.Any(z => z.Box.Contains(at)) || !InsideMap(_runner.Room.Bounds, at))
+            if (room.KillZones.Any(z => z.Box.Contains(at)) || !InsideMap(room.Bounds, at))
                 body.Teleport(body.Def.Position.ToGodot(), body.Def.Velocity.ToGodot());
         }
         if (_runner.Room.Exit.Contains(center))
@@ -224,7 +226,7 @@ public partial class RunFlow : Node
         var index = rooms.ToList().FindIndex(r => r.Id == _runner.Room.Id);
         if (index + 1 < rooms.Count)
         {
-            _runner.BuildRoom(rooms[index + 1].Id);
+            _runner.EnterRoom(rooms[index + 1].Id);   // the next room is already alive; only the checkpoint moves
             Run.EnterRoom(_runner.World);
             GD.Print($"[game] entered room {_runner.Room.Id}");
             return;

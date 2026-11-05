@@ -49,7 +49,7 @@ public partial class SwapController : Node
         _player = player;
         // You cannot hold a body through a barrier that blocks objects (user found: pulling the 3.2 box out of
         // its channel through the wall): the hold is refused, or dropped when the line crosses one.
-        player.HoldBlocked = (eye, body) => _runner.Barriers.Any(b =>
+        player.HoldBlocked = (eye, body) => _runner.AllBarriers.Any(b =>
             b.Def.Filter.BlocksObjects && BarrierGeometry.Crosses(eye.ToLevel(), body.ToLevel(), b.Def.Box));
     }
 
@@ -139,7 +139,8 @@ public partial class SwapController : Node
 
     private void UpdateAim()
     {
-        Target = _player.Aim(AimReach) as Body;
+        // Only the current room's bodies: another room is another world, behind its exit grid.
+        Target = _player.Aim(AimReach) is Body aimed && _runner.Bodies.Contains(aimed) ? aimed : null;
         var reason = Target is null ? null : _runner.World.Rules.Check(_runner.World, Request(Target), _now);
         Crosshair = CrosshairState.For(Target is not null, reason);
 

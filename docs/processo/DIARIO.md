@@ -2003,3 +2003,11 @@ câmera acompanha o olho. São 69 no total.
 - O usuário tinha mexido no `level_1.tscn` pelo editor (só a aparência). Passado para `level_1.boxes`: paredes de saída x 12/24/36 alinhadas às grades, paredes das portas x 10/35 deslocadas (portas junto no JSON), corredor na 1.1. A plataforma da 1.3 esticada até a parede bloqueava a solução; ficou o deslocamento em x e a largura antiga (pendente decisão do usuário).
 - `shaders/lab_panel.gdshader`: painéis em espaço de mundo com juntas. Paredes brancas, piso cinza em ladrilho, plataformas amarelas de segurança, fosso escuro com juntas vermelhas brilhando. Ambiente escuro, tonemap filmic, glow e SSAO. O gerador aplica a todos os níveis e ao mapa de teste.
 - Smoke 271 checks; o visual não é testado sem janela — conferência com o usuário.
+
+## 2026-11-04 — Todas as salas vivas até o fim do nível; grades alinhadas às portas
+
+- Pedido do usuário: ao passar de sala, os objetos da sala anterior sumiam. Agora `LevelRunner` monta todas as salas no início (cada uma com suas peças e seu `World`), e elas continuam funcionando (botões, portas, canhão).
+- A grade de saída só muda a sala atual (ponto de spawn; "não é a porta que deveria fazer isso, mas fica por enquanto"). Do outro lado o jogador está noutro mundo: chega com os próprios atributos e não mira objetos da sala anterior. A grade já barrava objetos e variáveis.
+- Reiniciar a sala / morrer reconstrói só a sala atual; reiniciar o nível reconstrói todas.
+- Layout: com porta, a grade fica colada na face de saída da porta (saída logo depois); sem porta, encaixada no vão da parede; as paredes do fim ganharam vão para a grade da última sala.
+- Smoke: novas verificações (todas as salas montadas; a caixa da 1.1 continua no botão depois de entrar na 1.2; não é alvo de troca da 1.2). 701 testes + smoke 274 checks.

@@ -93,12 +93,26 @@ size = Vector3(0.3, 9.5, 10)
 [sub_resource type="BoxShape3D" id="shape_WallStart"]
 size = Vector3(0.3, 9.5, 10)
 
-[sub_resource type="BoxMesh" id="mesh_WallEnd"]
+[sub_resource type="BoxMesh" id="mesh_WallEndLeft"]
 material = SubResource("wall")
-size = Vector3(0.3, 18.8, 10)
+size = Vector3(0.3, 18.8, 4)
 
-[sub_resource type="BoxShape3D" id="shape_WallEnd"]
-size = Vector3(0.3, 18.8, 10)
+[sub_resource type="BoxShape3D" id="shape_WallEndLeft"]
+size = Vector3(0.3, 18.8, 4)
+
+[sub_resource type="BoxMesh" id="mesh_WallEndRight"]
+material = SubResource("wall")
+size = Vector3(0.3, 18.8, 4)
+
+[sub_resource type="BoxShape3D" id="shape_WallEndRight"]
+size = Vector3(0.3, 18.8, 4)
+
+[sub_resource type="BoxMesh" id="mesh_WallEndTop"]
+material = SubResource("wall")
+size = Vector3(0.3, 12.3, 2)
+
+[sub_resource type="BoxShape3D" id="shape_WallEndTop"]
+size = Vector3(0.3, 12.3, 2)
 
 [sub_resource type="BoxMesh" id="mesh_Wall12Left"]
 material = SubResource("wall")
@@ -283,14 +297,32 @@ mesh = SubResource("mesh_WallStart")
 [node name="Shape" type="CollisionShape3D" parent="WallStart"]
 shape = SubResource("shape_WallStart")
 
-[node name="WallEnd" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.15, 5.9, 5)
+[node name="WallEndLeft" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.15, 5.9, 2)
 
-[node name="Mesh" type="MeshInstance3D" parent="WallEnd"]
-mesh = SubResource("mesh_WallEnd")
+[node name="Mesh" type="MeshInstance3D" parent="WallEndLeft"]
+mesh = SubResource("mesh_WallEndLeft")
 
-[node name="Shape" type="CollisionShape3D" parent="WallEnd"]
-shape = SubResource("shape_WallEnd")
+[node name="Shape" type="CollisionShape3D" parent="WallEndLeft"]
+shape = SubResource("shape_WallEndLeft")
+
+[node name="WallEndRight" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.15, 5.9, 8)
+
+[node name="Mesh" type="MeshInstance3D" parent="WallEndRight"]
+mesh = SubResource("mesh_WallEndRight")
+
+[node name="Shape" type="CollisionShape3D" parent="WallEndRight"]
+shape = SubResource("shape_WallEndRight")
+
+[node name="WallEndTop" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.15, 9.15, 5)
+
+[node name="Mesh" type="MeshInstance3D" parent="WallEndTop"]
+mesh = SubResource("mesh_WallEndTop")
+
+[node name="Shape" type="CollisionShape3D" parent="WallEndTop"]
+shape = SubResource("shape_WallEndTop")
 
 [node name="Wall12Left" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.15, 1.25, 2)

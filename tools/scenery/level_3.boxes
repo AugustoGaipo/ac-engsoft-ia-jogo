@@ -18,7 +18,10 @@ DoorWall22Top wall 22.5 3 1 22.8 6 3
 WallSouth wall -0.3 -3.5 -0.3 36.3 6 0
 WallNorth wall -0.3 -3.5 10 36.3 6 10.3
 WallStart wall -0.3 -3.5 0 0 6 10
-WallEnd wall 36 -3.5 0 36.3 6 7.9
+WallEndSouth wall 36 -3.5 0 36.3 6 1
+WallEndLow wall 36 -3.5 1 36.3 -1.5 6
+WallEndTop wall 36 1.5 1 36.3 6 6
+WallEndMid wall 36 -3.5 6 36.3 6 7.9
 WallEndNorth wall 36 -3.5 9.1 36.3 6 10
 WallEndBelow wall 36 -3.5 7.9 36.3 0 9.1
 WallEndAbove wall 36 1.1 7.9 36.3 6 9.1

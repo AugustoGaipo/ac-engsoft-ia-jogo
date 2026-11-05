@@ -582,6 +582,16 @@ public partial class SmokeTest : Node
         await WalkTo(player, 12.6f, 5);
         Check("full run 1.1: through the door and the exit grid into room 1.2", main.Runner.Room.Id == "1.2", $"room {main.Runner.Room.Id}, at {player.GlobalPosition}");
 
+        // All rooms stay alive (user's request, 2026-11-04): the 1.1 box is still on its button, the door still open.
+        var oldBox = box;
+        await PhysicsFrames(10);
+        Check("full run: every room of the level is built at once", main.Runner.BuiltRooms == main.Runner.Level.Rooms.Count, $"{main.Runner.BuiltRooms} rooms");
+        Check("full run: after the exit grid, the 1.1 box still exists, on its button",
+            IsInstanceValid(oldBox) && main.Runner.AllBodies.Any(x => x.Body == oldBox && x.Room.Id == "1.1") && oldBox.GlobalPosition.X > 5.5f && oldBox.GlobalPosition.X < 8,
+            IsInstanceValid(oldBox) ? $"box {oldBox.GlobalPosition}" : "freed");
+        Check("full run: the 1.1 box cannot be aimed at for a swap from room 1.2 (another world)",
+            !main.Runner.Bodies.Contains(oldBox), "listed in 1.2");
+
         // 1.2 — the first swap, across the pit.
         await WalkTo(player, 13.5f, 5);
         box = main.Runner.Bodies.Single();
