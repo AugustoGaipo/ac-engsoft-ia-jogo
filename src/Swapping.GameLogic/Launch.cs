@@ -12,6 +12,13 @@ public static class Launch
 
     public static bool Starts(double horizontalSpeed, double walkSpeed) => horizontalSpeed > walkSpeed + 1e-6;
 
+    /// <summary>
+    /// After a swap: only an energy swap launches (user, 2026-11-05). A mass swap keeps the energy, so walking
+    /// into a light mass would shoot the player forward with no energy received; walking stays walking.
+    /// </summary>
+    public static bool FromSwap(bool energySwap, double horizontalSpeed, double walkSpeed) =>
+        energySwap && Starts(horizontalSpeed, walkSpeed);
+
     public static double Step(double speed, bool onFloor, double deltaSeconds) =>
         Math.Max(0, speed - (onFloor ? FloorBrake : AirBrake) * deltaSeconds);
 

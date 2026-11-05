@@ -102,7 +102,7 @@ public partial class SwapController : Node
         var result = _swap.Apply(_runner.World, Request(target), _now);
         if (result.IsApplied)
         {
-            ApplyUpdates(result.Updates);
+            ApplyUpdates(result.Updates, energySwap: Choice == PropertyKind.KineticEnergy);
             _swapSound.PitchScale = (float)Feedback.SwapPitch(Choice);
             _swapSound.Play();
             SwapSounds++;
@@ -243,7 +243,7 @@ public partial class SwapController : Node
     /// would start inside the ghost and be shot away (found in the user's play test), so the swapped
     /// bodies ignore the player for <see cref="Body.GhostSeconds"/>.
     /// </summary>
-    private void ApplyUpdates(IReadOnlyList<BodyUpdate> updates)
+    private void ApplyUpdates(IReadOnlyList<BodyUpdate> updates, bool energySwap = false)
     {
         var swapped = updates.Where(u => u.ContainerId != LevelValidator.PlayerId)
             .Select(u => _runner.Bodies.Single(b => b.ContainerId == u.ContainerId)).ToList();
@@ -259,7 +259,7 @@ public partial class SwapController : Node
                 var spot = MakeRoom.ForPlayer(_player, center, swapped);
                 GD.Print($"[game] swap with {string.Join(",", swapped.Select(b => b.ContainerId))}: player from {_player.GlobalPosition} to center {center} → {spot.Outcome} {spot.Point}");
                 LastMakeRoom = spot.Outcome;
-                _player.PlaceAtCenter(spot.Point?.ToGodot() ?? center, update.Velocity.ToGodot(), update.MassKg);
+                _player.PlaceAtCenter(spot.Point?.ToGodot() ?? center, update.Velocity.ToGodot(), update.MassKg, energySwap);
                 died = spot.Outcome == MakeRoomOutcome.Death;
                 continue;
             }

@@ -144,5 +144,13 @@ public class RoomDesignTests
         Assert.Contains(room.Objects, o =>
             o.Kind == ObjectKind.Box && o.Velocity == Vec3.Zero && CanSwap(o, PropertyNames.KineticEnergy) && !CanSwap(o, PropertyNames.Position));
         Assert.Contains(room.Buttons, b => b.Detects == ButtonDetects.Objects);
+
+        // User play test 2026-11-05: the box left its channel by the open end (the old door wall was removed).
+        // Both channel walls run to the door's wall and stand high enough that a launched box stays inside.
+        var door = Assert.Single(room.Doors);
+        var channel = room.Barriers.Where(b => b.BlocksObjects && !b.IsExitGrid).ToList();
+        Assert.Equal(2, channel.Count);
+        Assert.All(channel, wall => Assert.True(wall.Box.Max.X >= door.Box.Min.X && wall.Box.Max.Y >= 6,
+            $"{wall.Id} ends at x {wall.Box.Max.X}, y {wall.Box.Max.Y}"));
     }
 }

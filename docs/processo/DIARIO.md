@@ -2022,3 +2022,10 @@ câmera acompanha o olho. São 69 no total.
 
 - Atalho achado pelo usuário: a caixa de 10 kg era arremessada direto no botão alto, sem nenhuma troca.
 - Teste vermelho em `RoomDesignTests` (caixa > 2,5 × 70 kg; massa travada no nível 1), depois caixa de 200 kg: não dá para segurar nem arremessar, só sobe trocando de posição de cima do botão. Mutação: com 10 kg o teste falha (visto vermelho antes). Smoke 274.
+
+## 2026-11-05 — Nível 3: frestas da parede afinada, canal da 3.2 fechado, troca de massa não lança
+
+- As paredes de divisa afinadas para dentro (−0,3 m) deixaram frestas: piso, canaleta, teto e canhão da 3.3 e o canal da 3.2 começavam em 12,3/24,3. Encostados de novo nas paredes. O canal da 3.2 terminava na parede de porta removida (x 22,5): o usuário tirou a caixa por ali. Canal até a parede (23,7) e barreiras do canal até 6 m. Teste em `RoomDesignTests` (mutação: canal até 22,5 → falha). Conferido com `--screenshot`.
+- Usuário: na 3.3, andar (correndo) e trocar de massa com a caixa de 5 kg lançava o jogador por cima do fosso (a energia fica, a massa cai: ≈ 11–15 m/s). Regra nova `Launch.FromSwap`: só a troca de energia lança; depois de trocar massa, andar continua andar. Teste vermelho antes, mutação (sem a condição → falha). Smoke: correndo + troca de massa → sem lançamento, cai no fosso.
+- Uma falha do smoke ("HUD mostra Massa") apareceu uma vez e sumiu na rodada seguinte: instabilidade de tempo, sem mudança relacionada.
+- 703 testes + smoke 276.

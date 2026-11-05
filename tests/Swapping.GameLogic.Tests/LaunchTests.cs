@@ -30,3 +30,23 @@ public sealed class LaunchTests
         Assert.Equal(8, Launch.FloorDistance(8, 0), 6);
     }
 }
+
+/// <summary>
+/// User play test 2026-11-05 (room 3.3): walking (≈ 315 J) and then taking a 5 kg mass kept the energy, so the
+/// player shot forward at ≈ 11 m/s with no ball. Only an energy swap launches; after a mass swap walking stays walking.
+/// </summary>
+public sealed class LaunchFromSwapTests
+{
+    [Fact]
+    public void A_mass_swap_never_launches_even_when_the_kept_energy_means_a_high_speed()
+    {
+        Assert.False(Launch.FromSwap(energySwap: false, horizontalSpeed: 11.2, walkSpeed: 3));
+    }
+
+    [Fact]
+    public void An_energy_swap_launches_above_walking_speed()
+    {
+        Assert.True(Launch.FromSwap(energySwap: true, horizontalSpeed: 11.2, walkSpeed: 3));
+        Assert.False(Launch.FromSwap(energySwap: true, horizontalSpeed: 2, walkSpeed: 3));
+    }
+}

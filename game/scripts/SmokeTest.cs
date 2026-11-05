@@ -946,8 +946,32 @@ public partial class SmokeTest : Node
         player.ScriptedMove = null;
         player.ScriptedSprint = null;
 
+        // No shortcut (user, 2026-11-05): running, then taking the 5 kg box's mass kept ≈ 600 J and shot the
+        // player over the pit. Only an energy swap launches now.
+        await WalkTo(player, 25.5f, 2);
+        var lightBox = main.Runner.Bodies.Single(b => b.ContainerId == "light-box-3-3");
+        PressKey(swaps, Key.Key2);
+        player.ScriptedSprint = true;
+        player.ScriptedMove = new Vector2(0, 1);
+        Swapping.Rules.Operations.SwapResult? lightSwap = null;
+        for (var i = 0; i < 90 && lightSwap is not { IsApplied: true }; i++)
+        {
+            var to = lightBox.GlobalPosition - player.Eye.Origin;
+            player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
+            await PhysicsFrames(1);
+            if (player.GlobalPosition.X > 26.8f)
+                lightSwap = swaps.TrySwap();
+        }
+        await PhysicsFrames(2);
+        Check("level 3, 3.3: a mass swap while running does not launch the player",
+            lightSwap is { IsApplied: true } && player.MassKg <= 5.01 && player.Launched is null && new Vector2(player.Velocity.X, player.Velocity.Z).Length() < 4.5f,
+            $"{lightSwap?.Reason}, mass {player.MassKg}, velocity {player.Velocity}");
+        await WaitDeath();
+        player.ScriptedMove = null;
+        player.ScriptedSprint = null;
+
         await WalkTo(player, 27.4f, 2);
-        var probe =main.Runner.Bodies.Single(b => b.ContainerId == "ball-3-3");
+        var probe = main.Runner.Bodies.Single(b => b.ContainerId == "ball-3-3");
         Check("level 3, 3.3: at 70 kg, the ball's energy is taken", await TakeBallEnergy(), $"no swap; ball {probe.GlobalPosition} v {probe.LinearVelocity}, {swaps.Crosshair}; eye {player.Eye.Origin}, aim hits {player.Aim(60)?.Name}");
         GD.Print($"[smoke] info level 3, 3.3: at 70 kg launched at {player.Velocity.Length():0.0} m/s");
         await WaitDeath();

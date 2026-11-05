@@ -155,14 +155,14 @@ public partial class Player : CharacterBody3D, IHasWeight
     public Vector3 Center => GlobalPosition + RulesMapping.PlayerCenterAboveFeet.ToGodot();
 
     /// <summary>Writes a swap's update back: the center becomes the new position, plus velocity and mass.</summary>
-    public void PlaceAtCenter(Vector3 center, Vector3 velocity, double massKg)
+    public void PlaceAtCenter(Vector3 center, Vector3 velocity, double massKg, bool energySwap = true)
     {
         Drop();
         GlobalPosition = center - RulesMapping.PlayerCenterAboveFeet.ToGodot();
         Velocity = velocity;
         MassKg = massKg;
         var flat = velocity with { Y = 0 };
-        Launched = Launch.Starts(flat.Length(), WalkSpeed) ? flat : null;   // an energy swap faster than walking
+        Launched = Launch.FromSwap(energySwap, flat.Length(), WalkSpeed) ? flat : null;   // an energy swap faster than walking
         ResetPhysicsInterpolation();
     }
 
