@@ -113,6 +113,9 @@ public partial class Main : Node3D
                 var to = point - Player.Eye.Origin;
                 Player.Look(Mathf.RadToDeg(Mathf.Atan2(-to.X, -to.Z)), Mathf.Atan2(to.Y, new Vector2(to.X, to.Z).Length()));
             }
+            // --pause-keys: the pause menu with the key list open.
+            if (args.Contains("--pause-keys"))
+                Flow.ShowPauseKeys();
             _ = SaveScreenshot(args[shot + 2]);
         }
     }

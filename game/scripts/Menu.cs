@@ -53,6 +53,14 @@ public partial class Menu : CanvasLayer
 
         _levelsScreen = NewScreen("Níveis");
         _controlsScreen = NewScreen("Controles");
+        _controlsScreen.AddChild(ControlsGrid());
+        AddButton(_controlsScreen, "Voltar", () => Show("main"));
+        BuildOnline();
+    }
+
+    /// <summary>The key list (main menu "Controles" and the pause menu).</summary>
+    public static GridContainer ControlsGrid()
+    {
         var controls = new GridContainer { Columns = 2 };
         controls.AddThemeConstantOverride("h_separation", 18);
         controls.AddThemeConstantOverride("v_separation", 8);
@@ -68,9 +76,7 @@ public partial class Menu : CanvasLayer
             controls.AddChild(KeyChip(key));
             controls.AddChild(new Label { Text = action, VerticalAlignment = VerticalAlignment.Center });
         }
-        _controlsScreen.AddChild(controls);
-        AddButton(_controlsScreen, "Voltar", () => Show("main"));
-        BuildOnline();
+        return controls;
     }
 
     /// <summary>Opens the menu on its first screen (progress may have changed since the last time).</summary>

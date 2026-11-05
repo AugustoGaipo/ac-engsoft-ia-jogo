@@ -30,6 +30,9 @@ public partial class RunFlow : Node
     private Player _player = null!;
     private ColorRect _fade = null!;
     private Control _pauseMenu = null!;
+    private GridContainer _pauseKeys = null!;
+    private Button _keysButton = null!;
+    private Button[] _pauseOthers = [];
     private Control _endScreen = null!;
     private Label _endText = null!;
     private Button _nextButton = null!;
@@ -291,11 +294,28 @@ public partial class RunFlow : Node
             RestartRoom(death: false);
     }
 
+    /// <summary>Pauses with the key list open (screenshots).</summary>
+    public void ShowPauseKeys()
+    {
+        SetPaused(true);
+        ShowKeys(true);
+    }
+
+    /// <summary>The key list takes the place of the other pause buttons (so it fits a small window).</summary>
+    private void ShowKeys(bool show)
+    {
+        _pauseKeys.Visible = show;
+        _keysButton.Text = show ? "Voltar" : "Controles";
+        foreach (var button in _pauseOthers)
+            button.Visible = !show;
+    }
+
     public void SetPaused(bool paused)
     {
         if (paused == IsPaused)
             return;
         _pauseMenu.Visible = paused;
+        ShowKeys(false);
         GetTree().Paused = paused;
         if (paused)
             Run.Pause();
@@ -330,10 +350,18 @@ public partial class RunFlow : Node
         _pauseMenu = Panel("Pausa");
         var buttons = BoxOf(_pauseMenu);
         AddButton(buttons, "Continuar", () => SetPaused(false));
-        AddButton(buttons, "Reiniciar sala", () => { SetPaused(false); RestartRoom(death: false); });
-        AddButton(buttons, "Reiniciar nível", RestartLevel);
-        AddButton(buttons, "Menu", () => MenuRequested?.Invoke());
-        AddButton(buttons, "Sair", () => GetTree().Quit());
+        // "Controles" opens the key list inside the pause sheet (closed again on resume).
+        _pauseKeys = Menu.ControlsGrid();
+        _pauseKeys.Visible = false;
+        _keysButton = AddButton(buttons, "Controles", () => ShowKeys(!_pauseKeys.Visible));
+        buttons.AddChild(_pauseKeys);
+        _pauseOthers =
+        [
+            AddButton(buttons, "Reiniciar sala", () => { SetPaused(false); RestartRoom(death: false); }),
+            AddButton(buttons, "Reiniciar nível", RestartLevel),
+            AddButton(buttons, "Menu", () => MenuRequested?.Invoke()),
+            AddButton(buttons, "Sair", () => GetTree().Quit()),
+        ];
         layer.AddChild(_pauseMenu);
 
         _endScreen = Panel("Relatório do teste");
