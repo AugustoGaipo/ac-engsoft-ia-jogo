@@ -210,9 +210,9 @@ public partial class Body : RigidBody3D, IHasWeight
             {
                 Swapping.GameLogic.Outline.White => Colors.White,
                 Swapping.GameLogic.Outline.Gray => new Color(0.5f, 0.5f, 0.5f),
-                Swapping.GameLogic.Outline.Position => new Color(0.3f, 0.85f, 1f),   // draft palette (open question of the spec)
-                Swapping.GameLogic.Outline.Mass => new Color(1f, 0.6f, 0.2f),
-                _ => new Color(1f, 0.35f, 0.8f),
+                Swapping.GameLogic.Outline.Position => AbilityColors.Position,   // same colours as the HUD chips
+                Swapping.GameLogic.Outline.Mass => AbilityColors.Mass,
+                _ => AbilityColors.KineticEnergy,
             };
     }
 }

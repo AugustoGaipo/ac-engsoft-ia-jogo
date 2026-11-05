@@ -2043,3 +2043,13 @@ câmera acompanha o olho. São 69 no total.
 - Regras: `Restoration.ReturnAllInPlace` — cada um pega suas variáveis de volta, mas posição e velocidade voltam a ser as da física (a restauração comum teletransportaria o jogador até quem tinha a posição dele). Teste vermelho antes; mutação (sem reaplicar a física) → falha.
 - `RunTracker`: com salas vivas, voltar a uma sala contava as trocas dela de novo. Agora cada mundo conta uma vez; um mundo reconstruído guarda as trocas que já tinha. Testes vermelhos antes.
 - Smoke: cruzar para a 1.3 devolve a posição sem mover; voltar para a 1.2 deixa mirar a caixa; atributos todos próprios; ir de novo para a 1.3. O "HUD mostra Massa" esperava só 2 passos de física e o HUD redesenha por quadro: agora espera até 30. 705 testes + smoke 280.
+
+## 2026-11-05 — HUD novo, com uma cor por habilidade
+
+- Pedido do usuário: um HUD com design melhor enquanto joga, "além dos nomes, cores para diferenciar cada habilidade". Procuramos skills de HUD na internet (só da comunidade; nenhuma oficial); o usuário decidiu fazer sem skill.
+- `AbilityColors`: Posição azul, Massa laranja, Energia rosa — as mesmas cores dos contornos dos objetos (`Body.cs` passou a usar a mesma tabela).
+- Painel "VOCÊ" (canto superior esquerdo, fundo escuro translúcido): uma linha por atributo com um quadradinho da cor dele; a linha de posição só aparece quando ela é emprestada.
+- Tempo grande e trocas num painel no canto superior direito.
+- Chips das habilidades embaixo, no centro ("1 Posição", "2 Massa", "3 Energia"): só os liberados na sala; o escolhido aceso na sua cor, os outros com borda colorida.
+- Mira e anel de recarga na cor da habilidade escolhida; vermelho quando a troca seria recusada.
+- Os textos lidos pelo smoke (`PlayerText`, `RunText`, `TargetText`) continuam iguais. Nova verificação: o chip aceso acompanha a tecla 2. Conferido com `--screenshot`. Smoke 281.

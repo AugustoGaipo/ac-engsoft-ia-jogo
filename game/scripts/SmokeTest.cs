@@ -1091,6 +1091,7 @@ public partial class SmokeTest : Node
         for (var i = 0; i < 30 && !main.Hud.RunText.Contains("Massa"); i++)   // the HUD redraws per frame, not per physics step
             await PhysicsFrames(1);
         Check("keys: the HUD shows Massa", main.Hud.RunText.Contains("Massa"), main.Hud.RunText);
+        Check("HUD: the Massa chip is the lit one, in the mass colour", main.Hud.LitChip == Swapping.Rules.Model.PropertyKind.Mass, $"{main.Hud.LitChip?.Name}");
         PressKey(main.Swaps, Key.Key3);
         Check("keys: 3 chooses energy", main.Swaps.Choice == Swapping.Rules.Model.PropertyKind.KineticEnergy, $"{main.Swaps.Choice.Name}");
         PressKey(main.Swaps, Key.Key1);
