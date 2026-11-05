@@ -37,7 +37,7 @@ public partial class Hud : CanvasLayer
     private Label _target = null!;
     private Label _time = null!;
     private Label _swapCount = null!;
-    private CooldownRingControl _ring = null!;
+    private CrosshairRing _ring = null!;
     private ThrowBarControl _charge = null!;
     private RunFlow? _flow;
 
@@ -55,7 +55,10 @@ public partial class Hud : CanvasLayer
     /// <summary>The throw bar shown (0–1), or null when hidden.</summary>
     public double? ChargeShown => _charge.Fraction;
 
-    public double RingProgress => _ring.Progress;
+    public double RingProgress => _ring.Cooldown;
+
+    /// <summary>The slices of the crosshair ring (headless checks).</summary>
+    public int RingSlices => _ring.Slices.Count;
 
     public string CrosshairText => _crosshair.Text;
 
@@ -81,13 +84,14 @@ public partial class Hud : CanvasLayer
         root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         AddChild(root);
 
-        _ring = new CooldownRingControl { MouseFilter = Control.MouseFilterEnum.Ignore };
+        _ring = new CrosshairRing { MouseFilter = Control.MouseFilterEnum.Ignore };
         _ring.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         root.AddChild(_ring);
         _charge = new ThrowBarControl { MouseFilter = Control.MouseFilterEnum.Ignore };
         _charge.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         root.AddChild(_charge);
-        _crosshair = Centered(root, "+", 40, 0);
+        _crosshair = Centered(root, "•", 18, 0);
+        _crosshair.Visible = false;               // drawn by the ring; the text stays for the headless checks
         _reason = Centered(root, "", 20, 34);
         _target = Centered(root, "", 18, 62);
 
@@ -173,17 +177,18 @@ public partial class Hud : CanvasLayer
         }
         UpdateChips(choice);
 
-        _ring.Progress = _swaps.CooldownProgress;
-        _ring.Tint = AbilityColors.Of(choice);
         _charge.Fraction = _player.ChargeFraction;
         var crosshair = _swaps.Crosshair;
-        // Always a crosshair (user's request): a small faint dot at rest, a bigger "+" on an object, in the
-        // chosen property's colour, red when the swap would be refused.
+        // The crosshair (user, 2026-11-05): a faint dot at rest; on an object, a ring split into one slice per
+        // swap it accepts, the chosen property's colour in the middle, and an X when the swap is not allowed.
         var idle = crosshair.Look == CrosshairLook.Idle;
-        _crosshair.Text = idle ? "•" : "+";
-        _crosshair.AddThemeFontSizeOverride("font_size", idle ? 18 : 40);
+        var cross = _swaps.TargetCross;
+        _ring.Slices = _swaps.TargetSegments.Select(AbilityColors.Of).ToList();
+        _ring.Mark = idle ? CrosshairRing.Look.Dot : cross ? CrosshairRing.Look.Cross : CrosshairRing.Look.Center;
+        _ring.CenterColor = AbilityColors.Of(choice);
+        _ring.Cooldown = _swaps.CooldownProgress;
+        _crosshair.Text = idle ? "•" : cross ? "×" : "●";
         var color = crosshair.Look == CrosshairLook.Refused ? RefusedColor : AbilityColors.Of(choice);
-        _crosshair.AddThemeColorOverride("font_color", idle ? new Color(1, 1, 1, 0.6f) : color);
         _reason.AddThemeColorOverride("font_color", color);
         _reason.Text = crosshair.Reason;
 
@@ -309,44 +314,59 @@ public partial class Hud : CanvasLayer
     }
 }
 
-/// <summary>The cooldown ring around the crosshair: an arc that fills up until the next swap is allowed.</summary>
-public partial class CooldownRingControl : Control
+/// <summary>
+/// The crosshair (user, 2026-11-05): a faint dot at rest; on an object a ring of equal slices, one per swap
+/// it accepts, with the chosen property's colour in the middle, or a red X when the swap is not allowed.
+/// After a swap, a thin white arc outside the ring fills up until the next one (cooldown).
+/// </summary>
+public partial class CrosshairRing : Control
 {
-    private double _progress = 1;
-    private Color _tint = new(1, 1, 1, 0.8f);
+    public enum Look { Dot, Center, Cross }
 
-    public double Progress
-    {
-        get => _progress;
-        set
-        {
-            if (Mathf.IsEqualApprox(value, _progress))
-                return;
-            _progress = value;
-            QueueRedraw();
-        }
-    }
+    private const float Radius = 18, Width = 5, Gap = 0.12f;
+    private static readonly Color Red = new(1f, 0.3f, 0.25f);
 
-    /// <summary>The ring takes the chosen property's colour.</summary>
-    public Color Tint
-    {
-        get => _tint;
-        set
-        {
-            if (value == _tint)
-                return;
-            _tint = value;
-            QueueRedraw();
-        }
-    }
+    public IReadOnlyList<Color> Slices { get; set; } = [];
+    public Look Mark { get; set; } = Look.Dot;
+    public Color CenterColor { get; set; } = Colors.White;
+    public double Cooldown { get; set; } = 1;
+
+    public override void _Process(double delta) => QueueRedraw();
 
     public override void _Draw()
     {
-        if (_progress >= 1)
-            return;
-        var center = Size / 2;
-        DrawArc(center, 22, 0, Mathf.Tau, 48, new Color(0, 0, 0, 0.35f), 5, antialiased: true);
-        DrawArc(center, 22, -Mathf.Pi / 2, -Mathf.Pi / 2 + Mathf.Tau * (float)_progress, 48, new Color(_tint, 0.9f), 3, antialiased: true);
+        var c = Size / 2;
+        if (Mark != Look.Dot && Slices.Count > 0)
+        {
+            var n = Slices.Count;
+            var gap = n > 1 ? Gap : 0;
+            for (var i = 0; i < n; i++)
+            {
+                var start = -Mathf.Pi / 2 + i * Mathf.Tau / n + gap / 2;
+                var end = start + Mathf.Tau / n - gap;
+                DrawArc(c, Radius, start, end, 32, new Color(0, 0, 0, 0.5f), Width + 3, antialiased: true);
+                DrawArc(c, Radius, start, end, 32, Slices[i], Width, antialiased: true);
+            }
+        }
+        if (Cooldown < 1)
+            DrawArc(c, Radius + 7, -Mathf.Pi / 2, -Mathf.Pi / 2 + Mathf.Tau * (float)Cooldown, 48, new Color(1, 1, 1, 0.85f), 2, antialiased: true);
+        switch (Mark)
+        {
+            case Look.Dot:
+                DrawCircle(c, 2.5f, new Color(1, 1, 1, 0.6f));
+                break;
+            case Look.Center:
+                DrawCircle(c, 6.5f, new Color(0, 0, 0, 0.55f));
+                DrawCircle(c, 5f, CenterColor);
+                break;
+            case Look.Cross:
+                foreach (var (a, b) in new[] { (new Vector2(-7, -7), new Vector2(7, 7)), (new Vector2(-7, 7), new Vector2(7, -7)) })
+                {
+                    DrawLine(c + a, c + b, new Color(0, 0, 0, 0.6f), 5, antialiased: true);
+                    DrawLine(c + a, c + b, Red, 3, antialiased: true);
+                }
+                break;
+        }
     }
 }
 

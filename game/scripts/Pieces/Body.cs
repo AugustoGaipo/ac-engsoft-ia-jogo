@@ -181,11 +181,13 @@ public partial class Body : RigidBody3D, IHasWeight
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
             CullMode = BaseMaterial3D.CullModeEnum.Front,
         };
-        PrimitiveMesh hull = def.Kind == ObjectKind.Ball
-            ? new SphereMesh { Radius = size.X / 2 + 0.05f, Height = size.X + 0.1f }
-            : new BoxMesh { Size = size + new Vector3(0.1f, 0.1f, 0.1f) };
-        hull.Material = body._outlineMaterial;
-        body._outline = new MeshInstance3D { Name = "Outline", Mesh = hull, Visible = false };
+        // Two widths (user, 2026-11-05): thick when the object can be held right now, thin otherwise.
+        PrimitiveMesh Hull(float margin) => def.Kind == ObjectKind.Ball
+            ? new SphereMesh { Radius = size.X / 2 + margin, Height = size.X + 2 * margin, Material = body._outlineMaterial }
+            : new BoxMesh { Size = size + Vector3.One * 2 * margin, Material = body._outlineMaterial };
+        body._thickHull = Hull(0.06f);
+        body._thinHull = Hull(0.015f);
+        body._outline = new MeshInstance3D { Name = "Outline", Mesh = body._thickHull, Visible = false };
         body.AddChild(body._outline);
         // Impact sounds (user's request): the body reports new contacts; OnHit decides by momentum (Feedback).
         body.ContactMonitor = true;
@@ -197,13 +199,20 @@ public partial class Body : RigidBody3D, IHasWeight
 
     private MeshInstance3D _outline = null!;
     private StandardMaterial3D _outlineMaterial = null!;
+    private PrimitiveMesh _thickHull = null!;
+    private PrimitiveMesh _thinHull = null!;
+
+    /// <summary>Whether the outline shown is the thick one (the object can be held now).</summary>
+    public bool OutlineThick { get; private set; }
 
     /// <summary>The outline shown now, or null when the body is neither aimed nor held.</summary>
     public Swapping.GameLogic.Outline? OutlineShown { get; private set; }
 
-    public void ShowOutline(Swapping.GameLogic.Outline? outline)
+    public void ShowOutline(Swapping.GameLogic.Outline? outline, bool thick = true)
     {
         OutlineShown = outline;
+        OutlineThick = outline is not null && thick;
+        _outline.Mesh = thick ? _thickHull : _thinHull;
         _outline.Visible = outline is not null;
         if (outline is { } kind)
             _outlineMaterial.AlbedoColor = kind switch

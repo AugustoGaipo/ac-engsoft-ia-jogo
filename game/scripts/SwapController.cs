@@ -33,6 +33,12 @@ public partial class SwapController : Node
 
     public Body? Target { get; private set; }
 
+    /// <summary>The swaps the aimed object accepts here (one ring slice each); empty when nothing is aimed.</summary>
+    public IReadOnlyList<IPropertyKind> TargetSegments { get; private set; } = [];
+
+    /// <summary>The aimed object refuses the chosen swap (not just the cooldown): an X on the crosshair.</summary>
+    public bool TargetCross { get; private set; }
+
     public Crosshair Crosshair { get; private set; } = new(CrosshairLook.Idle, "");
 
     /// <summary>0 right after a swap, 1 when the next one is allowed (the ring around the crosshair).</summary>
@@ -144,11 +150,20 @@ public partial class SwapController : Node
         var reason = Target is null ? null : _runner.World.Rules.Check(_runner.World, Request(Target), _now);
         Crosshair = CrosshairState.For(Target is not null, reason);
 
+        // The ring on the crosshair (user, 2026-11-05): a slice per swap the aimed object accepts; an X if refused.
+        TargetSegments = Target is null ? [] : SwapRing.Segments(_runner.World.Get(Target.ContainerId), _runner.World.Rules.UnlockedProperties);
+        TargetCross = Target is not null && SwapRing.ShowsCross(reason);
+
         // Task 9: the aimed or held object shows what it accepts (OutlineColor); the others show nothing.
+        // Thick when it can be held right now, thin otherwise (user, 2026-11-05).
         foreach (var body in _runner.Bodies)
         {
             var shown = body == Target || body == _player.Held;
-            body.ShowOutline(shown ? OutlineColor.For(_runner.World.Get(body.ContainerId), new HashSet<IPropertyKind> { Choice }) : null);
+            // Same test as holding: the aim ray reaches the body within the hold reach (0 = reached).
+            var reach = body == Target && _player.Aim(Player.HoldReach) == body ? 0 : double.MaxValue;
+            var thick = body == _player.Held || SwapRing.ThickOutline(reach, Player.HoldReach,
+                body.Mass, _player.MassKg, _player.HoldBlocked(_player.Eye.Origin, body.GlobalPosition));
+            body.ShowOutline(shown ? OutlineColor.For(_runner.World.Get(body.ContainerId), new HashSet<IPropertyKind> { Choice }) : null, thick);
         }
     }
 

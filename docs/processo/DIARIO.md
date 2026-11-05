@@ -2053,3 +2053,11 @@ câmera acompanha o olho. São 69 no total.
 - Chips das habilidades embaixo, no centro ("1 Posição", "2 Massa", "3 Energia"): só os liberados na sala; o escolhido aceso na sua cor, os outros com borda colorida.
 - Mira e anel de recarga na cor da habilidade escolhida; vermelho quando a troca seria recusada.
 - Os textos lidos pelo smoke (`PlayerText`, `RunText`, `TargetText`) continuam iguais. Nova verificação: o chip aceso acompanha a tecla 2. Conferido com `--screenshot`. Smoke 281.
+
+## 2026-11-05 — Contorno grosso/fino e anel de trocas na mira
+
+- Pedido do usuário: contorno grosso só quando dá para segurar o objeto (perto e com peso permitido), fininho quando não dá; ao mirar um objeto, um anel com as cores das trocas que ele aceita (1/3 cada se aceitar as três), a cor escolhida no meio, e um X quando a troca não é permitida.
+- `SwapRing` (GameLogic): partes do anel (aceitas e liberadas na sala, ordem fixa; nenhuma se travado), X quando recusado (a recarga não é X, é só espera), contorno grosso = mesmo teste de segurar (alcance pelo raio da mira, `HoldLoad`, sem barreira). Testes vermelhos antes; mutação (recarga contando como X) → falha.
+- `Body`: dois cascos de contorno (6 cm e 1,5 cm). `CrosshairRing` no HUD: partes coloridas, centro na cor escolhida, X vermelho, arco branco fino de recarga por fora.
+- Smoke: anel de 1 parte e centro na 1.2; contorno grosso ao alcance (1.1), fino do outro lado do fosso (1.2). Capturas conferidas (3.2: anel rosa + X; 1.1: sem trocas, X, contorno fino). 717 testes + smoke 283.
+- Deslize: na mutação, `git checkout` não desfaz arquivo ainda não versionado; desfeito à mão antes de rodar a suíte.

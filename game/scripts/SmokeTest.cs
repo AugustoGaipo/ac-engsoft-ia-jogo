@@ -203,6 +203,7 @@ public partial class SmokeTest : Node
         player.GlobalPosition = new Vector3(4, 0, 4.8f);
         player.Look(0, -0.6f);                       // looking along -Z and down, towards the box
         await PhysicsFrames(5);
+        Check("outline (user, 2026-11-05): a box within reach that can be held has the thick outline", box.OutlineShown is not null && box.OutlineThick, $"{box.OutlineShown} thick {box.OutlineThick}");
         player.ToggleHold();
         Check("player: E holds the aimed box", player.Held == box, $"held {player.Held?.Name ?? "nothing"}");
         await PhysicsFrames(40);
@@ -282,8 +283,9 @@ public partial class SmokeTest : Node
             $"target {swaps.Target?.Name ?? "none"}, {swaps.Crosshair}, distance {swaps.Measure(box).DistanceMeters:0.00}");
         Check("swap: the HUD shows the aimed box's numbers", main.Hud.TargetText.StartsWith("10 kg"), main.Hud.TargetText);
         Check("swap: the HUD shows the player's numbers", main.Hud.PlayerText.Contains("70 kg"), main.Hud.PlayerText);
+        Check("outline: the box across the pit, out of hold reach, has the thin outline", box.OutlineShown is not null && !box.OutlineThick, $"{box.OutlineShown} thick {box.OutlineThick}");
         await PhysicsFrames(1);
-        Check("crosshair: on an object it is the \"+\"", main.Hud.CrosshairText == "+", main.Hud.CrosshairText);
+        Check("crosshair: on a box that accepts the swap, the chosen colour in the middle of a one-slice ring (level 1: position only)", main.Hud.CrosshairText == "●" && main.Hud.RingSlices == 1, $"{main.Hud.CrosshairText} {main.Hud.RingSlices}");
         player.Look(-90, 1.2f);                                 // up at the sky
         await PhysicsFrames(3);
         Check("crosshair (user's request): with nothing aimed there is always a small dot",
