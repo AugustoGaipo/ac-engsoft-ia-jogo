@@ -107,12 +107,23 @@ public partial class SmokeTest : Node
         {
             var barrier = runner.Barriers.Single(b => b.Def.Id == def.Id);
             Check($"room {roomId}: {def.Id} at the file box", barrier.Position.DistanceTo(def.Box.Center()) < Tolerance, $"{barrier.Position}");
-            var look = (ShaderMaterial)((MeshInstance3D)barrier.GetChild(0)).Mesh.SurfaceGetMaterial(0);
-            var baseColor = (Vector3)look.GetShaderParameter("base_color");
-            var stripeColor = (Vector3)look.GetShaderParameter("stripe_color");
-            Check($"room {roomId}: {def.Id} has moving stripes darker than its color (not black), one side only",
-                stripeColor.X < baseColor.X && stripeColor.Y < baseColor.Y && stripeColor.Z < baseColor.Z && stripeColor.Length() > 0.05f && look.Shader.Code.Contains("cull_back"),
-                $"base {baseColor}, stripes {stripeColor}");
+            if (def.IsExitGrid)
+            {
+                // The exit grid looks like a frosted glass door with a frame (user, 2026-11-05).
+                Check($"room {roomId}: {def.Id} is a glass pane in a frame (two jambs, lintel, sill)",
+                    barrier.GetNodeOrNull("Glass") is MeshInstance3D && barrier.GetNodeOrNull("JambA") is not null && barrier.GetNodeOrNull("JambB") is not null
+                    && barrier.GetNodeOrNull("Lintel") is not null && barrier.GetNodeOrNull("Sill") is not null,
+                    string.Join(",", barrier.GetChildren().Select(c => c.Name.ToString())));
+            }
+            else
+            {
+                var look = (ShaderMaterial)((MeshInstance3D)barrier.GetChild(0)).Mesh.SurfaceGetMaterial(0);
+                var baseColor = (Vector3)look.GetShaderParameter("base_color");
+                var stripeColor = (Vector3)look.GetShaderParameter("stripe_color");
+                Check($"room {roomId}: {def.Id} has moving stripes darker than its color (not black), one side only",
+                    stripeColor.X < baseColor.X && stripeColor.Y < baseColor.Y && stripeColor.Z < baseColor.Z && stripeColor.Length() > 0.05f && look.Shader.Code.Contains("cull_back"),
+                    $"base {baseColor}, stripes {stripeColor}");
+            }
             if (def.IsExitGrid)
                 Check($"room {roomId}: {def.Id} blocks objects only", barrier.CollisionLayer == Layers.BarrierObjects, $"layer {barrier.CollisionLayer}");
         }

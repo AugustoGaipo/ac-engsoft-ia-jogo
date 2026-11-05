@@ -2034,3 +2034,4 @@ câmera acompanha o olho. São 69 no total.
 
 - Pedido do usuário (referência visual de outro jogo, "não igual"): a grade de saída virou um painel de vidro fosco com faixas verticais coloridas que tremulam devagar, um batente fino dourado e uma luz pálida no chão (`Pieces/ExitPortal.cs`). Só o visual: continua barrando objetos e trocas e deixando o jogador passar.
 - Conferido com `--screenshot` de perto e de longe. Smoke verde.
+- Erro de processo: o commit `4b7b3f7` saiu com o smoke vermelho (a verificação de listras ainda exigia o material antigo na grade; o comando encadeou o commit sem olhar o resultado). Corrigido no commit seguinte: a grade de saída agora é verificada como vidro + batente. Smoke 276.
