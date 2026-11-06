@@ -24,6 +24,8 @@
 | Verificações do teste sem janela | **285** (`--smoke-test`: os níveis 1, 2 e 3 jogados por roteiro do começo ao fim) + **27** do menu (`--smoke-menu`) |
 | Cobertura de linhas do `Swapping.GameLogic` | **98,8 %** sem `Online/GameApi.cs`, que é testado pelos testes da API (`Api.Tests/GameClient`); meta da spec ≥ 90 % |
 | `rules` / `levels` | 121 testes (98,6 % das linhas) / 124 testes (96,9 %) |
+| API | **252 aprovados de 252**, 96,7 % das linhas do `Swapping.Api`; o `Online/GameApi.cs` do jogo fica com 100 % por esses testes |
+| Toda a solução | **732 testes** (121 `rules` + 124 `levels` + 252 API + 235 `GameLogic`), todos verdes |
 | Build | 0 avisos (`TreatWarningsAsErrors`) |
 
 ## O que foi feito
