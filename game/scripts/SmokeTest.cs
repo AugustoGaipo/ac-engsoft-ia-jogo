@@ -289,7 +289,9 @@ public partial class SmokeTest : Node
         await PhysicsFrames(1);
         Check("crosshair: on a box that accepts the swap, the chosen colour in the middle of a one-slice ring (level 1: position only)", main.Hud.CrosshairText == "●" && main.Hud.RingSlices == 1, $"{main.Hud.CrosshairText} {main.Hud.RingSlices}");
         player.Look(-90, 1.2f);                                 // up at the sky
-        await PhysicsFrames(3);
+        // The HUD redraws per frame, not per physics step: wait until it catches up (was flaky with 3 steps).
+        for (var i = 0; i < 30 && main.Hud.CrosshairText != "•"; i++)
+            await PhysicsFrames(1);
         Check("crosshair (user's request): with nothing aimed there is always a small dot",
             swaps.Crosshair.Look == Swapping.GameLogic.CrosshairLook.Idle && main.Hud.CrosshairText == "•", main.Hud.CrosshairText);
 
@@ -493,7 +495,10 @@ public partial class SmokeTest : Node
             await PhysicsFrames(1);
         Check("online: without an account, the end screen points to menu › Conta for the ranking",
             flow.EndText.Contains("Entre numa conta") && main.Online.Session is null, flow.EndText.Replace('\n', '|'));
+        // The user (2026-11-05): the end screen stops the world so its buttons can be used; playing again runs it.
+        Check("end screen: the level is paused while it shows", main.GetTree().Paused, $"paused {main.GetTree().Paused}");
         flow.RestartLevel();
+        Check("end screen: playing again unpauses", !main.GetTree().Paused, $"paused {main.GetTree().Paused}");
 
         // The user's log (2026-11-03): in room 1.3, a swap with the ball in the air at the ledge edge, then
         // the player fell through the floor (below y = -10).

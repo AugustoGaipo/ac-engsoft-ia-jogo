@@ -2080,3 +2080,10 @@ câmera acompanha o olho. São 69 no total.
 - **Pegar com o botão esquerdo** (pedido do usuário): o E saiu; o botão esquerdo pega com as mãos vazias (esse clique não carrega nem solta) e, com item, toque solta e segurar arremessa. Teste de controles atualizado; nova verificação no smoke (285).
 - Sala 1.3: o usuário confirmou que passar com uma troca só era um bug, já corrigido.
 - Deslize: o primeiro commit levou junto `.uid` gerados pelo editor ainda não versionados (eles devem ser versionados mesmo). Smoke instável: "crosshair … small dot" falha às vezes também sem as mudanças do dia; não mexido.
+
+## 2026-11-05 — Fim de fase pausa o jogo
+
+- Usuário (gostou das fases): ao passar de nível o jogo não pausava e não dava para usar a tela de fim. O mundo seguia rodando e o mouse ficava preso na câmera.
+- `RunFlow.Finish` pausa a árvore e solta o mouse; começar, reiniciar e voltar ao menu despausam (o `SetPaused(false)` não bastava: ele só age quando o menu de pausa está aberto).
+- Smoke: tela de fim pausada; "jogar de novo" despausa (2 verificações novas, 287).
+- Smoke instável da mira ("small dot") corrigido: esperava 3 passos de física e o HUD redesenha por quadro; agora espera até 30, como o "HUD mostra Massa".

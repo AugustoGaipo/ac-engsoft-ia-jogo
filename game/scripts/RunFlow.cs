@@ -91,6 +91,7 @@ public partial class RunFlow : Node
         Result = null;
         CancelDeath();
         _endScreen.Visible = false;
+        GetTree().Paused = false;
         _nextButton.Visible = false;
         _fade.Color = _fade.Color with { A = 0 };
     }
@@ -103,6 +104,7 @@ public partial class RunFlow : Node
         CancelDeath();
         Result = null;
         _endScreen.Visible = false;
+        GetTree().Paused = false;
         Run = new RunTracker(_runner.Level.Id);
         _runner.BuildAll(_runner.Level.Rooms[0].Id);
         _player.SpawnAt(_runner.Room.Spawn);
@@ -134,6 +136,7 @@ public partial class RunFlow : Node
         SetPaused(false);
         Result = null;
         _endScreen.Visible = false;
+        GetTree().Paused = false;
         _runner.BuildAll(_runner.Level.Rooms[0].Id);
         _player.SpawnAt(_runner.Room.Spawn);
         Run.RestartLevel(_runner.World);
@@ -272,6 +275,10 @@ public partial class RunFlow : Node
             $"{_runner.Level.Name}: concluído!\n\nTempo  {RunClock.Format(Result.TimeMs)}\nTrocas  {Result.Swaps}\n" +
             $"Mortes  {Result.Deaths}   ·   Reinícios  {Result.RoomRestarts}\n\nR: jogar de novo   ·   Esc: menu";
         _endScreen.Visible = true;
+        // The level is over (user, 2026-11-05): the world stops and the mouse is free for the buttons.
+        GetTree().Paused = true;
+        if (DisplayServer.GetName() != "headless")
+            Input.MouseMode = Input.MouseModeEnum.Visible;
         GD.Print($"[game] level finished: {Result}");
         LevelFinished?.Invoke(Result);
     }
