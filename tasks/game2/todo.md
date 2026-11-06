@@ -13,6 +13,6 @@ Each task: red test → code → mutation → diary → tick → commit and push
       `RunFlow.cs`, progress file, headless menu checks. SC 17.
 - [x] **Task 16 — Level 2 scene and barrier looks (M).** `level_2.tscn`, scripted run. SC 17.
 - [x] **Task 17 — Level 3 scene (M).** `level_3.tscn`, scripted run. SC 17.
-- [ ] **Task 18 — Close (S).** Coverage, play-test sheet, report, README, C4, diary. SC 18.
+- [x] **Task 18 — Close (S).** Coverage, play-test sheet, report, README, C4, diary. SC 18. (2026-11-05: `RELATORIO-game-fatia2.md`; ficha `PLAYTEST-niveis-2-3.md` aguardando o usuário)
 
 Checkpoint after Task 15: the user plays the menu and level 1. After Task 17: the user plays everything.

@@ -20,7 +20,8 @@ Quinta é para slides e ensaio, sem código novo.
   peso volta a 70 kg ao morrer, barra de arremesso (3 s, 400 J, teto suave 15 m/s). Detalhes no diário.
 - **Feito em 11-03 (tarde):** `HoldLoad` (segurar depende do peso) e tarefa 16 (nível 2: 2.3 "Empréstimo", 2.4 "Pulo alto"; jogada sem janela). Falta o usuário jogar o nível 2.
 - **Feito em 11-03 (noite):** sons (pulo, queda, troca, segurar, barra, batidas), tela de morte, HUD de emprestado (⇄), jogador lançado (`Launch`), não se segura através de barreira de objetos, tarefa 17 (nível 3: 3.1 Canhão, 3.2, 3.3 Catapulta). Falta o usuário jogar os níveis 2 e 3.
-- **Próxima:** 18 fechamento (cobertura, ficha de playtest, relatório, README, C4, diário).
+- **Feito em 11-05:** tarefa 18 (relatório `RELATORIO-game-fatia2.md`, ficha `PLAYTEST-niveis-2-3.md`, README, C4), fundo do menu, teclas na pausa, pegar com o botão esquerdo, exportação Windows (`build/Swapping-windows.zip`; ver README).
+- **Próxima:** slides e ensaio (`docs/apresentacao/ROTEIRO.md`). Sem código novo.
 - **Depois da entrega:** editor de fases no Godot (peças como nós + "Exportar fase" para JSON com o
   validador). Adiado: resta menos de 50 % do plano Pro normal até sexta.
 - Sempre `dotnet build game/Swapping.Game.csproj` antes do `dotnet test` (senão o teste sem janela roda o jogo velho).
@@ -29,7 +30,7 @@ Quinta é para slides e ensaio, sem código novo.
 Teste vermelho → código → 1–2 mutações → diário (`docs/processo/DIARIO.md`) → marcar no todo → commit e push.
 
 ## Pendências com o usuário
-- Sala 1.3: ele passou com uma troca só (talvez segurando a caixa ao trocar com a bola) — perguntar.
+- Ficha dos níveis 2 e 3 para o usuário preencher.
 - Cores do contorno.
 - Skills desligadas para economizar tokens (ver memória `skills-desligadas`).
 

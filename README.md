@@ -75,13 +75,16 @@ dotnet list Swapping.sln package --vulnerable --include-transitive   # auditoria
 Os erros vêm em `application/problem+json` com um campo `code` (ex.: `InvalidBody`, `NameTaken`,
 `ProfileLocked`, `LevelLocked`, `InvalidQuery`). Fora de `Development`, a API exige HTTPS.
 
-## O jogo (Godot 4.7 .NET) — nível 1
+## O jogo (Godot 4.7 .NET) — 3 níveis + mapa de teste
+
+Três níveis no menu: **1 Posição**, **2 Peso** e **3 Energia**, cada um liberado ao terminar o anterior. Há também
+o **Mapa de teste** (as três trocas, fora do progresso), conta online e ranking por nível (com a API rodando).
 
 Requer o **Godot 4.7.2 .NET** (o executável `…_mono_win64.exe`; o `…_console.exe` mostra o log). Antes,
 `dotnet build Swapping.sln`: isso compila o jogo e copia `levels/*.json` para `game/levels/`.
 
 ```
-Godot_v4.7.2-stable_mono_win64.exe --path game                  # joga o nível 1
+Godot_v4.7.2-stable_mono_win64.exe --path game                  # abre o menu (ou jogar.bat)
 Godot_v4.7.2-stable_mono_win64.exe --path game -- --sandbox     # sala de testes (um posto por mecânica)
 # a sala de testes tem 5 baias ao norte (z 20–50), uma por tipo de barreira
 Godot_v4.7.2-stable_mono_win64.exe --editor --path game         # editor, com a prévia das peças nas cenas
@@ -90,13 +93,20 @@ Godot_..._console.exe --headless --path game -- --smoke-test level-1   # teste s
 
 | Controle | Ação |
 |---|---|
-| WASD + mouse | andar e olhar |
+| WASD + mouse | andar e olhar (`Shift` corre) |
 | Espaço | pular |
-| `E` | segurar / soltar o objeto mirado (até 2,5 m) |
-| Botão esquerdo | arremessar o objeto segurado |
-| Botão direito | **trocar de posição** com o objeto mirado (mira branca = vai funcionar) |
+| Botão esquerdo | **pegar** o objeto mirado; com ele na mão, toque solta e segurar carrega o arremesso |
+| Botão direito | **trocar** a propriedade escolhida com o objeto mirado (X vermelho = não vai funcionar) |
+| `1` `2` `3` / roda | escolher a troca: posição, massa, energia cinética |
+| `F` + mouse | girar o objeto segurado |
 | `R` | reiniciar a sala (na tela de fim: jogar de novo) |
-| `Esc` | menu de pausa (o tempo para) |
+| `Esc` | pausa (o tempo para; "Controles" mostra as teclas) |
+
+**Exportar para Windows** (para outra pessoa jogar sem instalar nada): instale os *export templates* do
+Godot 4.7.2 .NET (Editor › Gerenciar Modelos de Exportação) e rode
+`Godot_..._console.exe --headless --path game --export-release "Windows Desktop" ../build/windows/Swapping.exe`.
+Zipe a pasta `build/windows` inteira (`.exe`, `.pck` e `data_…`). As fases vão dentro do `.pck`. Sem a API, o
+ranking e a conta só ficam offline. O `.exe` não é assinado: o SmartScreen avisa ("Executar" funciona).
 
 - `game/`: o cliente Godot. Os scripts só medem e aplicam; quem decide são as bibliotecas.
   Spec: [`SPEC-game.md`](docs/specs/SPEC-game.md). Relatório: [`RELATORIO-game.md`](docs/processo/RELATORIO-game.md).

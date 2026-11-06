@@ -2071,3 +2071,12 @@ câmera acompanha o olho. São 69 no total.
 - Smoke: sem conta, a tela de fim aponta para menu › Conta. Com `SWAPPING_ONLINE_SMOKE=1` e a API rodando, o Godot cria conta, entra, envia e se vê no ranking — rodado de verdade: 288 checks.
 - Limpeza: `swapping.db-shm/-wal` estavam versionados por engano; agora ignorados. O banco de desenvolvimento tem perfis de teste (TesteE2E, smoke…): apagar `src/Swapping.Api/swapping.db*` antes da demo para começar limpo.
 - 733 testes verdes.
+
+## 2026-11-05 — Fundo do menu, teclas na pausa, exportação e pegar com o botão esquerdo
+
+- **Fundo do menu** (pedido do usuário com prints): o `LabBackdrop` usava `SetAnchorsPreset`, que mantém o retângulo atual (vazio) — o fundo ficava com tamanho zero. Trocado por `SetAnchorsAndOffsetsPreset`. Os textos da parede foram quebrados em linhas curtas e só aparecem se cabem ao lado da folha. Nova opção `--menu-shot` para conferir com `--resolution`; conferido em 1920×1080 e 1150×680.
+- **Teclas durante o jogo** (pedido do usuário): a pausa ganhou "Controles", que mostra a mesma lista do menu (`Menu.ControlsGrid`, uma só fonte) no lugar dos outros botões, para caber em 720p. `--pause-keys` com `--screenshot` para conferir.
+- **Exportação para um amigo jogar** (pedido do usuário): preset "Windows Desktop" versionado (`game/export_presets.cfg`, inclui `*.json`) e `game/Swapping.Game.sln` (o Godot exige para exportar C#). As fases eram lidas com `GlobalizePath` + `System.IO`, que não enxerga o `.pck`: `GameFiles` lê com o `FileAccess` do Godot e copia as fases para `user://levels` no jogo exportado. Testado no `.exe` exportado: menu, fase 2 e mapa de teste. Sem servidor o ranking só falha (4 s); o SmartScreen avisa por falta de assinatura ("Executar" funciona).
+- **Pegar com o botão esquerdo** (pedido do usuário): o E saiu; o botão esquerdo pega com as mãos vazias (esse clique não carrega nem solta) e, com item, toque solta e segurar arremessa. Teste de controles atualizado; nova verificação no smoke (285).
+- Sala 1.3: o usuário confirmou que passar com uma troca só era um bug, já corrigido.
+- Deslize: o primeiro commit levou junto `.uid` gerados pelo editor ainda não versionados (eles devem ser versionados mesmo). Smoke instável: "crosshair … small dot" falha às vezes também sem as mudanças do dia; não mexido.
