@@ -132,14 +132,13 @@ public partial class Player : CharacterBody3D, IHasWeight
             _pitch = Mathf.Clamp(_pitch - motion.Relative.Y * MouseSensitivity, -1.5f, 1.5f);
             Rotation = new Vector3(0, _yaw, 0);
         }
-        else if (@event.IsActionPressed(Controls.Name(GameAction.Hold)))
-        {
-            ToggleHold();
-        }
         else if (@event.IsActionPressed(Controls.Name(GameAction.Throw)))
         {
-            if (Held is not null)
-                ChargeSeconds = 0;   // the bar starts filling
+            // Left button: empty hands grab (that click does not charge); holding something starts the bar.
+            if (Held is null)
+                ToggleHold();
+            else
+                ChargeSeconds = 0;
         }
         else if (@event.IsActionReleased(Controls.Name(GameAction.Throw)))
         {

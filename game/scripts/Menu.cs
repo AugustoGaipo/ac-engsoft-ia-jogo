@@ -66,8 +66,8 @@ public partial class Menu : CanvasLayer
         controls.AddThemeConstantOverride("v_separation", 8);
         (string Key, string Action)[] keys =
         [
-            ("W A S D", "andar"), ("Shift", "correr"), ("Espaço", "pular"), ("Mouse", "olhar"), ("E", "segurar / soltar"),
-            ("Botão esquerdo", "segurar: carregar e arremessar · toque: solta"), ("Botão direito", "trocar"),
+            ("W A S D", "andar"), ("Shift", "correr"), ("Espaço", "pular"), ("Mouse", "olhar"),
+            ("Botão esquerdo", "pegar · com item: toque solta, segurar arremessa"), ("Botão direito", "trocar"),
             ("1  2  3", "escolher a troca (posição, massa, energia)"), ("Roda do mouse", "trocar a propriedade"),
             ("F + mouse", "girar o item segurado"), ("R", "reiniciar a sala"), ("Esc", "pausa"),
         ];

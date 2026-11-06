@@ -7,7 +7,7 @@ public enum GameAction
     MoveLeft,
     MoveRight,
     Jump,
-    Hold,
+    /// <summary>Left button (user, 2026-11-05): grabs when the hands are empty; holding it charges a throw, a tap drops.</summary>
     Throw,
     Swap,
     RestartRoom,
@@ -36,7 +36,6 @@ public static class Controls
         new(GameAction.MoveLeft, InputKind.Key, "A"),
         new(GameAction.MoveRight, InputKind.Key, "D"),
         new(GameAction.Jump, InputKind.Key, "Space"),
-        new(GameAction.Hold, InputKind.Key, "E"),
         new(GameAction.Throw, InputKind.MouseButton, "Left"),
         new(GameAction.Swap, InputKind.MouseButton, "Right"),
         new(GameAction.RestartRoom, InputKind.Key, "R"),

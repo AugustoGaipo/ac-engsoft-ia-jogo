@@ -379,8 +379,13 @@ public partial class SmokeTest : Node
         locked.Teleport(player.Eye.Origin - player.Eye.Basis.Z * 1.5f, Vector3.Zero);
         await PhysicsFrames(2);
         await LookAt(player, locked.GlobalPosition);
-        player.ToggleHold();
+        // The left button grabs with empty hands (user, 2026-11-05), and that click does not drop or charge.
+        left(true);
+        await PhysicsFrames(2);
+        left(false);
         await PhysicsFrames(10);
+        Check("left button: a click with empty hands grabs the box", player.Held == locked && player.ChargeFraction is null,
+            $"held {player.Held?.Name ?? "nothing"}, bar {player.ChargeFraction}");
         var (ticks, rings, throws, knocks) = (player.ChargeTicks, player.ChargeRings, player.Throws, locked.Impacts);
         left(true);
         await PhysicsFrames(90);                                    // 1.5 s at 60 Hz

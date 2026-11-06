@@ -8,7 +8,6 @@ public sealed class ControlsTests
     [InlineData(GameAction.MoveLeft, InputKind.Key, "A")]
     [InlineData(GameAction.MoveRight, InputKind.Key, "D")]
     [InlineData(GameAction.Jump, InputKind.Key, "Space")]
-    [InlineData(GameAction.Hold, InputKind.Key, "E")]
     [InlineData(GameAction.Throw, InputKind.MouseButton, "Left")]
     [InlineData(GameAction.Swap, InputKind.MouseButton, "Right")]
     [InlineData(GameAction.RestartRoom, InputKind.Key, "R")]
